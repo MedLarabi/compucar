@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/yalidine-status-check",
+      "schedule": "0 */2 * * *"
+    }
+  ]
+}

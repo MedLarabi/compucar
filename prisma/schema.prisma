@@ -1,0 +1,1069 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  firstName     String
+  lastName      String
+  name          String?
+  phone         String?
+  image         String?
+  dateOfBirth   String?
+  bio           String?
+  emailVerified DateTime?
+  isActive      Boolean   @default(true)
+  role          UserRole  @default(CUSTOMER)
+  isAdmin       Boolean   @default(false)  // Add admin flag for file tuning system
+  newsletter    Boolean   @default(false)
+  marketing     Boolean   @default(false)
+  // Notification preferences
+  emailNotifications Boolean @default(true)
+  smsNotifications   Boolean @default(false)
+  marketingEmails    Boolean @default(true)
+  // Display preferences
+  theme        String    @default("system")
+  language     String    @default("en")
+  currency     String    @default("DZD")
+  timezone     String    @default("America/New_York")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+  password      String?
+  accounts      Account[]
+  addresses     Address[]
+  orders        Order[]
+  sessions      Session[]
+  promotionalCodeUsages PromotionalCodeUsage[]
+  notifications Notification[]
+  downloads     Download[]
+  blogArticles  BlogArticle[]
+  assignedLicenseKeys LicenseKey[]
+  // Course system relations
+  courseEnrollments CourseEnrollment[]
+  courseProgress    CourseProgress[]
+  videoProgress     VideoProgress[]
+  // File tuning system relations
+  tuningFiles       TuningFile[]
+  tuningNotifications TuningNotification[]
+  auditLogs         AuditLog[]
+  courseReviews     CourseReview[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Address {
+  id             String      @id @default(cuid())
+  userId         String
+  type           AddressType @default(SHIPPING)
+  firstName      String
+  lastName       String
+  company        String?
+  address1       String
+  address2       String?
+  city           String
+  state          String
+  postalCode     String
+  country        String      @default("US")
+  phone          String?
+  isDefault      Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  billingOrders  Order[]     @relation("BillingAddress")
+  shippingOrders Order[]     @relation("ShippingAddress")
+
+  @@map("addresses")
+}
+
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?
+  image       String?
+  parentId    String?
+  isActive    Boolean    @default(true)
+  sortOrder   Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id               String           @id @default(cuid())
+  name             String
+  slug             String           @unique
+  description      String
+  shortDescription String?
+  price            Decimal          @db.Decimal(10, 2)
+  compareAtPrice   Decimal?         @db.Decimal(10, 2)
+  cost             Decimal?         @db.Decimal(8, 2)
+  sku              String           @unique
+  barcode          String?
+  trackQuantity    Boolean          @default(true)
+  quantity         Int              @default(0)
+  allowBackorder   Boolean          @default(false)
+  categoryId       String
+  brand            String?
+  vendor           String?
+  weight           Decimal?         @db.Decimal(8, 2)
+  length           Decimal?         @db.Decimal(8, 2)
+  width            Decimal?         @db.Decimal(8, 2)
+  height           Decimal?         @db.Decimal(8, 2)
+  // Virtual product fields
+  isVirtual        Boolean          @default(false)
+  downloadUrl      String?
+  downloadLimit    Int?             @default(3)
+  downloadExpiry   Int?             @default(30) // days
+  licenseKey       String?
+  systemRequirements String?
+  version          String?
+  fileSize         String?
+  status           ProductStatus    @default(DRAFT)
+  isActive         Boolean          @default(true)
+  isFeatured       Boolean          @default(false)
+  metaTitle        String?
+  metaDescription  String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  publishedAt      DateTime?
+  orderItems       OrderItem[]
+  images           ProductImage[]
+  videos           ProductVideo[]
+  reviews          ProductReview[]
+  tags             ProductTag[]
+  variants         ProductVariant[]
+  downloads        Download[]
+  licenseKeys      LicenseKey[]
+  category         Category         @relation(fields: [categoryId], references: [id])
+  // Course system relations
+  courses          ProductCourse[]
+
+  @@map("products")
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  url       String
+  altText   String?
+  sortOrder Int     @default(0)
+  isMain    Boolean @default(false)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+model ProductVideo {
+  id          String   @id @default(cuid())
+  productId   String
+  url         String
+  title       String?
+  description String?
+  thumbnail   String?  // Thumbnail image URL
+  duration    Int?     // Duration in seconds
+  fileSize    String?  // Human readable file size (e.g., "15.2 MB")
+  mimeType    String?  // e.g., "video/mp4", "video/webm"
+  sortOrder   Int      @default(0)
+  isMain      Boolean  @default(false) // Main video for product showcase
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_videos")
+}
+
+model ProductVariant {
+  id             String   @id @default(cuid())
+  productId      String
+  name           String
+  sku            String   @unique
+  price          Decimal  @db.Decimal(10, 2)
+  compareAtPrice Decimal? @db.Decimal(10, 2)
+  quantity       Int      @default(0)
+  image          String?
+  options        Json     @default("{}")
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_variants")
+}
+
+model ProductTag {
+  id        String  @id @default(cuid())
+  productId String
+  name      String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, name])
+  @@map("product_tags")
+}
+
+model ProductReview {
+  id         String   @id @default(cuid())
+  productId  String
+  userId     String?
+  name       String
+  email      String
+  rating     Int
+  title      String?
+  content    String
+  isVerified Boolean  @default(false)
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_reviews")
+}
+
+model Order {
+  id                String         @id @default(cuid())
+  orderNumber       String         @unique
+  userId            String?
+  status            OrderStatus    @default(PENDING)
+  
+  // COD specific fields
+  paymentMethod     PaymentMethod  @default(COD)
+  codStatus         CODStatus      @default(PENDING)
+  subtotalCents     Int?           // for COD orders in cents
+  shippingCents     Int            @default(0)
+  totalCents        Int?           // total in cents for COD
+  currency          String         @default("DZD")
+  customerFirst     String?        // COD customer info
+  customerLast      String?
+  customerPhone     String?
+  
+  // Legacy fields (keep for existing orders)
+  subtotal          Decimal        @db.Decimal(10, 2)
+  shipping          Decimal        @default(0) @db.Decimal(10, 2)
+  tax               Decimal        @default(0) @db.Decimal(10, 2)
+  discount          Decimal        @default(0) @db.Decimal(10, 2)
+  total             Decimal        @db.Decimal(10, 2)
+  
+  shippingAddressId String?
+  billingAddressId  String?
+  shippingMethod    String
+  trackingNumber    String?
+  estimatedDelivery DateTime?
+  shippedAt         DateTime?
+  deliveredAt       DateTime?
+  customerNotes     String?
+  adminNotes        String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  
+  items             OrderItem[]
+  billingAddress    Address?       @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  shippingAddress   Address?       @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  user              User?          @relation(fields: [userId], references: [id])
+  payments          Payment[]
+  promotionalCodeUsages PromotionalCodeUsage[]
+  downloads         Download[]
+  assignedLicenseKeys LicenseKey[]
+  yalidine          YalidineParcel?
+  // Course system relations
+  courseEnrollments CourseEnrollment[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String     @id @default(cuid())
+  orderId   String
+  productId String
+  variantId String?
+  name      String
+  sku       String
+  price     Decimal    @db.Decimal(10, 2)
+  quantity  Int
+  image     String?
+  variant   String?
+  
+  // COD specific fields for physical products
+  unitPriceCents Int?      // price in cents for COD
+  weightGr       Int?      // weight per unit in grams
+  lengthCm       Float?    // length per unit in cm
+  widthCm        Float?    // width per unit in cm  
+  heightCm       Float?    // height per unit in cm
+  
+  order     Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product    @relation(fields: [productId], references: [id])
+  downloads Download[]
+
+  @@map("order_items")
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  orderId       String
+  method        PaymentMethod
+  status        PaymentStatus @default(PENDING)
+  transactionId String?
+  gatewayId     String?
+  amount        Decimal       @db.Decimal(10, 2)
+  currency      String        @default("DZD")
+  paidAt        DateTime?
+  refundedAt    DateTime?
+  refundAmount  Decimal?      @db.Decimal(10, 2)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  order         Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum AddressType {
+  SHIPPING
+  BILLING
+  BOTH
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CARD
+  PAYPAL
+  APPLE_PAY
+  GOOGLE_PAY
+  BANK_TRANSFER
+  COD
+}
+
+enum CODStatus {
+  PENDING     // order placed locally
+  SUBMITTED   // parcel created at Yalidine
+  DISPATCHED  // carrier picked up / in transit
+  DELIVERED   // delivered & cash collected
+  FAILED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+model PromotionalCode {
+  id              String           @id @default(cuid())
+  code            String           @unique
+  name            String
+  description     String?
+  type            DiscountType
+  value           Decimal          @db.Decimal(10, 2)
+  minimumAmount   Decimal?         @db.Decimal(10, 2)
+  maximumDiscount Decimal?         @db.Decimal(10, 2)
+  usageLimit      Int?
+  usedCount       Int              @default(0)
+  userUsageLimit  Int?             // Per user usage limit
+  isActive        Boolean          @default(true)
+  startsAt        DateTime
+  expiresAt       DateTime?
+  applicableCategories String[]    // Category IDs where code applies
+  applicableProducts   String[]    // Product IDs where code applies
+  excludedProducts     String[]    // Product IDs excluded from discount
+  customerGroups  String[]         // User role or group restrictions
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  usages          PromotionalCodeUsage[]
+
+  @@map("promotional_codes")
+}
+
+model PromotionalCodeUsage {
+  id                String           @id @default(cuid())
+  promotionalCodeId String
+  userId            String
+  orderId           String
+  discountAmount    Decimal          @db.Decimal(10, 2)
+  usedAt            DateTime         @default(now())
+  promotionalCode   PromotionalCode  @relation(fields: [promotionalCodeId], references: [id], onDelete: Cascade)
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  order             Order            @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([promotionalCodeId, orderId])
+  @@map("promotional_code_usages")
+}
+
+model Download {
+  id              String   @id @default(cuid())
+  userId          String?
+  productId       String
+  orderId         String
+  orderItemId     String
+  downloadUrl     String
+  licenseKey      String?
+  downloadCount   Int      @default(0)
+  downloadLimit   Int      @default(3)
+  expiresAt       DateTime?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  lastDownloadAt  DateTime?
+  user            User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderItem       OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  // Removed unique constraint with userId since it can be null for guest orders
+  @@map("downloads")
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  FREE_SHIPPING
+}
+
+enum LicenseKeyStatus {
+  AVAILABLE
+  ASSIGNED
+  USED
+  REVOKED
+}
+
+model LicenseKey {
+  id                String            @id @default(cuid())
+  productId         String
+  keyValue          String            @unique
+  encryptedKey      String
+  status            LicenseKeyStatus  @default(AVAILABLE)
+  assignedToOrderId String?
+  assignedToUserId  String?
+  assignedAt        DateTime?
+  usedAt            DateTime?
+  revokedAt         DateTime?
+  revokedReason     String?
+  notes             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  // Relations
+  product           Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
+  assignedToOrder   Order?            @relation(fields: [assignedToOrderId], references: [id], onDelete: SetNull)
+  assignedToUser    User?             @relation(fields: [assignedToUserId], references: [id], onDelete: SetNull)
+  
+  @@index([productId])
+  @@index([status])
+  @@index([assignedToOrderId])
+  @@index([assignedToUserId])
+  @@map("license_keys")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  message   String
+  data      Json     @default("{}")
+  priority  String   @default("medium")
+  isRead    Boolean  @default(false)
+  readAt    DateTime?
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model BlogArticle {
+  id            String          @id @default(cuid())
+  title         String
+  slug          String          @unique
+  excerpt       String?
+  content       String
+  featuredImage String?
+  imageAlt      String?
+  status        ArticleStatus   @default(DRAFT)
+  isPublished   Boolean         @default(false)
+  publishedAt   DateTime?
+  authorId      String
+  categoryId    String?
+  tags          BlogTag[]
+  readTime      Int?            // estimated read time in minutes
+  views         Int             @default(0)
+  likes         Int             @default(0)
+  metaTitle     String?
+  metaDescription String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  author        User            @relation(fields: [authorId], references: [id])
+  category      BlogCategory?   @relation(fields: [categoryId], references: [id])
+
+  @@map("blog_articles")
+}
+
+model BlogCategory {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  slug        String        @unique
+  description String?
+  color       String?       @default("#3B82F6")
+  sortOrder   Int           @default(0)
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  articles    BlogArticle[]
+
+  @@map("blog_categories")
+}
+
+model BlogTag {
+  id        String        @id @default(cuid())
+  name      String        @unique
+  slug      String        @unique
+  color     String?       @default("#6B7280")
+  articleId String
+  createdAt DateTime      @default(now())
+  article   BlogArticle   @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@map("blog_tags")
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model YalidineParcel {
+  id              String  @id @default(cuid())
+  orderId         String  @unique
+  
+  // Yalidine required fields
+  order_id        String
+  firstname       String
+  familyname      String
+  contact_phone   String
+  address         String
+  to_wilaya_name  String
+  to_commune_name String
+
+  is_stopdesk     Boolean  @default(false)
+  stopdesk_id     Int?
+  freeshipping    Boolean  @default(false)
+  has_exchange    Boolean  @default(false)
+
+  product_list    String   // concise items summary
+  price           Int      // COD amount to collect (DA)
+  height          Int?     // cm
+  width           Int?     // cm
+  length          Int?     // cm
+  weight          Int?     // kg as integer (API expects kg)
+  from_wilaya_name String?
+  from_address     String?
+
+  tracking        String?  // tracking number from Yalidine
+  label_url       String?  // shipping label URL
+  status          String?  // last known carrier status
+  lastStatusCheck DateTime? // last time we checked status with Yalidine API
+  statusHistory   Json[]   @default([]) // history of status changes
+  lastPayload     Json?    // store last request/response for audit
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  order           Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  @@map("yalidine_parcels")
+}
+
+// Store webhook events idempotently for auditing and deduplication
+model YalidineEvent {
+  id         String   @id            // event_id from Yalidine
+  type       String
+  occurredAt DateTime
+  payload    Json
+  receivedAt DateTime @default(now())
+
+  @@map("yalidine_events")
+}
+
+// Yalidine locations cache for fast local reads
+model Wilaya {
+  id        Int         @id
+  nameFr    String
+  nameAr    String?
+  code      String?
+  slug      String      @unique
+  active    Boolean     @default(true)
+  communes  Commune[]
+  stopdesks StopDesk[]
+  updatedAt DateTime    @updatedAt
+
+  @@map("yalidine_wilayas")
+}
+
+model Commune {
+  id        Int      @id
+  wilayaId  Int
+  nameFr    String
+  nameAr    String?
+  slug      String   @unique
+  active    Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+
+  wilaya    Wilaya   @relation(fields: [wilayaId], references: [id])
+
+  @@index([wilayaId])
+  @@map("yalidine_communes")
+}
+
+model StopDesk {
+  id        Int      @id
+  wilayaId  Int
+  name      String
+  nameAr    String?
+  address   String
+  slug      String   @unique
+  active    Boolean  @default(true)
+  phone     String?
+  latitude  Float?
+  longitude Float?
+  updatedAt DateTime @updatedAt
+
+  wilaya    Wilaya   @relation(fields: [wilayaId], references: [id])
+
+  @@index([wilayaId])
+  @@unique([wilayaId, slug])
+  @@map("yalidine_stopdesks")
+}
+
+// Video Courses System
+model Course {
+  id               String            @id @default(cuid())
+  title            String
+  slug             String            @unique
+  description      String?
+  shortDescription String?
+  thumbnail        String?
+  price            Decimal?          @db.Decimal(10, 2)
+  compareAtPrice   Decimal?          @db.Decimal(10, 2)
+  duration         Int?              // Total course duration in minutes
+  level            CourseLevel       @default(BEGINNER)
+  language         String            @default("en")
+  status           CourseStatus      @default(DRAFT)
+  isActive         Boolean           @default(true)
+  isFeatured       Boolean           @default(false)
+  isFree           Boolean           @default(false)
+  // SEO fields
+  metaTitle        String?
+  metaDescription  String?
+  // Course settings
+  allowPreview     Boolean           @default(false)
+  certificateEnabled Boolean         @default(false)
+  // Timestamps
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  publishedAt      DateTime?
+  
+  // Relations
+  modules          CourseModule[]
+  enrollments      CourseEnrollment[]
+  progress         CourseProgress[]
+  reviews          CourseReview[]
+  tags             CourseTag[]
+  // Link to products for purchasing
+  products         ProductCourse[]
+
+  @@map("courses")
+}
+
+model CourseModule {
+  id          String   @id @default(cuid())
+  courseId    String
+  title       String
+  description String?
+  orderIndex  Int      @default(0)
+  isActive    Boolean  @default(true)
+  isFree      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  course      Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  videos      CourseVideo[]
+  
+  @@index([courseId])
+  @@map("course_modules")
+}
+
+model CourseVideo {
+  id               String   @id @default(cuid())
+  moduleId         String
+  title            String
+  description      String?
+  // Video source options
+  videoType        VideoType @default(S3) // S3 or YOUTUBE
+  // AWS S3 storage (for uploaded videos)
+  s3Key            String?   // S3 object key for the video file (optional for YouTube videos)
+  s3Bucket         String?   @default("compucar-courses") // S3 bucket name (optional for YouTube videos)
+  // YouTube integration
+  youtubeUrl       String?   // YouTube video URL (optional for S3 videos)
+  youtubeVideoId   String?   // Extracted YouTube video ID for embedding
+  // Vimeo integration
+  vimeoUrl         String?   // Vimeo video URL (optional for S3/YouTube videos)
+  vimeoVideoId     String?   // Extracted Vimeo video ID for embedding
+  // Video metadata
+  duration         Int?     // Duration in seconds
+  fileSize         String?  // Human readable file size
+  videoQuality     String?  // e.g., "1080p", "720p", "480p"
+  thumbnail        String?  // Thumbnail image URL/S3 key
+  // Ordering and status
+  orderIndex       Int      @default(0)
+  isActive         Boolean  @default(true)
+  isPreview        Boolean  @default(false) // Allow free preview
+  // Timestamps
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  // Relations
+  module           CourseModule     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress         VideoProgress[]
+  
+  @@index([moduleId])
+  @@map("course_videos")
+}
+
+model CourseEnrollment {
+  id           String              @id @default(cuid())
+  userId       String
+  courseId     String
+  // Enrollment details
+  enrolledAt   DateTime            @default(now())
+  expiresAt    DateTime?           // Optional expiration
+  status       EnrollmentStatus    @default(ACTIVE)
+  // How the enrollment was granted
+  source       EnrollmentSource    @default(PURCHASE)
+  orderId      String?             // If purchased
+  grantedBy    String?             // Admin user ID if manually granted
+  // Progress tracking
+  completedAt  DateTime?
+  lastAccessAt DateTime?
+  progressPercent Float            @default(0)
+  
+  // Relations
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course       Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  order        Order?              @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  progress     CourseProgress[]
+  
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@map("course_enrollments")
+}
+
+model CourseProgress {
+  id             String   @id @default(cuid())
+  userId         String
+  courseId       String
+  enrollmentId   String
+  // Progress tracking
+  completedModules Int    @default(0)
+  totalModules     Int    @default(0)
+  completedVideos  Int    @default(0)
+  totalVideos      Int    @default(0)
+  watchTimeMinutes Int    @default(0)
+  lastWatchedAt    DateTime?
+  completedAt      DateTime?
+  
+  // Relations
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course       Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrollment   CourseEnrollment  @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  videoProgress VideoProgress[]
+  
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@map("course_progress")
+}
+
+model VideoProgress {
+  id              String   @id @default(cuid())
+  userId          String
+  videoId         String
+  courseProgressId String
+  // Video watching progress
+  watchedSeconds  Int      @default(0)
+  totalSeconds    Int      @default(0)
+  isCompleted     Boolean  @default(false)
+  completedAt     DateTime?
+  lastWatchedAt   DateTime @default(now())
+  
+  // Relations
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video           CourseVideo    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  courseProgress  CourseProgress @relation(fields: [courseProgressId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, videoId])
+  @@index([userId])
+  @@index([videoId])
+  @@map("video_progress")
+}
+
+model CourseReview {
+  id         String   @id @default(cuid())
+  courseId   String
+  userId     String
+  rating     Int      // 1-5 stars
+  title      String?
+  content    String
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  // Relations
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([courseId, userId])
+  @@map("course_reviews")
+}
+
+model CourseTag {
+  id       String @id @default(cuid())
+  courseId String
+  name     String
+  
+  // Relations
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  @@unique([courseId, name])
+  @@map("course_tags")
+}
+
+// Junction table for Product-Course relationship
+model ProductCourse {
+  id        String  @id @default(cuid())
+  productId String
+  courseId  String
+  
+  // Relations
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  course    Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
+  @@unique([productId, courseId])
+  @@map("product_courses")
+}
+
+// File Tuning System Models
+
+model Modification {
+  id          Int      @id @default(autoincrement())
+  code        String   @unique
+  label       String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  fileModifications FileModification[]
+  
+  @@map("modifications")
+}
+
+model TuningFile {
+  id               String   @id @default(uuid())
+  userId           String
+  originalFilename String
+  r2Key            String   @unique
+  fileSize         BigInt
+  fileType         String
+  status           TuningFileStatus @default(RECEIVED)
+  price            Decimal  @default(0) @db.Decimal(10, 2)
+  paymentStatus    TuningPaymentStatus @default(NOT_PAID)
+  uploadDate       DateTime @default(now()) @db.Date
+  updatedDate      DateTime? @db.Date
+  customerComment  String?
+  adminNotes       String?
+  estimatedProcessingTime Int? // Estimated time in minutes (5, 10, 15, 20, 30, 45, 60)
+  estimatedProcessingTimeSetAt DateTime? // When the estimated time was set
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  
+  // Modified file fields
+  modifiedFilename    String?
+  modifiedR2Key       String?   @unique
+  modifiedFileSize    BigInt?
+  modifiedFileType    String?
+  modifiedUploadDate  DateTime?
+  
+  // Relations
+  user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileModifications FileModification[]
+  notifications     TuningNotification[]
+  auditLogs         AuditLog[]
+  
+  @@map("tuning_files")
+}
+
+model FileModification {
+  fileId         String
+  modificationId Int
+  
+  // Relations
+  file         TuningFile   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  modification Modification @relation(fields: [modificationId], references: [id], onDelete: Cascade)
+  
+  @@id([fileId, modificationId])
+  @@map("file_modifications")
+}
+
+model TuningNotification {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  fileId    String?
+  data      String?  // JSON string for additional notification data
+  createdAt DateTime @default(now())
+  
+  // Relations
+  user User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  file TuningFile? @relation(fields: [fileId], references: [id], onDelete: SetNull)
+  
+  @@map("tuning_notifications")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  fileId    String
+  actorId   String?
+  action    String
+  oldValue  String?
+  newValue  String?
+  date      DateTime @default(now()) @db.Date
+  createdAt DateTime @default(now())
+  
+  // Relations
+  file  TuningFile @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  actor User?      @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  
+  @@map("audit_logs")
+}
+
+// Enums for File Tuning System
+enum TuningFileStatus {
+  RECEIVED
+  PENDING
+  READY
+}
+
+enum TuningPaymentStatus {
+  NOT_PAID
+  PAID
+}
+
+// Enums for Course System
+enum CourseLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  COMPLETED
+}
+
+enum EnrollmentSource {
+  PURCHASE      // Bought through order
+  MANUAL        // Manually assigned by admin
+  PROMOTION     // Free promotion/coupon
+  GIFT          // Gifted by another user
+}
+
+enum VideoType {
+  S3            // Video stored in AWS S3
+  YOUTUBE       // YouTube embedded video
+  VIMEO         // Vimeo embedded video
+}

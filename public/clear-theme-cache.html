@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Theme Cache - CompuCar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+            background: white;
+            color: black;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧹 Clear Theme Cache</h1>
+    <p>If you're still seeing dark theme on your phone, click the button below to clear all cached theme data:</p>
+    
+    <button class="button" onclick="clearThemeCache()">Clear Theme Cache</button>
+    
+    <div id="result"></div>
+    
+    <p><a href="/">← Back to CompuCar</a></p>
+
+    <script>
+        function clearThemeCache() {
+            try {
+                // Clear all possible theme-related localStorage keys
+                localStorage.removeItem('theme');
+                localStorage.removeItem('compucar-theme');
+                localStorage.removeItem('next-themes-theme');
+                localStorage.removeItem('chakra-ui-color-mode');
+                
+                // Clear all localStorage (nuclear option)
+                const keys = Object.keys(localStorage);
+                keys.forEach(key => {
+                    if (key.includes('theme') || key.includes('dark') || key.includes('light')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+                
+                // Force light theme
+                localStorage.setItem('compucar-theme', 'light');
+                
+                document.getElementById('result').innerHTML = 
+                    '<div class="success">✅ Theme cache cleared! Please refresh the main site.</div>';
+                    
+                // Auto redirect after 2 seconds
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+                
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<div style="color: red;">❌ Error: ' + error.message + '</div>';
+            }
+        }
+    </script>
+</body>
+</html>

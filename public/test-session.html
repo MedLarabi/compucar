@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Session Debug Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; }
+        .error { background-color: #f8d7da; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow: auto; }
+        button { padding: 10px 15px; margin: 5px; border: none; border-radius: 3px; cursor: pointer; }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-danger { background-color: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+    <h1>CompuCar Session Debug</h1>
+    
+    <div class="section">
+        <h2>Actions</h2>
+        <button class="btn-primary" onclick="checkSession()">Check Session Data</button>
+        <button class="btn-primary" onclick="subscribeNewsletter()">✅ Subscribe to Newsletter</button>
+        <button class="btn-primary" onclick="unsubscribeNewsletter()">❌ Unsubscribe from Newsletter</button>
+        <button class="btn-danger" onclick="signOut()">Sign Out & Clear Session</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        async function checkSession() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Checking session...</p>';
+            
+            try {
+                const response = await fetch('/api/debug/session');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultsDiv.innerHTML = `
+                        <div class="section success">
+                            <h3>✅ Session Data Retrieved</h3>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="section error">
+                            <h3>❌ Error</h3>
+                            <p>Status: ${response.status}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="section error">
+                        <h3>❌ Network Error</h3>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function subscribeNewsletter() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Subscribing to newsletter...</p>';
+            
+            try {
+                const response = await fetch('/api/debug/update-newsletter', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newsletter: true })
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultsDiv.innerHTML = `
+                        <div class="section success">
+                            <h3>✅ Newsletter Subscription Updated</h3>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                            <p><strong>Note:</strong> You may need to sign out and sign back in for the session to refresh.</p>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="section error">
+                            <h3>❌ Error</h3>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="section error">
+                        <h3>❌ Network Error</h3>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function unsubscribeNewsletter() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Unsubscribing from newsletter...</p>';
+            
+            try {
+                const response = await fetch('/api/debug/update-newsletter', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newsletter: false })
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultsDiv.innerHTML = `
+                        <div class="section success">
+                            <h3>❌ Newsletter Subscription Updated</h3>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                            <p><strong>Note:</strong> You may need to sign out and sign back in for the session to refresh.</p>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="section error">
+                            <h3>❌ Error</h3>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="section error">
+                        <h3>❌ Network Error</h3>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function signOut() {
+            if (confirm('Are you sure you want to sign out?')) {
+                window.location.href = '/api/auth/signout';
+            }
+        }
+        
+        // Auto-check on page load
+        window.onload = () => {
+            checkSession();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+# Environment variables for CompuCar E-commerce
+# Copy this file to .env and update with your values
+
+# Database URL for Prisma (PostgreSQL with postgres user)
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/compucar?schema=public"
+
+# Next.js Environment
+NODE_ENV="development"
+
+# NextAuth Configuration
+NEXTAUTH_SECRET="your-super-secret-key-change-this-in-production"
+NEXTAUTH_URL="http://localhost:3000"
+
+# OAuth Provider Configuration
+# Google OAuth (get from https://console.developers.google.com/)
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+
+# GitHub OAuth (get from https://github.com/settings/applications/new)
+GITHUB_ID=""
+GITHUB_SECRET=""
+
+# External API Keys
+STRIPE_SECRET_KEY="sk_test_your_stripe_secret_key"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_your_stripe_publishable_key"
+UPLOADTHING_SECRET="your_uploadthing_secret"
+UPLOADTHING_APP_ID="your_uploadthing_app_id"
+RESEND_API_KEY="re_your_resend_api_key"

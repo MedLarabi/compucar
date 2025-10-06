@@ -1,0 +1,228 @@
+# Video Courses Implementation for Customer Dashboard
+
+## Project Overview
+I need to extend my existing e-commerce website's customer dashboard to include video courses alongside Files downloads. The system should automatically grant access to video courses when orders are confirmed, and also allow manual assignment of courses to customers.
+
+## Current System Context
+- E-commerce website selling physical products with digital materials
+- Cash on Delivery (COD) payment method only
+- Existing customer dashboard with downloads section for Files
+- Order confirmation workflow already in place
+
+## Requirements to Implement
+
+### 1. Database Schema Extensions
+
+Create/modify the following database tables:
+
+```sql
+-- Video Courses table
+CREATE TABLE video_courses (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    video_url VARCHAR(500),
+    video_file_path VARCHAR(500),
+    thumbnail_url VARCHAR(500),
+    duration INT, -- in seconds
+    order_index INT DEFAULT 0,
+    product_id INT,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+-- Customer course access table
+CREATE TABLE customer_course_access (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id INT NOT NULL,
+    course_id INT NOT NULL,
+    order_id INT,
+    granted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    granted_by ENUM('automatic', 'manual') DEFAULT 'automatic',
+    granted_by_admin_id INT NULL,
+    FOREIGN KEY (customer_id) REFERENCES customers(id),
+    FOREIGN KEY (course_id) REFERENCES video_courses(id),
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    UNIQUE KEY unique_customer_course (customer_id, course_id)
+);
+
+-- Product courses relationship (many-to-many)
+CREATE TABLE product_courses (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    product_id INT NOT NULL,
+    course_id INT NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id),
+    FOREIGN KEY (course_id) REFERENCES video_courses(id),
+    UNIQUE KEY unique_product_course (product_id, course_id)
+);
+```
+
+### 2. Backend API Endpoints
+
+Implement the following API endpoints:
+
+#### Customer-facing endpoints:
+- `GET /api/customer/courses` - Get all accessible courses for logged-in customer
+- `GET /api/customer/courses/{courseId}` - Get specific course details
+- `POST /api/customer/courses/{courseId}/track-progress` - Track video progress
+
+#### Admin endpoints:
+- `GET /api/admin/courses` - List all courses
+- `POST /api/admin/courses` - Create new course
+- `PUT /api/admin/courses/{courseId}` - Update course
+- `DELETE /api/admin/courses/{courseId}` - Delete course
+- `POST /api/admin/customers/{customerId}/grant-course/{courseId}` - Manually grant course access
+- `DELETE /api/admin/customers/{customerId}/revoke-course/{courseId}` - Revoke course access
+
+### 3. Automatic Course Assignment Logic
+
+Modify the existing order confirmation workflow to include:
+
+```php
+// Add this to your order confirmation function
+function confirmOrder($orderId) {
+    // ... existing order confirmation logic ...
+    
+    // Get order details
+    $order = getOrderById($orderId);
+    
+    // Get all courses associated with products in this order
+    $orderItems = getOrderItems($orderId);
+    foreach ($orderItems as $item) {
+        $courses = getCoursesForProduct($item['product_id']);
+        foreach ($courses as $course) {
+            grantCourseAccess($order['customer_id'], $course['id'], $orderId, 'automatic');
+        }
+    }
+    
+    // ... rest of confirmation logic ...
+}
+
+function grantCourseAccess($customerId, $courseId, $orderId = null, $grantedBy = 'automatic') {
+    // Insert into customer_course_access table
+    // Send notification email about new course access
+}
+```
+
+### 4. Frontend Dashboard Updates
+
+#### Customer Dashboard - Video Courses Section:
+
+Create a new section in the customer dashboard with:
+
+- **Courses Grid/List View**: Display accessible courses with thumbnails, titles, and progress
+- **Video Player**: Secure video player with progress tracking
+- **Course Details Page**: Description, duration, related product info
+- **Progress Tracking**: Visual progress bars and completion status
+- **Search/Filter**: Filter by product, completion status, or date added
+
+#### Required UI Components:
+
+```javascript
+// Course card component
+<CourseCard 
+    title={course.title}
+    thumbnail={course.thumbnail_url}
+    duration={course.duration}
+    progress={course.progress}
+    onClick={() => openCourse(course.id)}
+/>
+
+// Video player component with controls
+<VideoPlayer 
+    videoUrl={course.video_url}
+    onProgress={(currentTime) => trackProgress(course.id, currentTime)}
+    onComplete={() => markComplete(course.id)}
+/>
+```
+
+### 5. Admin Panel Features
+
+Add to existing admin panel:
+
+#### Course Management:
+- Course CRUD operations
+- Bulk course upload interface
+- Video file upload with progress indicators
+- Course-to-product assignment interface
+- Customer course access management
+
+#### Manual Course Assignment:
+- Customer search functionality
+- Course selection dropdown/modal
+- Bulk assignment capabilities
+- Access revocation options
+
+### 6. Security Considerations
+
+Implement the following security measures:
+
+- **Video URL Security**: Use signed URLs or token-based authentication for video access
+- **Access Control**: Verify customer has permission before serving video content
+- **Video Protection**: Implement video streaming with domain restrictions
+- **Session Management**: Secure video sessions to prevent unauthorized sharing
+
+### 7. File Storage Structure
+
+Organize video files as follows:
+```
+/storage/courses/
+├── videos/
+│   ├── course_1/
+│   │   ├── video_1.mp4
+│   │   └── video_2.mp4
+│   └── course_2/
+├── thumbnails/
+│   ├── course_1_thumb.jpg
+│   └── course_2_thumb.jpg
+```
+
+### 8. Email Notifications
+
+Create email templates for:
+- New course access granted
+- Course completion confirmation
+- Course access expiration reminder (if applicable)
+
+### 9. Integration Points
+
+Ensure integration with:
+- Existing download system (show both PDFs and videos in unified dashboard)
+- Order management system
+- Customer authentication system
+- Admin notification system
+
+### 10. Additional Features to Consider
+
+- **Video Progress Tracking**: Save playback position
+- **Course Completion Certificates**: Generate PDF certificates
+- **Course Reviews/Ratings**: Allow customers to rate courses
+- **Mobile Responsiveness**: Ensure video player works on mobile devices
+- **Video Quality Options**: Multiple resolution options if needed
+- **Offline Download**: Allow course downloads for offline viewing (optional)
+
+## Implementation Priority
+
+1. Database schema setup
+2. Backend API endpoints
+3. Automatic course assignment logic
+4. Customer dashboard video section
+5. Admin panel course management
+6. Security and access controls
+7. Email notifications
+8. Testing and optimization
+
+## Testing Requirements
+
+- Test automatic course assignment on order confirmation
+- Test manual course assignment from admin panel
+- Verify video access permissions
+- Test video player functionality across browsers
+- Validate email notifications
+- Test mobile responsiveness
+
+Please implement this step by step, starting with the database schema and backend API endpoints, then moving to the frontend components. Ensure all existing functionality remains intact during the implementation.

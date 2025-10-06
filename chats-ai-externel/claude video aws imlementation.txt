@@ -1,0 +1,171 @@
+# E-commerce Video Course Dashboard Extension - Cursor AI Implementation
+
+## Project Overview
+Extend existing e-commerce customer dashboard to include video courses alongside file downloads. Implement automatic course access on order confirmation and manual course assignment capabilities. Use AWS S3 + CloudFront for secure video delivery.
+
+## Core Requirements
+
+### 1. Database Schema Extensions
+- Create `courses` table with fields: id, title, description, thumbnail, price, status, created_at, updated_at
+- Create `course_videos` table with fields: id, course_id, title, description, video_url, duration, order_position, s3_key
+- Create `course_enrollments` table with fields: id, user_id, course_id, enrolled_at, expires_at, status
+- Create `user_course_progress` table with fields: id, user_id, course_id, video_id, watched_duration, completed, last_watched_at
+- Add `course_id` field to existing orders/products table for linking
+
+### 2. AWS Infrastructure Setup
+- Configure AWS S3 bucket for video storage with proper CORS settings
+- Set up CloudFront distribution with signed URLs for secure video access
+- Implement pre-signed URL generation for temporary video access (2-4 hour expiry)
+- Create IAM roles and policies for S3/CloudFront access
+- Add environment variables for AWS credentials and CloudFront distribution ID
+
+### 3. Backend API Endpoints
+```
+GET /api/courses - List all available courses
+GET /api/courses/:id - Get course details with video list
+GET /api/user/enrolled-courses - Get user's enrolled courses
+GET /api/user/course/:id/progress - Get user's progress in specific course
+POST /api/user/course/:id/progress - Update video watch progress
+GET /api/user/course/:courseId/video/:videoId/url - Get signed video URL
+POST /api/admin/courses - Create new course (admin only)
+PUT /api/admin/courses/:id - Update course (admin only)
+POST /api/admin/enroll-user - Manually enroll user in course (admin only)
+```
+
+### 4. Automatic Course Access System
+- Create order confirmation webhook/event handler
+- When order status changes to "confirmed/paid":
+  - Check if order contains course products
+  - Automatically create course_enrollments records
+  - Send confirmation email with course access details
+- Implement enrollment expiry system (configurable per course)
+
+### 5. Customer Dashboard UI Components
+- **Course Library Section**: Grid/list view of enrolled courses with progress indicators
+- **Course Player Page**: 
+  - Video player with progress tracking
+  - Course navigation sidebar
+  - Resume from last position functionality
+  - Next/previous video controls
+- **Progress Tracking**: Visual progress bars, completion badges, watch time tracking
+- **Mobile Responsive**: Ensure video player works on mobile devices
+
+### 6. Admin Management Interface
+- **Course Management**: CRUD operations for courses and videos
+- **Enrollment Management**: View all enrollments, manual enrollment, access control
+- **Analytics Dashboard**: Course completion rates, popular videos, user engagement
+- **Video Upload Interface**: Direct upload to S3 with progress indicators
+
+### 7. Security & Access Control
+- Implement signed CloudFront URLs with 2-4 hour expiry
+- Validate user enrollment before generating video URLs
+- Add rate limiting for video URL requests
+- Implement video hotlink protection
+- Session-based access validation
+
+### 8. Video Player Features
+- HTML5 video player with custom controls
+- Playback speed control (0.5x to 2x)
+- Video quality selection if multiple formats available
+- Subtitles/captions support
+- Keyboard shortcuts (space for play/pause, arrow keys for seek)
+- Remember playback position across sessions
+
+### 9. Email Notifications
+- Course access granted notification
+- Course completion congratulations
+- New video added to enrolled courses
+- Course expiry warnings
+
+### 10. Performance Optimizations
+- Implement video thumbnail generation and caching
+- Add CDN headers for optimal CloudFront caching
+- Lazy loading for course lists and video thumbnails
+- Progressive video loading and buffering optimization
+
+## Technical Implementation Notes
+
+### AWS Configuration
+```javascript
+// Example CloudFront signed URL generation
+const generateSignedUrl = (videoKey, expiryHours = 3) => {
+  const cloudFront = new AWS.CloudFront.Signer(
+    process.env.CLOUDFRONT_KEY_PAIR_ID,
+    process.env.CLOUDFRONT_PRIVATE_KEY
+  );
+  
+  const expiry = new Date(Date.now() + expiryHours * 60 * 60 * 1000);
+  const url = `https://${process.env.CLOUDFRONT_DOMAIN}/${videoKey}`;
+  
+  return cloudFront.getSignedUrl({
+    url,
+    expires: expiry
+  });
+};
+```
+
+### Video Progress Tracking
+- Track watch time every 10-15 seconds
+- Mark video as completed at 90% watched
+- Store progress in user_course_progress table
+- Sync progress across devices using user session
+
+### File Structure Suggestions
+```
+/components
+  /courses
+    CourseCard.jsx
+    CoursePlayer.jsx
+    VideoList.jsx
+    ProgressBar.jsx
+  /admin
+    CourseManager.jsx
+    EnrollmentManager.jsx
+
+/pages
+  /dashboard
+    courses.jsx
+    course/[id].jsx
+  /admin
+    courses.jsx
+    enrollments.jsx
+
+/api
+  /courses
+    index.js
+    [id].js
+  /admin
+    courses.js
+    enroll-user.js
+  /user
+    enrolled-courses.js
+    course-progress.js
+
+/utils
+  aws-helpers.js
+  video-utils.js
+  auth-middleware.js
+```
+
+## Integration Points
+- Connect with existing user authentication system
+- Integrate with current order processing workflow
+- Extend existing customer dashboard navigation
+- Utilize current email notification system
+- Maintain consistency with existing UI/UX patterns
+
+## Testing Requirements
+- Unit tests for video URL generation and expiry
+- Integration tests for order-to-enrollment workflow
+- End-to-end tests for complete user journey
+- Load testing for video streaming capabilities
+- Security testing for access control mechanisms
+
+## Deployment Considerations
+- Environment-specific AWS configurations
+- Database migration scripts for new tables
+- CloudFront cache invalidation on video updates
+- Monitoring and logging for video access patterns
+- Backup strategy for video content and user progress
+
+Please implement this system incrementally, starting with the database schema and basic course listing, then progressing to video playback and finally the automatic enrollment system.
