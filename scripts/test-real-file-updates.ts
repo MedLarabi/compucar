@@ -41,7 +41,7 @@ async function getFileOwnerAndTestUpdates() {
     console.log(`   User ID: ${file.user.id}`);
     
     // Import the SSE function
-    const { sendUpdateToUser } = await import('../src/app/api/sse/route');
+    const { sendUpdateToUser } = await import('../src/lib/sse-utils');
     
     console.log('\n📤 Sending real-time updates to file owner...');
     

@@ -11,7 +11,7 @@ async function testFileDetailRealTimeUpdates() {
   const fileId = '68bc11f0-302d-4eb3-b5b7-896bbd8f9542'; // From your URL
   
   // Import the SSE function
-  const { sendUpdateToUser } = await import('../src/app/api/sse/route');
+  const { sendUpdateToUser } = await import('../src/lib/sse-utils');
   
   console.log('📤 Sending file status update...');
   

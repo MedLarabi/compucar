@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { TelegramService } from '@/lib/services/telegram';
 import { prisma } from '@/lib/database/prisma';
 import { NotificationService } from '@/lib/services/notifications';
-import { sendUpdateToUser } from '@/app/api/sse/route';
+import { sendUpdateToUser } from '@/lib/sse-utils';
 
 export async function POST(request: NextRequest) {
   try {
