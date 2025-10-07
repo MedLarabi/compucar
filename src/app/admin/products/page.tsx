@@ -201,7 +201,7 @@ export default function AdminProductsPage() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to create product");
+        throw new Error(error.error || error.message || "Failed to create product");
       }
 
       const result = await response.json();

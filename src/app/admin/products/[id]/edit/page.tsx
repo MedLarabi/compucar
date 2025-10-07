@@ -85,18 +85,39 @@ export default function EditProductPage() {
         variants: data.variants || [],
       };
 
+      console.log("=== CLIENT: Submitting product update ===");
+      console.log("Product ID:", params.id);
+      console.log("Transformed data:", {
+        name: transformedData.name,
+        description: transformedData.description?.substring(0, 50) + "...",
+        categoryId: transformedData.categoryId,
+        price: transformedData.price,
+        isDraft: transformedData.isDraft,
+        hasImages: transformedData.images?.length || 0,
+        hasVideos: transformedData.videos?.length || 0,
+        allKeys: Object.keys(transformedData)
+      });
+
       const response = await fetch(`/api/admin/products/${params.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(transformedData),
       });
 
+      console.log("=== CLIENT: Response received ===");
+      console.log("Response status:", response.status);
+      console.log("Response ok:", response.ok);
+
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || "Failed to update product");
+        console.log("=== CLIENT: Error response ===");
+        console.log("Error data:", error);
+        throw new Error(error.error || error.message || `Failed to update product (${response.status})`);
       }
 
       const result = await response.json();
+      console.log("=== CLIENT: Success response ===");
+      console.log("Result:", result);
       
       if (isDraft) {
         toast.success("Product saved as draft successfully!");
@@ -107,7 +128,10 @@ export default function EditProductPage() {
       // Redirect to products list or product detail page
       router.push("/admin/products");
     } catch (error: any) {
-      console.error("Error updating product:", error);
+      console.error("=== CLIENT: Error updating product ===");
+      console.error("Error object:", error);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
       toast.error(error.message || "Failed to update product");
     } finally {
       setLoading(false);
