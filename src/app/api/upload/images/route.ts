@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth/config';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { uploadProductMediaToR2 } from '@/lib/storage/r2-products';
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,31 +32,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'File size must be less than 4MB' }, { status: 400 });
     }
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'public', 'uploads', 'products');
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true });
-    }
+    console.log("Uploading image to R2...");
 
-    // Generate unique filename
-    const timestamp = Date.now();
-    const randomString = Math.random().toString(36).substring(2, 8);
-    const fileExtension = file.name.split('.').pop();
-    const filename = `product-${timestamp}-${randomString}.${fileExtension}`;
-    const filepath = join(uploadsDir, filename);
+    // Upload to R2
+    const uploadResult = await uploadProductMediaToR2({
+      file,
+      type: 'image',
+      userId: session.user.id,
+    });
 
-    // Convert file to buffer and save
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filepath, buffer);
-
-    // Return the public URL
-    const publicUrl = `/uploads/products/${filename}`;
+    console.log("R2 image upload successful:", uploadResult);
 
     return NextResponse.json({
       success: true,
-      url: publicUrl,
-      filename,
+      url: uploadResult.url,
+      filename: uploadResult.name,
+      r2Key: uploadResult.r2Key,
     });
 
   } catch (error) {

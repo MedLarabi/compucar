@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
-import { existsSync } from "fs";
+import { uploadProductMediaToR2 } from "@/lib/storage/r2-products";
 
 export async function POST(request: NextRequest) {
   console.log("Upload API called");
@@ -63,40 +61,24 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
-    // Create upload directory
-    const uploadDir = join(process.cwd(), 'public', 'uploads', 'products');
-    console.log("Upload directory:", uploadDir);
-    
-    if (!existsSync(uploadDir)) {
-      console.log("Creating upload directory");
-      await mkdir(uploadDir, { recursive: true });
-    }
+    console.log("Uploading to R2...");
 
-    // Generate unique filename
-    const timestamp = Date.now();
-    const randomString = Math.random().toString(36).substring(7);
-    const extension = file.name.split('.').pop() || '';
-    const filename = `${type}_${timestamp}_${randomString}.${extension}`;
-    const filepath = join(uploadDir, filename);
+    // Upload to R2
+    const uploadResult = await uploadProductMediaToR2({
+      file,
+      type: type as 'image' | 'video',
+      userId: session.user.id,
+    });
 
-    console.log("Saving file to:", filepath);
+    console.log("R2 upload successful:", uploadResult);
 
-    // Save file
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filepath, buffer);
-
-    console.log("File saved successfully");
-
-    // Return public URL
-    const publicUrl = `/uploads/products/${filename}`;
-
-    // Get file metadata
+    // Get file metadata with R2 info
     let metadata: any = {
-      name: file.name,
-      size: file.size,
-      type: file.type,
-      url: publicUrl,
+      name: uploadResult.name,
+      size: uploadResult.size,
+      type: uploadResult.type,
+      url: uploadResult.url,
+      r2Key: uploadResult.r2Key,
     };
 
     // For videos, we'll add duration extraction later if needed

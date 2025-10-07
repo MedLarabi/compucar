@@ -25,6 +25,27 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'picsum.photos',
       },
+      // Cloudflare R2 patterns
+      {
+        protocol: 'https',
+        hostname: '**.r2.cloudflarestorage.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.r2.dev',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.compucar.pro',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.compucar.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'carworkshop.org',
+      },
     ],
     formats: ['image/webp', 'image/avif'] as const,
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
