@@ -8,6 +8,7 @@ import { loginUserSchema } from "@/lib/validations";
 // Production-safe auth configuration without OAuth dependencies
 export const config = {
   adapter: PrismaAdapter(prisma),
+  trustHost: true, // Trust the production host
   providers: [
     // Credentials Provider (Email/Password) - Always works
     Credentials({

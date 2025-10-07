@@ -7,6 +7,7 @@ import { loginUserSchema } from "@/lib/validations";
 
 export const config = {
   adapter: PrismaAdapter(prisma),
+  trustHost: true, // Add this to trust the production host
   providers: [
     // Credentials Provider (Email/Password)
     Credentials({
@@ -81,7 +82,7 @@ export const config = {
       name: `next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'lax' as const,
         path: '/',
         secure: process.env.NODE_ENV === 'production'
       }
