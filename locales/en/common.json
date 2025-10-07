@@ -106,7 +106,8 @@
         "fileName": "File Name",
         "price": "Price",
         "status": "Status",
-        "actions": "Actions"
+        "actions": "Actions",
+    "goHome": "Go Home"
       }
     },
     "empty": {
@@ -320,6 +321,7 @@
     "settings": "Settings",
     "toggleMenu": "Toggle Menu",
     "actions": "Actions",
+    "goHome": "Go Home",
     "language": "Language",
     "theme": "Theme"
   },
@@ -391,7 +393,10 @@
     "registrationFailed": "Registration failed. Please try again.",
     "registrationSuccess": "Registration successful! Please sign in.",
     "adminTestAccount": "Admin Test Account",
-    "useAdminAccount": "Use this account to test admin features"
+    "useAdminAccount": "Use this account to test admin features",
+    "authenticationError": "Authentication Error",
+    "errorOccurredDuringAuth": "An error occurred during authentication",
+    "tryAgain": "Try Again"
   },
   "contact": {
     "email": "Email",
@@ -792,6 +797,7 @@
     "settings": "Settings",
     "toggleMenu": "Toggle Menu",
     "actions": "Actions",
+    "goHome": "Go Home",
     "language": "Language",
     "theme": "Theme",
     "search": "Search",
