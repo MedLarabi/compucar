@@ -152,11 +152,11 @@ export default function FileDetailPage() {
         console.log('📊 Modified filename:', data.data.modifiedFilename);
         setFile(data.data);
       } else {
-        setError(data.error || t('fileDetail.errors.notFound', 'File not found'));
+        setError(data.error || t('fileDetail.errors.notFound') || 'File not found');
       }
     } catch (error) {
       console.error('Error fetching file details:', error);
-      setError(t('fileDetail.errors.loadFailed', 'Failed to load file details'));
+      setError(t('fileDetail.errors.loadFailed') || 'Failed to load file details');
     } finally {
       setLoading(false);
     }
@@ -164,7 +164,7 @@ export default function FileDetailPage() {
 
   const handleDownload = async () => {
     if (!file?.downloadUrl) {
-      toast.error(t('fileDetail.download.urlNotAvailable', 'Download URL not available'));
+      toast.error(t('fileDetail.download.urlNotAvailable') || 'Download URL not available');
       return;
     }
 
@@ -179,10 +179,10 @@ export default function FileDetailPage() {
       link.click();
       document.body.removeChild(link);
 
-      toast.success(t('fileDetail.download.started', 'Download started'));
+      toast.success(t('fileDetail.download.started') || 'Download started');
     } catch (error) {
       console.error('Download error:', error);
-      toast.error(t('fileDetail.download.failed', 'Failed to download file'));
+      toast.error(t('fileDetail.download.failed') || 'Failed to download file');
     } finally {
       setDownloading(false);
     }
@@ -210,13 +210,13 @@ export default function FileDetailPage() {
           link.click();
           document.body.removeChild(link);
 
-          toast.success(t('fileDetail.download.modifiedStarted', 'Modified file download started'));
+          toast.success(t('fileDetail.download.modifiedStarted') || 'Modified file download started');
         } else {
-          toast.error(data.error || t('fileDetail.download.getUrlFailed', 'Failed to get download URL'));
+          toast.error(data.error || t('fileDetail.download.getUrlFailed') || 'Failed to get download URL');
         }
       } catch (error) {
         console.error('Error fetching modified file download URL:', error);
-        toast.error(t('fileDetail.download.modifiedFailed', 'Failed to download modified file'));
+        toast.error(t('fileDetail.download.modifiedFailed') || 'Failed to download modified file');
       }
     } else {
       // Use existing download URL
@@ -228,10 +228,10 @@ export default function FileDetailPage() {
         link.click();
         document.body.removeChild(link);
 
-        toast.success(t('fileDetail.download.modifiedStarted', 'Modified file download started'));
+        toast.success(t('fileDetail.download.modifiedStarted') || 'Modified file download started');
       } catch (error) {
         console.error('Download error:', error);
-        toast.error(t('fileDetail.download.modifiedFailed', 'Failed to download modified file'));
+        toast.error(t('fileDetail.download.modifiedFailed') || 'Failed to download modified file');
       }
     }
 
@@ -244,31 +244,31 @@ export default function FileDetailPage() {
         return {
           color: 'bg-blue-500',
           icon: Clock,
-          text: t('fileDetail.status.received', 'Received'),
-          description: t('fileDetail.status.receivedDescription', 'Your file has been received and is waiting to be processed')
+          text: t('fileDetail.status.received') || 'Received',
+          description: t('fileDetail.status.receivedDescription') || 'Your file has been received and is waiting to be processed'
         };
       case 'PENDING':
         return {
           color: 'bg-yellow-500',
           icon: Settings,
-          text: t('fileDetail.status.inProgress', 'In Progress'),
-          description: file.estimatedProcessingTime 
-            ? t('fileDetail.status.inProgressDescriptionWithTime', 'Your file is currently being processed. Estimated completion time: {time} minutes', { time: file.estimatedProcessingTime })
-            : t('fileDetail.status.inProgressDescription', 'Your file is currently being processed')
+          text: t('fileDetail.status.inProgress') || 'In Progress',
+          description: file?.estimatedProcessingTime 
+            ? `Your file is currently being processed. Estimated completion time: ${file?.estimatedProcessingTime} minutes`
+            : (t('fileDetail.status.inProgressDescription') || 'Your file is currently being processed')
         };
       case 'READY':
         return {
           color: 'bg-green-500',
           icon: CheckCircle,
-          text: t('fileDetail.status.ready', 'Ready'),
-          description: t('fileDetail.status.readyDescription', 'Your file is ready for download')
+          text: t('fileDetail.status.ready') || 'Ready',
+          description: t('fileDetail.status.readyDescription') || 'Your file is ready for download'
         };
       default:
         return {
           color: 'bg-gray-500',
           icon: AlertCircle,
           text: status,
-          description: t('fileDetail.status.unknown', 'Unknown status')
+          description: t('fileDetail.status.unknown') || 'Unknown status'
         };
     }
   };
@@ -309,7 +309,7 @@ export default function FileDetailPage() {
           <Link href="/files">
             <Button variant="outline">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              {t('fileDetail.actions.backToFiles', 'Back to Files')}
+              {t('fileDetail.actions.backToFiles') || 'Back to Files'}
             </Button>
           </Link>
         </div>
@@ -333,13 +333,13 @@ export default function FileDetailPage() {
           <Link href="/files">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              {t('fileDetail.actions.backToFiles', 'Back to Files')}
+              {t('fileDetail.actions.backToFiles') || 'Back to Files'}
             </Button>
           </Link>
           <div>
             <h1 className="text-3xl font-bold">{file.originalFilename}</h1>
             <p className="text-muted-foreground mt-2">
-              {t('fileDetail.header.description', 'File details and download information')}
+              {t('fileDetail.header.description') || 'File details and download information'}
             </p>
           </div>
         </div>
@@ -374,7 +374,7 @@ export default function FileDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <StatusIcon className="h-5 w-5 mr-2" />
-                {t('fileDetail.status.title', 'Status')}: {statusInfo.text}
+                {t('fileDetail.status.title') || 'Status'}: {statusInfo.text}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -385,7 +385,7 @@ export default function FileDetailPage() {
                 {file.paymentStatus === 'PAID' && (
                   <Badge className="bg-green-500 text-white">
                     <CreditCard className="h-3 w-3 mr-1" />
-                    {t('fileDetail.payment.paid', 'Paid')}
+                    {t('fileDetail.payment.paid') || 'Paid'}
                   </Badge>
                 )}
               </div>
@@ -415,7 +415,7 @@ export default function FileDetailPage() {
                         {downloading ? (
                           <>
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            {t('fileDetail.download.downloading', 'Downloading...')}
+                            {t('fileDetail.download.downloading') || 'Downloading...'}
                           </>
                         ) : (
                           <>
@@ -425,7 +425,7 @@ export default function FileDetailPage() {
                         )}
                       </Button>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {t('fileDetail.download.submittedFile', 'Your submitted file')} ({formatFileSize(file.fileSize)})
+                        {t('fileDetail.download.submittedFile') || 'Your submitted file'} ({formatFileSize(file.fileSize)})
                       </p>
                     </div>
                   )}
@@ -441,7 +441,7 @@ export default function FileDetailPage() {
                         {downloadingModified ? (
                           <>
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            {t('fileDetail.download.downloading', 'Downloading...')}
+                            {t('fileDetail.download.downloading') || 'Downloading...'}
                           </>
                         ) : (
                           <>
@@ -451,14 +451,14 @@ export default function FileDetailPage() {
                         )}
                       </Button>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {t('fileDetail.download.tunedFile', 'Tuned file')} ({file.modifiedFileSize ? formatFileSize(file.modifiedFileSize) : t('fileDetail.download.unknownSize', 'Unknown size')})
+                        {t('fileDetail.download.tunedFile') || 'Tuned file'} ({file.modifiedFileSize ? formatFileSize(file.modifiedFileSize) : t('fileDetail.download.unknownSize') || 'Unknown size'})
                       </p>
                     </div>
                   )}
 
                   {!file.downloadUrl && !file.modifiedFilename && (
                     <p className="text-sm text-muted-foreground">
-                      {t('fileDetail.download.noFilesAvailable', 'No files available for download yet.')}
+                      {t('fileDetail.download.noFilesAvailable') || 'No files available for download yet.'}
                     </p>
                   )}
                 </div>
@@ -469,9 +469,9 @@ export default function FileDetailPage() {
           {/* Modifications */}
           <Card>
             <CardHeader>
-              <CardTitle>{t('fileDetail.modifications.title', 'Requested Modifications')}</CardTitle>
+              <CardTitle>{t('fileDetail.modifications.title') || 'Requested Modifications'}</CardTitle>
               <CardDescription>
-                {t('fileDetail.modifications.description', 'The modifications you selected for this file')}
+                {t('fileDetail.modifications.description') || 'The modifications you selected for this file'}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -503,7 +503,7 @@ export default function FileDetailPage() {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <MessageSquare className="h-5 w-5 mr-2" />
-                  {t('fileDetail.comments.title', 'Your Comments')}
+                  {t('fileDetail.comments.title') || 'Your Comments'}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -520,10 +520,10 @@ export default function FileDetailPage() {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <MessageSquare className="h-5 w-5 mr-2" />
-                  {t('fileDetail.adminComments.title', 'Admin Comments')}
+                  {t('fileDetail.adminComments.title') || 'Admin Comments'}
                 </CardTitle>
                 <CardDescription>
-                  {t('fileDetail.adminComments.description', 'Comments from the administrator about your file')}
+                  {t('fileDetail.adminComments.description') || 'Comments from the administrator about your file'}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -542,33 +542,33 @@ export default function FileDetailPage() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <FileText className="h-5 w-5 mr-2" />
-                {t('fileDetail.fileInfo.title', 'File Information')}
+                {t('fileDetail.fileInfo.title') || 'File Information'}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.fileInfo.fileName', 'File Name')}</Label>
+                <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.fileInfo.fileName') || 'File Name'}</Label>
                 <p className="text-sm break-all">{file.originalFilename}</p>
               </div>
               
               <Separator />
               
               <div>
-                <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.fileInfo.fileSize', 'File Size')}</Label>
+                <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.fileInfo.fileSize') || 'File Size'}</Label>
                 <p className="text-sm">{formatFileSize(file.fileSize)}</p>
               </div>
               
               <Separator />
               
               <div>
-                <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.fileInfo.fileType', 'File Type')}</Label>
+                <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.fileInfo.fileType') || 'File Type'}</Label>
                 <p className="text-sm">{file.fileType}</p>
               </div>
               
               <Separator />
               
               <div>
-                <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.fileInfo.uploadDate', 'Upload Date')}</Label>
+                <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.fileInfo.uploadDate') || 'Upload Date'}</Label>
                 <div className="flex items-center text-sm">
                   <Calendar className="h-4 w-4 mr-1" />
                   {formatDate(file.uploadDate)}
@@ -579,7 +579,7 @@ export default function FileDetailPage() {
                 <>
                   <Separator />
                   <div>
-                    <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.fileInfo.lastUpdated', 'Last Updated')}</Label>
+                    <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.fileInfo.lastUpdated') || 'Last Updated'}</Label>
                     <div className="flex items-center text-sm">
                       <Calendar className="h-4 w-4 mr-1" />
                       {formatDate(file.updatedDate)}
@@ -596,22 +596,22 @@ export default function FileDetailPage() {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <DollarSign className="h-5 w-5 mr-2" />
-                  {t('fileDetail.pricing.title', 'Pricing')}
+                  {t('fileDetail.pricing.title') || 'Pricing'}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.pricing.price', 'Price')}</Label>
+                  <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.pricing.price') || 'Price'}</Label>
                   <p className="text-2xl font-bold">{file.price.toFixed(0)} DA</p>
                 </div>
                 
                 <Separator />
                 
                 <div>
-                  <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.pricing.paymentStatus', 'Payment Status')}</Label>
+                  <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.pricing.paymentStatus') || 'Payment Status'}</Label>
                   <div className="flex items-center mt-1">
                     <Badge className={file.paymentStatus === 'PAID' ? 'bg-green-500' : 'bg-red-500'}>
-                      {file.paymentStatus === 'PAID' ? t('fileDetail.payment.paid', 'Paid') : t('fileDetail.payment.notPaid', 'Not Paid')}
+                      {file.paymentStatus === 'PAID' ? t('fileDetail.payment.paid') || 'Paid' : t('fileDetail.payment.notPaid') || 'Not Paid'}
                     </Badge>
                   </div>
                 </div>
@@ -620,7 +620,7 @@ export default function FileDetailPage() {
                   <Alert>
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
-                      {t('fileDetail.payment.manualPayment', 'Payment is handled manually. Please contact the administrator to arrange payment.')}
+                      {t('fileDetail.payment.manualPayment') || 'Payment is handled manually. Please contact the administrator to arrange payment.'}
                     </AlertDescription>
                   </Alert>
                 )}
@@ -631,7 +631,7 @@ export default function FileDetailPage() {
           {/* Actions */}
           <Card>
             <CardHeader>
-              <CardTitle>{t('fileDetail.actions.title', 'Actions')}</CardTitle>
+              <CardTitle>{t('fileDetail.actions.title') || 'Actions'}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {file.status === 'READY' && (
@@ -646,12 +646,12 @@ export default function FileDetailPage() {
                       {downloading ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          {t('fileDetail.download.downloading', 'Downloading...')}
+                          {t('fileDetail.download.downloading') || 'Downloading...'}
                         </>
                       ) : (
                         <>
                           <Download className="h-4 w-4 mr-2" />
-                          {t('fileDetail.actions.downloadOriginal', 'Download Original')}
+                          {t('fileDetail.actions.downloadOriginal') || 'Download Original'}
                         </>
                       )}
                     </Button>
@@ -668,12 +668,12 @@ export default function FileDetailPage() {
                       {downloadingModified ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          {t('fileDetail.download.downloading', 'Downloading...')}
+                          {t('fileDetail.download.downloading') || 'Downloading...'}
                         </>
                       ) : (
                         <>
                           <Download className="h-4 w-4 mr-2" />
-                          {t('fileDetail.actions.downloadModified', 'Download Modified')}
+                          {t('fileDetail.actions.downloadModified') || 'Download Modified'}
                         </>
                       )}
                     </Button>
@@ -686,13 +686,13 @@ export default function FileDetailPage() {
                 onClick={fetchFileDetails}
                 className="w-full"
               >
-                {t('fileDetail.actions.refreshStatus', 'Refresh Status')}
+                {t('fileDetail.actions.refreshStatus') || 'Refresh Status'}
               </Button>
               
               <Link href="/files" className="block">
                 <Button variant="ghost" className="w-full">
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  {t('fileDetail.actions.backToFiles', 'Back to Files')}
+                  {t('fileDetail.actions.backToFiles') || 'Back to Files'}
                 </Button>
               </Link>
             </CardContent>

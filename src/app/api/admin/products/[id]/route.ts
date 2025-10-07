@@ -325,6 +325,13 @@ export async function PUT(
       });
     });
 
+    if (!updatedProduct) {
+      return NextResponse.json(
+        { error: "Failed to update product" },
+        { status: 500 }
+      );
+    }
+
     console.log("Product updated successfully:", {
       id: updatedProduct.id,
       name: updatedProduct.name,

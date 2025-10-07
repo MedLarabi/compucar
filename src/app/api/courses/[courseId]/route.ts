@@ -54,9 +54,36 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
             }
           }
         },
+        reviews: {
+          where: { isApproved: true },
+          select: {
+            id: true,
+            rating: true,
+            title: true,
+            content: true,
+            createdAt: true,
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+                image: true,
+              }
+            }
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+        },
+        tags: {
+          select: {
+            name: true,
+          }
+        },
         _count: {
           select: {
             enrollments: true,
+            reviews: {
+              where: { isApproved: true }
+            }
           }
         }
       }

@@ -40,10 +40,10 @@ export function WebVitals() {
       };
 
       // Import web-vitals library dynamically
-      import('web-vitals').then(({ onCLS, onFCP, onFID, onLCP, onTTFB }) => {
+      import('web-vitals').then(({ onCLS, onFCP, onINP, onLCP, onTTFB }) => {
         onCLS((metric) => trackWebVital(metric.name, metric.value));
         onFCP((metric) => trackWebVital(metric.name, metric.value));
-        onFID((metric) => trackWebVital(metric.name, metric.value));
+        onINP((metric) => trackWebVital(metric.name, metric.value));
         onLCP((metric) => trackWebVital(metric.name, metric.value));
         onTTFB((metric) => trackWebVital(metric.name, metric.value));
       }).catch((error) => {
@@ -64,7 +64,7 @@ export function WebVitals() {
             }
 
             // Track Time to Interactive
-            const tti = navigationEntry.domInteractive - navigationEntry.navigationStart;
+            const tti = navigationEntry.domInteractive - navigationEntry.fetchStart;
             if (tti > 0) {
               trackWebVital('time_to_interactive', tti);
             }

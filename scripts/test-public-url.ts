@@ -59,7 +59,7 @@ async function testPublicUrl() {
         }
         
       } catch (fetchError) {
-        console.log(`   ❌ Fetch error: ${fetchError.message}`);
+        console.log(`   ❌ Fetch error: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`);
       }
       
       console.log('   ' + '─'.repeat(60));

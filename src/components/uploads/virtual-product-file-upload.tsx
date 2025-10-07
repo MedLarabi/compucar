@@ -282,15 +282,11 @@ export function VirtualProductFileUpload({
             )}
 
             {file.status === 'error' && (
-              <Button
-                variant="outline"
-                onClick={() => handleFileSelection(new File([], file.name))}
-                disabled={disabled}
-                className="w-full"
-              >
-                <Upload className="h-4 w-4 mr-2" />
-                Retry Upload
-              </Button>
+              <div className="text-center py-2">
+                <p className="text-sm text-muted-foreground">
+                  Upload failed. Please try uploading the file again.
+                </p>
+              </div>
             )}
           </div>
         )}

@@ -82,7 +82,7 @@ async function testR2FileListing() {
     // 4. Compare R2 vs Database
     console.log('3️⃣ Comparing R2 vs Database...');
     
-    const r2Keys = new Set(r2Objects.map(obj => obj.Key).filter(Boolean));
+    const r2Keys = new Set(r2Objects.map(obj => obj.Key).filter((key): key is string => Boolean(key)));
     const dbKeys = new Set(dbFiles.map(file => file.r2Key));
     
     // Files in R2 but not in DB
@@ -166,7 +166,7 @@ async function testFileAccess(url: string, filename: string) {
     }
     
   } catch (fetchError) {
-    console.log(`   ❌ Fetch error: ${fetchError.message}`);
+    console.log(`   ❌ Fetch error: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`);
   }
 }
 

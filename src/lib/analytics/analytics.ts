@@ -94,12 +94,9 @@ class Analytics {
       order_id: orderId,
       total,
       item_count: items.length,
-      items: items.map(item => ({
-        product_id: item.productId,
-        product_name: item.name,
-        price: item.price,
-        quantity: item.quantity,
-      })),
+      // Convert items array to string for analytics compatibility
+      item_names: items.map(item => item.name).join(', '),
+      item_ids: items.map(item => item.productId).join(', '),
     };
 
     track('purchase', properties);

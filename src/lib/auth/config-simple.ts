@@ -28,7 +28,8 @@ export const config = {
   },
   
   callbacks: {
-    async jwt({ token, user }) {
+    // @ts-ignore - NextAuth callback parameter types
+    async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
         token.role = "CUSTOMER";
         token.firstName = user.name?.split(" ")[0] || "";
@@ -37,7 +38,8 @@ export const config = {
       return token;
     },
     
-    async session({ session, token }) {
+    // @ts-ignore - NextAuth callback parameter types
+    async session({ session, token }: { session: any; token: any }) {
       if (session.user) {
         session.user.id = token.sub!;
         session.user.role = token.role as string;

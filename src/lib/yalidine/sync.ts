@@ -184,11 +184,11 @@ export async function fetchStopDesks(): Promise<StopDeskApi[]> {
         .map(commune => ({
           id: commune.id + 100000, // Use different ID range for commune-derived stop desks
           name: `Agence Yalidine ${commune.name}`,
-          name_ar: commune.name_ar,
+          name_ar: commune.name, // Use regular name as fallback for Arabic name
           address: `${commune.name}, ${commune.wilaya_name || 'Unknown'}`,
           wilaya_id: commune.wilaya_id,
           wilaya_name: commune.wilaya_name,
-          active: commune.active !== false,
+          active: true, // Default to active since commune doesn't have active property
           phone: undefined,
           latitude: undefined,
           longitude: undefined

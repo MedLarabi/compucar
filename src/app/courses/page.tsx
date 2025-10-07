@@ -6,7 +6,12 @@ import { CoursesPageClient } from '@/components/courses/courses-page-client';
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState([]);
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState<{
+    totalCourses: number;
+    publishedCourses: number;
+    totalVideos: number;
+    totalDuration: number;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,8 +29,9 @@ export default function CoursesPage() {
           // Calculate stats dynamically from actual course data
           const dynamicStats = {
             totalCourses: coursesList.length,
-            totalVideos: coursesList.reduce((total, course) => total + (course.videoCount || 0), 0),
-            totalDuration: coursesList.reduce((total, course) => total + (course.duration || 0), 0),
+            publishedCourses: coursesList.filter((course: any) => course.status === 'PUBLISHED').length,
+            totalVideos: coursesList.reduce((total: number, course: any) => total + (course.videoCount || 0), 0),
+            totalDuration: coursesList.reduce((total: number, course: any) => total + (course.duration || 0), 0),
           };
           setStats(dynamicStats);
         }

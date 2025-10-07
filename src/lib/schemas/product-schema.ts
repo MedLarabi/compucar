@@ -54,7 +54,7 @@ export const productSchema = z.object({
     .optional(),
 
   // Status
-  status: z.enum(["draft", "active", "archived"]).default("draft"),
+  status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]).default("DRAFT"),
   isActive: z.boolean().default(true),
   isFeatured: z.boolean().default(false),
 
@@ -112,7 +112,7 @@ export const productFilterSchema = z.object({
   brand: z.string().optional(),
   vendor: z.string().optional(),
   tags: z.array(z.string()).optional(),
-  status: z.enum(["draft", "active", "archived"]).optional(),
+  status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]).optional(),
   isActive: z.boolean().optional(),
   isFeatured: z.boolean().optional(),
   sortBy: z.enum(["name", "price", "createdAt", "updatedAt"]).default("createdAt"),

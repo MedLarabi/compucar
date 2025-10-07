@@ -6,7 +6,7 @@ export interface SEOConfig {
   keywords?: string[];
   image?: string;
   url?: string;
-  type?: 'website' | 'article' | 'product';
+  type?: 'website' | 'article';
   publishedTime?: string;
   modifiedTime?: string;
   author?: string;
@@ -158,7 +158,7 @@ export class SEOMetadata {
       keywords: [product.brand, product.category, 'computer parts', 'PC components'].filter(Boolean) as string[],
       image: product.images[0],
       url,
-      type: 'product',
+      type: 'website',
     };
 
     const metadata = this.generateMetadata(config);
@@ -166,23 +166,30 @@ export class SEOMetadata {
     // Add product-specific structured data
     const structuredData = this.generateProductStructuredData(product, url);
 
+    // Filter out undefined values from metadata.other
+    const filteredOther = Object.entries(metadata.other || {}).reduce((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = value;
+      }
+      return acc;
+    }, {} as Record<string, string | number | (string | number)[]>);
+
     return {
       ...metadata,
       other: {
-        ...metadata.other,
+        ...filteredOther,
         'product:price:amount': product.price.toString(),
         'product:price:currency': product.currency,
         'product:availability': product.availability,
         'product:condition': product.condition,
-        'product:brand': product.brand,
-        'product:category': product.category,
-        'product:retailer_item_id': product.sku,
-        'product:gtin': product.gtin,
-        'product:mpn': product.mpn,
+        ...(product.brand && { 'product:brand': product.brand }),
+        ...(product.category && { 'product:category': product.category }),
+        ...(product.sku && { 'product:retailer_item_id': product.sku }),
+        ...(product.gtin && { 'product:gtin': product.gtin }),
+        ...(product.mpn && { 'product:mpn': product.mpn }),
       },
       alternates: {
         ...metadata.alternates,
-        'structured-data': JSON.stringify(structuredData),
       },
     };
   }
@@ -238,8 +245,8 @@ export class SEOMetadata {
   static generateProductStructuredData(
     product: ProductSEOData,
     url: string
-  ): object {
-    const structuredData = {
+  ): any {
+    const structuredData: any = {
       '@context': 'https://schema.org',
       '@type': 'Product',
       name: product.name,

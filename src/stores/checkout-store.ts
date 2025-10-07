@@ -7,7 +7,11 @@ export const useCheckoutStore = create<CheckoutState>()(
     (set, get) => ({
       step: 'cart',
       customerInfo: null,
+      billingAddress: null,
+      shippingAddress: null,
+      shippingMethod: null,
       paymentMethod: null,
+      sameAsShipping: true,
       isLoading: false,
       error: null,
 
@@ -15,7 +19,15 @@ export const useCheckoutStore = create<CheckoutState>()(
 
       setCustomerInfo: (info) => set({ customerInfo: info }),
 
+      setBillingAddress: (address) => set({ billingAddress: address }),
+
+      setShippingAddress: (address) => set({ shippingAddress: address }),
+
+      setShippingMethod: (method) => set({ shippingMethod: method }),
+
       setPaymentMethod: (method) => set({ paymentMethod: method }),
+
+      setSameAsShipping: (same) => set({ sameAsShipping: same }),
 
       setLoading: (loading) => set({ isLoading: loading }),
 
@@ -24,7 +36,11 @@ export const useCheckoutStore = create<CheckoutState>()(
       reset: () => set({
         step: 'cart',
         customerInfo: null,
+        billingAddress: null,
+        shippingAddress: null,
+        shippingMethod: null,
         paymentMethod: null,
+        sameAsShipping: true,
         isLoading: false,
         error: null,
       }),
@@ -33,7 +49,11 @@ export const useCheckoutStore = create<CheckoutState>()(
       name: 'compucar-checkout',
       partialize: (state) => ({
         customerInfo: state.customerInfo,
+        billingAddress: state.billingAddress,
+        shippingAddress: state.shippingAddress,
+        shippingMethod: state.shippingMethod,
         paymentMethod: state.paymentMethod,
+        sameAsShipping: state.sameAsShipping,
       }),
     }
   )

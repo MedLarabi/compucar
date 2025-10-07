@@ -8,6 +8,7 @@ export async function generateProductMetadata(slug: string): Promise<Metadata> {
       where: { slug },
       include: {
         category: true,
+        images: true,
         reviews: {
           where: { isApproved: true },
           select: { rating: true }
@@ -59,10 +60,10 @@ export async function generateProductMetadata(slug: string): Promise<Metadata> {
         title,
         description,
         url: productUrl,
-        type: 'product',
+        type: 'website',
         images: [
           {
-            url: product.images?.[0] || `${baseUrl}/placeholder-product.jpg`,
+            url: product.images?.[0]?.url || `${baseUrl}/placeholder-product.jpg`,
             width: 800,
             height: 600,
             alt: product.name,

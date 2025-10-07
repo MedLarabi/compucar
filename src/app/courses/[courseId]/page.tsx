@@ -41,6 +41,8 @@ interface Video {
   youtubeVideoId?: string;
   vimeoUrl?: string;
   vimeoVideoId?: string;
+  s3Key?: string;
+  s3Bucket?: string;
 }
 
 interface Module {

@@ -234,7 +234,7 @@ export function AdvancedSearchFilters({
           <div className="space-y-2">
             <Slider
               value={priceRange}
-              onValueChange={setPriceRange}
+              onValueChange={(value) => setPriceRange([value[0], value[1]])}
               max={1000}
               min={0}
               step={10}

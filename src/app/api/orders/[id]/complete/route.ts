@@ -110,7 +110,7 @@ export async function GET(
       licenseKeys: order.assignedLicenseKeys?.map(license => ({
         id: license.id,
         keyValue: license.keyValue,
-        decryptedKey: license.decryptedKey || license.keyValue, // Fallback if not encrypted
+        decryptedKey: license.encryptedKey || license.keyValue, // Fallback if not encrypted
         product: license.product,
         assignedAt: license.assignedAt,
       })) || [],

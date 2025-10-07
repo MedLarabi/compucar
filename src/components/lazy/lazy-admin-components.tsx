@@ -32,7 +32,7 @@ export const LazyImageUpload = dynamic(
 );
 
 export const LazyAnalytics = dynamic(
-  () => import('@/components/admin/analytics-dashboard'),
+  () => import('@/components/admin/analytics-dashboard').then(mod => ({ default: mod.AnalyticsDashboard })),
   {
     loading: () => (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -44,10 +44,3 @@ export const LazyAnalytics = dynamic(
   }
 );
 
-export const LazyCharts = dynamic(
-  () => import('recharts'),
-  {
-    loading: () => <Skeleton className="h-64 w-full" />,
-    ssr: false,
-  }
-);

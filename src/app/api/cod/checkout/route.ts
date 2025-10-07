@@ -380,8 +380,8 @@ export async function POST(request: NextRequest) {
     } catch (adminNotificationError) {
       console.error('❌ Error sending COD order admin notifications:', adminNotificationError);
       console.error('❌ COD admin notification error details:', {
-        message: adminNotificationError.message,
-        stack: adminNotificationError.stack
+        message: adminNotificationError instanceof Error ? adminNotificationError.message : String(adminNotificationError),
+        stack: adminNotificationError instanceof Error ? adminNotificationError.stack : undefined
       });
       // Don't fail the order process if admin notification fails
     }
@@ -513,7 +513,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: "Validation failed", details: error.errors },
+        { error: "Validation failed", details: error.issues },
         { status: 400 }
       );
     }

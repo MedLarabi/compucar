@@ -34,7 +34,7 @@ const digitalCheckoutSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
   lastName: z.string().min(1, 'Last name is required'),
   email: z.string().email('Valid email is required'),
-  newsletter: z.boolean().default(false),
+  newsletter: z.boolean(),
 });
 
 type AddressForm = z.infer<typeof addressSchema>;
@@ -202,11 +202,11 @@ export function ShippingForm() {
                     <Input
                       id="firstName"
                       {...register('firstName')}
-                      className={errors.firstName ? 'border-destructive' : ''}
+                      className={(errors as any).firstName ? 'border-destructive' : ''}
                     />
-                    {errors.firstName && (
+                    {(errors as any).firstName && (
                       <p className="text-sm text-destructive mt-1">
-                        {errors.firstName.message}
+                        {(errors as any).firstName.message}
                       </p>
                     )}
                   </div>
@@ -215,11 +215,11 @@ export function ShippingForm() {
                     <Input
                       id="lastName"
                       {...register('lastName')}
-                      className={errors.lastName ? 'border-destructive' : ''}
+                      className={(errors as any).lastName ? 'border-destructive' : ''}
                     />
-                    {errors.lastName && (
+                    {(errors as any).lastName && (
                       <p className="text-sm text-destructive mt-1">
-                        {errors.lastName.message}
+                        {(errors as any).lastName.message}
                       </p>
                     )}
                   </div>
@@ -231,12 +231,12 @@ export function ShippingForm() {
                     id="email"
                     type="email"
                     {...register('email')}
-                    className={errors.email ? 'border-destructive' : ''}
+                    className={isDigitalCheckout && (errors as any).email ? 'border-destructive' : ''}
                     placeholder="your.email@example.com"
                   />
-                  {errors.email && (
+                  {isDigitalCheckout && (errors as any).email && (
                     <p className="text-sm text-destructive mt-1">
-                      {errors.email.message}
+                      {(errors as any).email.message}
                     </p>
                   )}
                 </div>
@@ -260,11 +260,11 @@ export function ShippingForm() {
                     <Input
                       id="firstName"
                       {...register('firstName')}
-                      className={errors.firstName ? 'border-destructive' : ''}
+                      className={(errors as any).firstName ? 'border-destructive' : ''}
                     />
-                    {errors.firstName && (
+                    {(errors as any).firstName && (
                       <p className="text-sm text-destructive mt-1">
-                        {errors.firstName.message}
+                        {(errors as any).firstName.message}
                       </p>
                     )}
                   </div>
@@ -273,11 +273,11 @@ export function ShippingForm() {
                     <Input
                       id="lastName"
                       {...register('lastName')}
-                      className={errors.lastName ? 'border-destructive' : ''}
+                      className={(errors as any).lastName ? 'border-destructive' : ''}
                     />
-                    {errors.lastName && (
+                    {(errors as any).lastName && (
                       <p className="text-sm text-destructive mt-1">
-                        {errors.lastName.message}
+                        {(errors as any).lastName.message}
                       </p>
                     )}
                   </div>
@@ -293,11 +293,11 @@ export function ShippingForm() {
                   <Input
                     id="address1"
                     {...register('address1')}
-                    className={errors.address1 ? 'border-destructive' : ''}
+                    className={(errors as any).address1 ? 'border-destructive' : ''}
                   />
-                  {errors.address1 && (
+                  {(errors as any).address1 && (
                     <p className="text-sm text-destructive mt-1">
-                      {errors.address1.message}
+                      {(errors as any).address1.message}
                     </p>
                   )}
                 </div>
@@ -313,11 +313,11 @@ export function ShippingForm() {
                     <Input
                       id="city"
                       {...register('city')}
-                      className={errors.city ? 'border-destructive' : ''}
+                      className={(errors as any).city ? 'border-destructive' : ''}
                     />
-                    {errors.city && (
+                    {(errors as any).city && (
                       <p className="text-sm text-destructive mt-1">
-                        {errors.city.message}
+                        {(errors as any).city.message}
                       </p>
                     )}
                   </div>
@@ -326,11 +326,11 @@ export function ShippingForm() {
                     <Input
                       id="state"
                       {...register('state')}
-                      className={errors.state ? 'border-destructive' : ''}
+                      className={(errors as any).state ? 'border-destructive' : ''}
                     />
-                    {errors.state && (
+                    {(errors as any).state && (
                       <p className="text-sm text-destructive mt-1">
-                        {errors.state.message}
+                        {(errors as any).state.message}
                       </p>
                     )}
                   </div>
@@ -342,11 +342,11 @@ export function ShippingForm() {
                     <Input
                       id="postalCode"
                       {...register('postalCode')}
-                      className={errors.postalCode ? 'border-destructive' : ''}
+                      className={(errors as any).postalCode ? 'border-destructive' : ''}
                     />
-                    {errors.postalCode && (
+                    {(errors as any).postalCode && (
                       <p className="text-sm text-destructive mt-1">
-                        {errors.postalCode.message}
+                        {(errors as any).postalCode.message}
                       </p>
                     )}
                   </div>
@@ -355,11 +355,11 @@ export function ShippingForm() {
                     <Input
                       id="country"
                       {...register('country')}
-                      className={errors.country ? 'border-destructive' : ''}
+                      className={(errors as any).country ? 'border-destructive' : ''}
                     />
-                    {errors.country && (
+                    {(errors as any).country && (
                       <p className="text-sm text-destructive mt-1">
-                        {errors.country.message}
+                        {(errors as any).country.message}
                       </p>
                     )}
                   </div>

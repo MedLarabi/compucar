@@ -46,6 +46,7 @@ interface Order {
   orderNumber: string;
   status: string;
   displayStatus?: string; // Added for COD orders
+  paymentMethod?: string;
   subtotal: number;
   shipping: number;
   tax: number;
@@ -54,7 +55,26 @@ interface Order {
   updatedAt: string;
   customerNotes?: string;
   shippingMethod?: string;
+  customerFirst?: string;
+  customerLast?: string;
+  customerPhone?: string;
+  codStatus?: string;
+  currency?: string;
   items: OrderItem[];
+  user?: {
+    id: string;
+    firstName?: string;
+    lastName?: string;
+    email: string;
+  } | null;
+  payments?: Array<{
+    id: string;
+    method: string;
+    status: string;
+    transactionId?: string;
+    amount: number;
+    paidAt?: string;
+  }>;
   tracking?: string | null; // Added for tracking
   trackingStatus?: string | null; // Added for tracking status
   shippingInfo?: {
@@ -64,6 +84,7 @@ interface Order {
     shippingCost: number;
     address: string;
   } | null;
+  yalidine?: any; // Full yalidine object for detailed tracking
 }
 
 function getStatusIcon(status: string, size = "h-5 w-5") {

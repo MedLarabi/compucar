@@ -288,8 +288,7 @@ export class YalidineService {
           trackingNumber: parcel.tracking_number,
           status: parcel.status,
           event
-        },
-        priority: event === 'parcel.delivered' ? 'high' : 'medium'
+        }
       });
     }
   }
@@ -341,8 +340,7 @@ export class YalidineService {
             status: parcel.status,
             customerName: parcel.recipient.name,
             event
-          },
-          priority: 'medium'
+          }
         });
       }
     }

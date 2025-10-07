@@ -70,7 +70,7 @@ export function AdminGuard({ children, requiredRole = "ADMIN" }: AdminGuardProps
   const hasRequiredAccess = 
     userRole === "SUPER_ADMIN" || 
     isAdmin === true ||
-    (requiredRole === "ADMIN" && (userRole === "ADMIN" || userRole === "SUPER_ADMIN" || isAdmin === true));
+    (requiredRole === "ADMIN" && (userRole === "ADMIN" || userRole === "SUPER_ADMIN"));
 
   if (!hasRequiredAccess) {
     return (

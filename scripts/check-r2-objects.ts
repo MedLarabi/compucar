@@ -43,7 +43,7 @@ async function checkR2Objects() {
     // Compare
     console.log('\n3️⃣ Comparing R2 objects with database...');
     
-    const r2Keys = new Set(r2Objects.map(obj => obj.Key).filter(Boolean));
+    const r2Keys = new Set(r2Objects.map(obj => obj.Key).filter((key): key is string => Boolean(key)));
     const dbKeys = new Set(dbFiles.map(file => file.r2Key));
     
     console.log('\n   📊 R2 Objects:');
@@ -142,7 +142,7 @@ async function checkR2Objects() {
       });
       
       // Now compare with database
-      const subfolderKeys = new Set(subfolderObjects.map(obj => obj.Key).filter(Boolean));
+      const subfolderKeys = new Set(subfolderObjects.map(obj => obj.Key).filter((key): key is string => Boolean(key)));
       const matchingSubfolder = Array.from(subfolderKeys).filter(key => dbKeys.has(key));
       
       console.log(`\n   ✅ ${matchingSubfolder.length} files match in subfolder`);

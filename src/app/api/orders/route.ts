@@ -406,8 +406,8 @@ export async function POST(request: NextRequest) {
     } catch (adminNotificationError) {
       console.error('❌ Error sending admin notifications:', adminNotificationError);
       console.error('❌ Admin notification error details:', {
-        message: adminNotificationError.message,
-        stack: adminNotificationError.stack
+        message: adminNotificationError instanceof Error ? adminNotificationError.message : String(adminNotificationError),
+        stack: adminNotificationError instanceof Error ? adminNotificationError.stack : undefined
       });
       // Don't fail the order process if admin notification fails
     }

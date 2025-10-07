@@ -87,7 +87,7 @@ export async function generateBlogMetadata(slug: string): Promise<Metadata> {
       other: {
         'article:author': authorName,
         'article:section': article.category?.name || 'Automotive',
-        'article:published_time': article.publishedAt?.toISOString(),
+        'article:published_time': article.publishedAt?.toISOString() || article.createdAt.toISOString(),
         'article:modified_time': article.updatedAt.toISOString(),
         'article:tag': article.tags.map(tag => tag.name).join(','),
       },

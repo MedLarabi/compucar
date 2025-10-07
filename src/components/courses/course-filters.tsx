@@ -85,7 +85,7 @@ export function CourseFilters() {
                   <Checkbox
                     id="watchable"
                     checked={showWatchable}
-                    onCheckedChange={setShowWatchable}
+                    onCheckedChange={(checked) => setShowWatchable(checked === true)}
                   />
                   <label
                     htmlFor="watchable"

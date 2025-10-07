@@ -22,11 +22,11 @@ const createCheckoutSchema = (totalPrice: number) => z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Please enter a valid email address"),
-  newsletter: z.boolean().default(false),
-  createAccount: z.boolean().default(false),
+  newsletter: z.boolean(),
+  createAccount: z.boolean(),
   paymentMethod: totalPrice > 0 
     ? z.enum(['stripe', 'paypal', 'google-pay', 'apple-pay', 'link', 'crypto'], {
-        required_error: 'Please select a payment method',
+        message: 'Please select a payment method',
       })
     : z.enum(['stripe', 'paypal', 'google-pay', 'apple-pay', 'link', 'crypto']).optional(),
 });

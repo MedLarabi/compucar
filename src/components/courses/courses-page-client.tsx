@@ -11,6 +11,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 interface Course {
   id: string;
   title: string;
+  slug: string;
   description: string | null;
   thumbnail: string | null;
   status: string;

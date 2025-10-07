@@ -259,9 +259,8 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           
           <div className="space-y-6">
             <ReviewsDisplay 
-              reviews={product.reviews || []} 
-              averageRating={product.averageRating || 0}
-              totalReviews={product._count?.reviews || 0}
+              productSlug={product.slug}
+              initialReviews={product.reviews || []}
             />
             
             {showReviewForm && (

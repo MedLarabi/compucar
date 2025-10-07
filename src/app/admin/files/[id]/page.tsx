@@ -375,7 +375,7 @@ export default function AdminFileDetailPage() {
 
   if (error) {
     return (
-      <TuningLayout>
+      <AdminHeaderLayout>
         <div className="container mx-auto px-4 py-8 max-w-4xl">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -392,7 +392,7 @@ export default function AdminFileDetailPage() {
             </Link>
           </div>
         </div>
-      </TuningLayout>
+      </AdminHeaderLayout>
     );
   }
 
@@ -846,7 +846,7 @@ export default function AdminFileDetailPage() {
                         const input = document.createElement('input');
                         input.type = 'file';
                         input.accept = '.bin,.hex,.ecu,.map,.ori,.mod,.kess,.ktag,.pcm,.edc,.damos,.a2l';
-                        input.onchange = handleFileUpload;
+                        input.onchange = (e) => handleFileUpload(e as unknown as React.ChangeEvent<HTMLInputElement>);
                         input.click();
                       }}
                       disabled={uploading}
@@ -880,7 +880,7 @@ export default function AdminFileDetailPage() {
                         const input = document.createElement('input');
                         input.type = 'file';
                         input.accept = '.bin,.hex,.ecu,.map,.ori,.mod,.kess,.ktag,.pcm,.edc,.damos,.a2l';
-                        input.onchange = handleFileUpload;
+                        input.onchange = (e) => handleFileUpload(e as unknown as React.ChangeEvent<HTMLInputElement>);
                         input.click();
                       }}
                       disabled={uploading}
@@ -910,6 +910,3 @@ export default function AdminFileDetailPage() {
   );
 }
 
-function Label({ children, className, htmlFor }: { children: React.ReactNode; className?: string; htmlFor?: string }) {
-  return <label htmlFor={htmlFor} className={className}>{children}</label>;
-}

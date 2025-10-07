@@ -272,11 +272,11 @@ export default function CustomerFilesPage() {
         setSummary(data.summary);
       } else {
         console.error('Failed to fetch files:', data);
-        toast.error(t('files.errors.fetchFailed', 'Failed to fetch files'));
+        toast.error(t('files.errors.fetchFailed'));
       }
     } catch (error) {
       console.error('Error fetching files:', error);
-      toast.error(t('files.errors.fetchFailed', 'Failed to fetch files'));
+      toast.error(t('files.errors.fetchFailed'));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -338,7 +338,7 @@ export default function CustomerFilesPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <h1 className="text-3xl font-bold">{t('files.title', 'Order Modifications')}</h1>
+            <h1 className="text-3xl font-bold">{t('files.title')}</h1>
             {/* Real-time connection status */}
             <div className="flex items-center gap-2">
               {isConnected ? (
@@ -355,13 +355,13 @@ export default function CustomerFilesPage() {
             </div>
           </div>
           <p className="text-muted-foreground">
-            {t('files.description', 'Track your tuning file orders and modifications')}
+            {t('files.description')}
           </p>
         </div>
         <Link href="/files/upload">
           <Button>
             <Plus className="h-4 w-4 mr-2" />
-            {t('files.uploadNewFile', 'Upload New File')}
+            {t('files.uploadNewFile')}
           </Button>
         </Link>
       </div>
@@ -370,7 +370,7 @@ export default function CustomerFilesPage() {
       <div className="grid gap-4 md:grid-cols-4 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('files.stats.totalOrders', 'Total Orders')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('files.stats.totalOrders')}</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -379,7 +379,7 @@ export default function CustomerFilesPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('files.stats.ready', 'Ready')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('files.stats.ready')}</CardTitle>
             <div className="h-2 w-2 bg-green-500 rounded-full" />
           </CardHeader>
           <CardContent>
@@ -390,7 +390,7 @@ export default function CustomerFilesPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('files.stats.inProgress', 'In Progress')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('files.stats.inProgress')}</CardTitle>
             <div className="h-2 w-2 bg-yellow-500 rounded-full" />
           </CardHeader>
           <CardContent>
@@ -401,7 +401,7 @@ export default function CustomerFilesPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{t('files.stats.received', 'Received')}</CardTitle>
+            <CardTitle className="text-sm font-medium">{t('files.stats.received')}</CardTitle>
             <div className="h-2 w-2 bg-blue-500 rounded-full" />
           </CardHeader>
           <CardContent>
@@ -417,7 +417,7 @@ export default function CustomerFilesPage() {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Filter className="h-5 w-5 mr-2" />
-            {t('files.filters.title', 'Filters')}
+            {t('files.filters.title')}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -425,7 +425,7 @@ export default function CustomerFilesPage() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder={t('files.filters.searchPlaceholder', 'Search orders by file name...')}
+                placeholder={t('files.filters.searchPlaceholder')}
                 value={filters.search}
                 onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                 className="pl-10"
@@ -436,13 +436,13 @@ export default function CustomerFilesPage() {
               onValueChange={(value) => setFilters(prev => ({ ...prev, status: value }))}
             >
               <SelectTrigger className="w-full sm:w-48">
-                <SelectValue placeholder={t('files.filters.statusPlaceholder', 'Status')} />
+                <SelectValue placeholder={t('files.filters.statusPlaceholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{t('files.filters.allFiles', 'All Files')}</SelectItem>
-                <SelectItem value="RECEIVED">{t('files.filters.received', 'Received')}</SelectItem>
-                <SelectItem value="PENDING">{t('files.filters.inProgress', 'In Progress')}</SelectItem>
-                <SelectItem value="READY">{t('files.filters.ready', 'Ready')}</SelectItem>
+                <SelectItem value="all">{t('files.filters.allFiles')}</SelectItem>
+                <SelectItem value="RECEIVED">{t('files.filters.received')}</SelectItem>
+                <SelectItem value="PENDING">{t('files.filters.inProgress')}</SelectItem>
+                <SelectItem value="READY">{t('files.filters.ready')}</SelectItem>
               </SelectContent>
             </Select>
             <Button
@@ -584,9 +584,9 @@ export default function CustomerFilesPage() {
       {/* Files Table */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('files.table.title', 'Order Modifications')}</CardTitle>
+          <CardTitle>{t('files.table.title')}</CardTitle>
           <CardDescription>
-            {loading ? t('files.table.loading', 'Loading...') : t('files.table.totalOrders', `${pagination.total} total orders`)}
+            {loading ? t('files.table.loading') : `${pagination.total} ${t('files.table.totalOrders')}`}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -606,17 +606,17 @@ export default function CustomerFilesPage() {
           ) : files.length === 0 ? (
             <div className="text-center py-8">
               <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">{t('files.empty.title', 'No orders found')}</h3>
+              <h3 className="text-lg font-semibold mb-2">{t('files.empty.title')}</h3>
               <p className="text-muted-foreground mb-4">
                 {filters.search || filters.status !== 'all' 
-                  ? t('files.empty.noMatch', 'No orders match your current filters')
-                  : t('files.empty.getStarted', 'Upload your first file to get started')
+                  ? t('files.empty.noMatch')
+                  : t('files.empty.getStarted')
                 }
               </p>
               <Link href="/files/upload">
                 <Button>
                   <Upload className="h-4 w-4 mr-2" />
-                  {t('files.empty.uploadFile', 'Upload File')}
+                  {t('files.empty.uploadFile')}
                 </Button>
               </Link>
             </div>
@@ -632,7 +632,7 @@ export default function CustomerFilesPage() {
                         className="text-left p-4 font-medium text-sm relative"
                         style={{ width: `${columnWidths.orderId}px` }}
                       >
-                        {t('files.table.headers.orderId', 'Order ID')}
+                        {t('files.table.headers.orderId')}
                         <div
                           className="absolute right-0 top-0 bottom-0 w-0.5 cursor-col-resize bg-gray-400 hover:bg-gray-600 hover:w-1 transition-all duration-200"
                           onMouseDown={(e) => handleResizeStart('orderId', e)}
@@ -643,7 +643,7 @@ export default function CustomerFilesPage() {
                         className="text-left p-4 font-medium text-sm relative"
                         style={{ width: `${columnWidths.date}px` }}
                       >
-                        {t('files.table.headers.date', 'Date')}
+                        {t('files.table.headers.date')}
                         <div
                           className="absolute right-0 top-0 bottom-0 w-0.5 cursor-col-resize bg-gray-400 hover:bg-gray-600 hover:w-1 transition-all duration-200"
                           onMouseDown={(e) => handleResizeStart('date', e)}
@@ -654,7 +654,7 @@ export default function CustomerFilesPage() {
                         className="text-left p-4 font-medium text-sm relative"
                         style={{ width: `${columnWidths.fileName}px` }}
                       >
-                        {t('files.table.headers.fileName', 'File Name')}
+                        {t('files.table.headers.fileName')}
                         <div
                           className="absolute right-0 top-0 bottom-0 w-0.5 cursor-col-resize bg-gray-400 hover:bg-gray-600 hover:w-1 transition-all duration-200"
                           onMouseDown={(e) => handleResizeStart('fileName', e)}
@@ -665,7 +665,7 @@ export default function CustomerFilesPage() {
                         className="text-left p-4 font-medium text-sm relative"
                         style={{ width: `${columnWidths.price}px` }}
                       >
-                        {t('files.table.headers.price', 'Price')}
+                        {t('files.table.headers.price')}
                         <div
                           className="absolute right-0 top-0 bottom-0 w-0.5 cursor-col-resize bg-gray-400 hover:bg-gray-600 hover:w-1 transition-all duration-200"
                           onMouseDown={(e) => handleResizeStart('price', e)}
@@ -676,7 +676,7 @@ export default function CustomerFilesPage() {
                         className="text-left p-4 font-medium text-sm relative"
                         style={{ width: `${columnWidths.status}px` }}
                       >
-                        {t('files.table.headers.status', 'Status')}
+                        {t('files.table.headers.status')}
                         <div
                           className="absolute right-0 top-0 bottom-0 w-0.5 cursor-col-resize bg-gray-400 hover:bg-gray-600 hover:w-1 transition-all duration-200"
                           onMouseDown={(e) => handleResizeStart('status', e)}
@@ -687,7 +687,7 @@ export default function CustomerFilesPage() {
                         className="text-left p-4 font-medium text-sm"
                         style={{ width: `${columnWidths.actions}px` }}
                       >
-                        {t('files.table.headers.actions', 'Actions')}
+                        {t('files.table.headers.actions')}
                       </th>
                     </tr>
                   </thead>
@@ -738,7 +738,7 @@ export default function CustomerFilesPage() {
                                 {file.price.toFixed(0)} DA
                               </div>
                             ) : (
-                              <span className="text-muted-foreground">{t('files.price.free', 'Free')}</span>
+                              <span className="text-muted-foreground">{t('files.price.free')}</span>
                             )}
                           </div>
                         </td>
@@ -761,7 +761,7 @@ export default function CustomerFilesPage() {
                             }}
                           >
                             <Eye className="h-4 w-4 mr-1" />
-                            {t('files.actions.view', 'View')}
+                            {t('files.actions.view')}
                           </Button>
                         </td>
                       </tr>
@@ -807,7 +807,7 @@ export default function CustomerFilesPage() {
                             {file.price.toFixed(0)} DA
                           </div>
                         ) : (
-                          <span className="text-muted-foreground">{t('files.price.free', 'Free')}</span>
+                          <span className="text-muted-foreground">{t('files.price.free')}</span>
                         )}
                       </div>
                     </div>
@@ -821,9 +821,9 @@ export default function CustomerFilesPage() {
           {pagination.pages > 1 && (
             <div className="flex items-center justify-between mt-6">
               <div className="text-sm text-muted-foreground">
-                {t('files.pagination.showing', 'Showing')} {((pagination.page - 1) * pagination.limit) + 1} {t('files.pagination.to', 'to')}{' '}
-                {Math.min(pagination.page * pagination.limit, pagination.total)} {t('files.pagination.of', 'of')}{' '}
-                {pagination.total} {t('files.pagination.orders', 'orders')}
+                {t('files.pagination.showing')} {((pagination.page - 1) * pagination.limit) + 1} {t('files.pagination.to')}{' '}
+                {Math.min(pagination.page * pagination.limit, pagination.total)} {t('files.pagination.of')}{' '}
+                {pagination.total} {t('files.pagination.orders')}
               </div>
               <div className="flex items-center space-x-2">
                 <Button
@@ -832,7 +832,7 @@ export default function CustomerFilesPage() {
                   onClick={() => handlePageChange(pagination.page - 1)}
                   disabled={pagination.page <= 1}
                 >
-                  {t('files.pagination.previous', 'Previous')}
+                  {t('files.pagination.previous')}
                 </Button>
                 <Button
                   variant="outline"
@@ -840,7 +840,7 @@ export default function CustomerFilesPage() {
                   onClick={() => handlePageChange(pagination.page + 1)}
                   disabled={pagination.page >= pagination.pages}
                 >
-                  {t('files.pagination.next', 'Next')}
+                  {t('files.pagination.next')}
                 </Button>
               </div>
             </div>
@@ -853,10 +853,10 @@ export default function CustomerFilesPage() {
         <CardHeader>
           <CardTitle className="flex items-center">
             <DollarSign className="h-5 w-5 mr-2" />
-            {t('files.summary.title', 'Order Summary')}
+            {t('files.summary.title')}
           </CardTitle>
           <CardDescription>
-            {t('files.summary.description', 'Financial overview of your order modifications')}
+            {t('files.summary.description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -864,7 +864,7 @@ export default function CustomerFilesPage() {
             <div className="text-3xl font-bold text-red-600">
               {summary.totalUnpaid.toFixed(0)} DA
             </div>
-            <div className="text-sm text-muted-foreground">{t('files.summary.totalUnpaid', 'Total Unpaid')}</div>
+            <div className="text-sm text-muted-foreground">{t('files.summary.totalUnpaid')}</div>
           </div>
         </CardContent>
       </Card>

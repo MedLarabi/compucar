@@ -168,7 +168,7 @@ export async function createDownloadsForOrder(orderId: string) {
 
     // Create downloads for each virtual product in the order
     for (const item of order.items) {
-      if (item.product.isVirtual) {
+      if (item.product.isVirtual && order.user) {
         try {
           const download = await createVirtualProductDownload({
             userId: order.user.id,

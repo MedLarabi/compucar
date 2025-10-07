@@ -87,11 +87,11 @@ async function testR2Files() {
             console.log(`   ❌ File not accessible in R2 (Status: ${response.status})`);
           }
         } catch (fetchError) {
-          console.log(`   ⚠️  Could not test file accessibility: ${fetchError.message}`);
+          console.log(`   ⚠️  Could not test file accessibility: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`);
         }
         
       } catch (r2Error) {
-        console.log(`   ❌ Failed to generate download URL: ${r2Error.message}`);
+        console.log(`   ❌ Failed to generate download URL: ${r2Error instanceof Error ? r2Error.message : String(r2Error)}`);
       }
       
       console.log('   ---');

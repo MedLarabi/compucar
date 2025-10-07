@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
               );
 
               // Send real-time update to customer's browser
-              const { sendUpdateToUser } = await import('@/app/api/sse/route');
+              const { sendUpdateToUser } = await import('@/lib/sse-utils');
               sendUpdateToUser(file.userId, {
                 type: 'file_status_update',
                 fileId: file.id,
@@ -266,7 +266,7 @@ export async function POST(request: NextRequest) {
                              minutes === '5' ? '5 minutes' :
                              `${minutes} minutes`;
 
-              const { sendUpdateToUser } = await import('@/app/api/sse/route');
+              const { sendUpdateToUser } = await import('@/lib/sse-utils');
               sendUpdateToUser(file.userId, {
                 type: 'estimated_time_update',
                 fileId: file.id,
@@ -389,8 +389,7 @@ export async function POST(request: NextRequest) {
                       select: { 
                         id: true, 
                         firstName: true, 
-                        lastName: true,
-                        telegramChatId: true
+                        lastName: true
                       }
                     },
                     fileModifications: {
@@ -409,7 +408,7 @@ export async function POST(request: NextRequest) {
                   );
 
                   // Send real-time update to customer's browser
-                  const { sendUpdateToUser } = await import('@/app/api/sse/route');
+                  const { sendUpdateToUser } = await import('@/lib/sse-utils');
                   sendUpdateToUser(file.userId, {
                     type: 'file_status_update',
                     fileId: fileId,
@@ -584,7 +583,7 @@ export async function POST(request: NextRequest) {
                                minutes === '5' ? '5 minutes' :
                                `${minutes} minutes`;
 
-                const { sendUpdateToUser } = await import('@/app/api/sse/route');
+                const { sendUpdateToUser } = await import('@/lib/sse-utils');
                 sendUpdateToUser(file.userId, {
                   type: 'estimated_time_update',
                   fileId: fileId,
@@ -813,7 +812,7 @@ async function getSystemStats() {
       prisma.tuningFile.count(),
       prisma.order.aggregate({
         _sum: { total: true },
-        where: { status: 'COMPLETED' }
+        where: { status: 'DELIVERED' }
       })
     ]);
 

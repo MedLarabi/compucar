@@ -150,12 +150,8 @@ export function RichTextEditor({
         heading: {
           levels: [1, 2],
         },
-        // Ensure default keyboard behaviors are preserved
-        history: {
-          depth: 100,
-        },
         // Make sure delete key functionality is not disabled
-        gapcursor: true,
+        gapcursor: false,
       }),
       Typography,
       Underline,

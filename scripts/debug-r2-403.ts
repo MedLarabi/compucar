@@ -64,7 +64,7 @@ async function debugR2_403() {
       }
       
     } catch (bucketError) {
-      console.log(`   ❌ Bucket access failed: ${bucketError.message}`);
+      console.log(`   ❌ Bucket access failed: ${bucketError instanceof Error ? bucketError.message : String(bucketError)}`);
       return;
     }
     
@@ -154,17 +154,17 @@ async function debugR2_403() {
           }
           
         } catch (fetchError) {
-          console.log(`   ❌ Fetch error: ${fetchError.message}`);
+          console.log(`   ❌ Fetch error: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`);
         }
         
       } catch (r2Error) {
-        console.log(`   ❌ R2 error: ${r2Error.message}`);
+        console.log(`   ❌ R2 error: ${r2Error instanceof Error ? r2Error.message : String(r2Error)}`);
         
-        if (r2Error.name === 'NoSuchKey') {
+        if (r2Error instanceof Error && r2Error.name === 'NoSuchKey') {
           console.log(`   💡 The object doesn't exist in R2`);
-        } else if (r2Error.name === 'AccessDenied') {
+        } else if (r2Error instanceof Error && r2Error.name === 'AccessDenied') {
           console.log(`   💡 Access denied - check R2 permissions`);
-        } else if (r2Error.name === 'InvalidAccessKeyId') {
+        } else if (r2Error instanceof Error && r2Error.name === 'InvalidAccessKeyId') {
           console.log(`   💡 Invalid access key - check R2 credentials`);
         }
       }

@@ -177,17 +177,10 @@ export async function getProductBySlug(slug: string) {
             where: { isActive: true },
             orderBy: { createdAt: "asc" },
           },
-          tags: {
-            include: { tag: true },
-          },
+          tags: true,
           reviews: {
             orderBy: { createdAt: "desc" },
             take: 10,
-            include: {
-              user: {
-                select: { name: true, image: true },
-              },
-            },
           },
           _count: {
             select: { reviews: true },
@@ -220,11 +213,11 @@ export async function getProductBySlug(slug: string) {
 
 // Optimized categories query
 export async function getCategories() {
-  const cacheKey = cache.generateKey('categories', 'all');
+  // const cacheKey = cache.generateKey('categories', 'all');
 
-  return withCache(
-    cacheKey,
-    async () => {
+  // return withCache(
+  //   cacheKey,
+  //   async () => {
       const categories = await prisma.category.findMany({
         where: { isActive: true },
         include: {
@@ -243,18 +236,18 @@ export async function getCategories() {
       });
 
       return serializeForClient(categories);
-    },
-    CACHE_DURATIONS.CATEGORIES
-  );
+  // },
+  // CACHE_DURATIONS.CATEGORIES
+  // );
 }
 
 // Optimized search with autocomplete
 export async function searchProducts(query: string, limit = 10) {
-  const cacheKey = cache.generateKey('search', query, limit);
+  // const cacheKey = cache.generateKey('search', query, limit);
 
-  return withCache(
-    cacheKey,
-    async () => {
+  // return withCache(
+  //   cacheKey,
+  //   async () => {
       const products = await prisma.product.findMany({
         where: {
           isActive: true,
@@ -280,33 +273,35 @@ export async function searchProducts(query: string, limit = 10) {
           },
         },
         orderBy: [
-          { featured: 'desc' },
+          { isFeatured: 'desc' },
           { name: 'asc' },
         ],
         take: limit,
       });
 
       return serializeForClient(products);
-    },
-    CACHE_DURATIONS.SEARCH_RESULTS
-  );
+  // },
+  // CACHE_DURATIONS.SEARCH_RESULTS
+  // );
 }
 
 // Cache invalidation helpers
 export async function invalidateProductCache(productId?: string, slug?: string) {
-  if (productId) {
-    await cache.delete(cache.generateKey('product', productId));
-  }
-  if (slug) {
-    await cache.delete(cache.generateKey('product', slug));
-  }
+  // Temporarily disabled caching
+  // if (productId) {
+  //   await cache.delete(cache.generateKey('product', productId));
+  // }
+  // if (slug) {
+  //   await cache.delete(cache.generateKey('product', slug));
+  // }
   
-  // Clear related caches
-  await cache.delete(cache.generateKey('products', '*'));
-  await cache.delete(cache.generateKey('categories', 'all'));
+  // // Clear related caches
+  // await cache.delete(cache.generateKey('products', '*'));
+  // await cache.delete(cache.generateKey('categories', 'all'));
 }
 
 export async function invalidateCategoryCache() {
-  await cache.delete(cache.generateKey('categories', 'all'));
-  await cache.delete(cache.generateKey('products', '*'));
+  // Temporarily disabled caching
+  // await cache.delete(cache.generateKey('categories', 'all'));
+  // await cache.delete(cache.generateKey('products', '*'));
 }

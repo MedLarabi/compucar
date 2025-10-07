@@ -42,7 +42,7 @@ function extractDurationFromOEmbed(data: any): number | null {
 function extractDurationFromHTML(html: string): number | null {
   try {
     // Look for duration in JSON-LD structured data
-    const jsonLdMatch = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>(.*?)<\/script>/s);
+    const jsonLdMatch = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i);
     if (jsonLdMatch) {
       const jsonData = JSON.parse(jsonLdMatch[1]);
       if (jsonData.duration) {
@@ -58,7 +58,7 @@ function extractDurationFromHTML(html: string): number | null {
     }
 
     // Look for duration in Vimeo's config data
-    const configMatch = html.match(/window\.vimeo_oembed\s*=\s*({.*?});/s);
+    const configMatch = html.match(/window\.vimeo_oembed\s*=\s*([\s\S]*?);/i);
     if (configMatch) {
       const configData = JSON.parse(configMatch[1]);
       if (configData.duration) {

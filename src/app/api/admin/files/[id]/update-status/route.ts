@@ -141,7 +141,7 @@ export async function POST(
           customerEmail: currentFile.user.email,
           customerName: `${currentFile.user.firstName} ${currentFile.user.lastName}`,
           filename: currentFile.originalFilename,
-          price: currentFile.price > 0 ? Number(currentFile.price) : undefined,
+          price: Number(currentFile.price) > 0 ? Number(currentFile.price) : undefined,
           fileId: currentFile.id
         });
       } catch (emailError) {
@@ -165,7 +165,7 @@ export async function POST(
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
+        { error: 'Invalid request data', details: error.issues },
         { status: 400 }
       );
     }

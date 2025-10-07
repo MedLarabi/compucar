@@ -96,7 +96,7 @@ async function testExistingFiles() {
               const errorText = await errorResponse.text();
               console.log(`   📄 Error Response: ${errorText.substring(0, 200)}...`);
             } catch (e) {
-              console.log(`   📄 Could not fetch error details: ${e.message}`);
+              console.log(`   📄 Could not fetch error details: ${e instanceof Error ? e.message : String(e)}`);
             }
             
           } else if (response.status === 404) {
@@ -106,11 +106,11 @@ async function testExistingFiles() {
           }
           
         } catch (fetchError) {
-          console.log(`   ❌ Fetch error: ${fetchError.message}`);
+          console.log(`   ❌ Fetch error: ${fetchError instanceof Error ? fetchError.message : String(fetchError)}`);
         }
         
       } catch (r2Error) {
-        console.log(`   ❌ R2 error: ${r2Error.message}`);
+        console.log(`   ❌ R2 error: ${r2Error instanceof Error ? r2Error.message : String(r2Error)}`);
       }
       
       console.log('   ' + '─'.repeat(60));
@@ -140,7 +140,7 @@ async function testExistingFiles() {
       console.log(`   Status: ${basicResponse.status}`);
       
     } catch (error) {
-      console.log(`   Error: ${error.message}`);
+      console.log(`   Error: ${error instanceof Error ? error.message : String(error)}`);
     }
     
     // Test 2: With response content disposition
@@ -162,7 +162,7 @@ async function testExistingFiles() {
       console.log(`   Status: ${dispositionResponse.status}`);
       
     } catch (error) {
-      console.log(`   Error: ${error.message}`);
+      console.log(`   Error: ${error instanceof Error ? error.message : String(error)}`);
     }
     
     // Test 3: With different expiration
@@ -183,7 +183,7 @@ async function testExistingFiles() {
       console.log(`   Status: ${longResponse.status}`);
       
     } catch (error) {
-      console.log(`   Error: ${error.message}`);
+      console.log(`   Error: ${error instanceof Error ? error.message : String(error)}`);
     }
     
     console.log('\n💡 If all tests show 403, the issue is likely:');

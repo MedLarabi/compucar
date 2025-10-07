@@ -29,7 +29,7 @@ function extractYouTubeVideoId(input: string): string | null {
 function extractDurationFromHTML(html: string): number | null {
   try {
     // Look for duration in JSON-LD structured data
-    const jsonLdMatch = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>(.*?)<\/script>/s);
+    const jsonLdMatch = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i);
     if (jsonLdMatch) {
       const jsonData = JSON.parse(jsonLdMatch[1]);
       if (jsonData.duration) {

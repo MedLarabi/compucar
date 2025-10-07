@@ -49,16 +49,14 @@ export async function GET(request: NextRequest) {
             select: { id: true, name: true, price: true },
           },
           tags: {
-            include: { 
-              tag: {
-                select: { name: true, slug: true },
-              },
+            select: { 
+              name: true,
             },
           },
           reviews: {
             orderBy: { createdAt: "desc" },
             take: 5,
-            select: { id: true, rating: true, comment: true, createdAt: true },
+            select: { id: true, rating: true, content: true, createdAt: true },
           },
           _count: {
             select: { reviews: true },
@@ -202,8 +200,25 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = productSchema.parse(body);
     
+    // Transform the data for Prisma
+    const { images, tags, ...productData } = validatedData;
+    
     const product = await prisma.product.create({
-      data: validatedData,
+      data: {
+        ...productData,
+        images: {
+          create: images.map((url, index) => ({
+            url,
+            sortOrder: index,
+            alt: `${productData.name} image ${index + 1}`,
+          })),
+        },
+        tags: {
+          create: tags.map((name) => ({
+            name,
+          })),
+        },
+      },
       include: {
         category: true,
         images: {
@@ -211,7 +226,7 @@ export async function POST(request: NextRequest) {
         },
         variants: true,
         tags: {
-          include: { tag: true },
+          select: { name: true },
         },
       },
     });

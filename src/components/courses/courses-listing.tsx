@@ -60,7 +60,7 @@ export function CoursesListing({ courses: initialCourses }: CoursesListingProps)
         const response = await fetch('/api/user/courses');
         if (response.ok) {
           const data = await response.json();
-          const courseIds = new Set(data.enrollments?.map((enrollment: any) => enrollment.course.id) || []);
+          const courseIds = new Set<string>(data.enrollments?.map((enrollment: any) => enrollment.course.id as string) || []);
           setEnrolledCourseIds(courseIds);
         }
       } catch (error) {

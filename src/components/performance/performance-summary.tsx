@@ -60,8 +60,10 @@ export function PerformanceSummary() {
         const fidObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
           entries.forEach((entry) => {
-            const fid = entry.processingStart - entry.startTime;
-            setMetrics(prev => ({ ...prev, fid }));
+            if ('processingStart' in entry && 'startTime' in entry) {
+              const fid = (entry as any).processingStart - entry.startTime;
+              setMetrics(prev => ({ ...prev, fid }));
+            }
           });
         });
         fidObserver.observe({ entryTypes: ['first-input'] });
@@ -74,8 +76,10 @@ export function PerformanceSummary() {
         let clsScore = 0;
         const clsObserver = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
-            if (!entry.hadRecentInput) {
-              clsScore += entry.value;
+            if ('hadRecentInput' in entry && 'value' in entry) {
+              if (!(entry as any).hadRecentInput) {
+                clsScore += (entry as any).value;
+              }
             }
           }
           setMetrics(prev => ({ ...prev, cls: clsScore }));
@@ -115,15 +119,15 @@ export function PerformanceSummary() {
     
     switch (metric) {
       case 'lcp':
-        return value <= 2500 ? "success" : value <= 4000 ? "warning" : "destructive";
+        return value <= 2500 ? "default" : value <= 4000 ? "secondary" : "destructive";
       case 'fid':
-        return value <= 100 ? "success" : value <= 300 ? "warning" : "destructive";
+        return value <= 100 ? "default" : value <= 300 ? "secondary" : "destructive";
       case 'cls':
-        return value <= 0.1 ? "success" : value <= 0.25 ? "warning" : "destructive";
+        return value <= 0.1 ? "default" : value <= 0.25 ? "secondary" : "destructive";
       case 'fcp':
-        return value <= 1800 ? "success" : value <= 3000 ? "warning" : "destructive";
+        return value <= 1800 ? "default" : value <= 3000 ? "secondary" : "destructive";
       case 'loadTime':
-        return value <= 3000 ? "success" : value <= 5000 ? "warning" : "destructive";
+        return value <= 3000 ? "default" : value <= 5000 ? "secondary" : "destructive";
       default:
         return "secondary";
     }

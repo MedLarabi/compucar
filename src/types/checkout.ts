@@ -63,21 +63,29 @@ export interface Order {
 }
 
 export interface CheckoutState {
-  step: 'cart' | 'checkout' | 'success';
+  step: 'cart' | 'checkout' | 'shipping' | 'payment' | 'review' | 'success';
   customerInfo: {
     firstName: string;
     lastName: string;
     email: string;
     newsletter: boolean;
   } | null;
+  billingAddress: Address | null;
+  shippingAddress: Address | null;
+  shippingMethod: ShippingMethod | null;
   paymentMethod: PaymentMethod | null;
+  sameAsShipping: boolean;
   isLoading: boolean;
   error: string | null;
   
   // Actions
   setStep: (step: CheckoutState['step']) => void;
   setCustomerInfo: (info: { firstName: string; lastName: string; email: string; newsletter: boolean }) => void;
+  setBillingAddress: (address: Address | null) => void;
+  setShippingAddress: (address: Address | null) => void;
+  setShippingMethod: (method: ShippingMethod | null) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
+  setSameAsShipping: (same: boolean) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   reset: () => void;

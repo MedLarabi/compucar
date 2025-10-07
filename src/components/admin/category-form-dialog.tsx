@@ -40,8 +40,8 @@ const categoryFormSchema = z.object({
   description: z.string().max(500, "Description is too long").optional(),
   image: z.string().url("Invalid URL").optional().or(z.literal("")),
   parentId: z.string().optional().or(z.literal("")).or(z.literal("none")),
-  isActive: z.boolean().default(true),
-  sortOrder: z.string().transform((val) => parseInt(val) || 0),
+  isActive: z.boolean(),
+  sortOrder: z.number().min(0, "Sort order must be 0 or greater"),
 });
 
 type CategoryFormData = z.infer<typeof categoryFormSchema>;
@@ -84,7 +84,7 @@ export function CategoryFormDialog({
       image: "",
       parentId: "none",
       isActive: true,
-      sortOrder: "0",
+      sortOrder: 0,
     },
   });
 
@@ -97,7 +97,7 @@ export function CategoryFormDialog({
         image: category.image || "",
         parentId: category.parentId || "none",
         isActive: category.isActive,
-        sortOrder: category.sortOrder.toString(),
+        sortOrder: category.sortOrder,
       });
     } else {
       form.reset({
@@ -106,7 +106,7 @@ export function CategoryFormDialog({
         image: "",
         parentId: "none",
         isActive: true,
-        sortOrder: "0",
+        sortOrder: 0,
       });
     }
   }, [category, form]);
@@ -243,7 +243,11 @@ export function CategoryFormDialog({
                           type="number" 
                           min="0"
                           placeholder="0" 
-                          {...field} 
+                          value={field.value?.toString() || ""}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            field.onChange(value === "" ? 0 : parseInt(value) || 0);
+                          }}
                         />
                       </FormControl>
                       <FormDescription>

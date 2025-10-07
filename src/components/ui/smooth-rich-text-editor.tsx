@@ -165,10 +165,7 @@ export function SmoothRichTextEditor({
       heading: {
         levels: [1, 2],
       },
-      // Optimize for performance
-      history: {
-        depth: 50, // Reduced history depth
-      },
+      // Optimize for performance - removed invalid history property
     }),
     Typography,
     Underline,

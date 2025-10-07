@@ -124,7 +124,7 @@ export class NotificationService {
         type: data.type,
         title: data.title,
         message: data.message,
-        data: data.data || {},
+        data: JSON.stringify(data.data || {}),
         expiresAt: data.expiresAt,
         isRead: false
       }));
@@ -207,8 +207,7 @@ export class NotificationService {
           userId
         },
         data: {
-          isRead: true,
-          readAt: new Date()
+          isRead: true
         }
       });
 
@@ -230,8 +229,7 @@ export class NotificationService {
           isRead: false
         },
         data: {
-          isRead: true,
-          readAt: new Date()
+          isRead: true
         }
       });
 

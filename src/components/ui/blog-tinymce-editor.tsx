@@ -85,7 +85,7 @@ export function BlogTinyMCEEditor({
           init={{
             height,
             menubar: false,
-            license_key: 'gpl',
+            licenseKey: 'gpl',
             
             // Blog-optimized plugins
             plugins: [

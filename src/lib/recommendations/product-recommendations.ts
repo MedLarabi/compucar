@@ -27,10 +27,10 @@ export class ProductRecommendations {
       const userOrders = await prisma.order.findMany({
         where: {
           userId,
-          status: { in: ['COMPLETED', 'SHIPPED', 'DELIVERED'] }
+          status: { in: ['DELIVERED', 'SHIPPED'] }
         },
         include: {
-          orderItems: {
+          items: {
             include: {
               product: {
                 include: {
@@ -54,7 +54,7 @@ export class ProductRecommendations {
       const purchasedProductIds = new Set<string>();
 
       userOrders.forEach(order => {
-        order.orderItems.forEach(item => {
+        order.items.forEach(item => {
           purchasedProductIds.add(item.productId);
           purchasedCategories.add(item.product.categoryId);
           item.product.tags.forEach(tag => {
@@ -246,7 +246,7 @@ export class ProductRecommendations {
       const popularProducts = await prisma.product.findMany({
         where: {
           isActive: true,
-          status: 'PUBLISHED'
+          status: 'ACTIVE'
         },
         include: {
           _count: {
@@ -415,7 +415,7 @@ export class ProductRecommendations {
       reasons.push('Based on your category preferences');
     }
 
-    const commonTags = product.tags.filter(tag => 
+    const commonTags = product.tags.filter((tag: any) => 
       purchasedTags.has(tag.name)
     );
     if (commonTags.length > 0) {
@@ -427,7 +427,7 @@ export class ProductRecommendations {
     }
 
     if (product.reviews.length > 0) {
-      const avgRating = product.reviews.reduce((sum, review) => 
+      const avgRating = product.reviews.reduce((sum: number, review: any) => 
         sum + review.rating, 0
       ) / product.reviews.length;
       if (avgRating >= 4) {

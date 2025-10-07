@@ -37,7 +37,6 @@ interface Product {
   status: string;
   category?: { name: string; slug: string };
   variants?: { id: string; name: string; price: number }[];
-  tags?: { tag: { name: string; slug: string } }[];
   _count?: { reviews: number };
 }
 

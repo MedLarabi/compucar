@@ -49,7 +49,7 @@ async function completeOrderSetup(orderId: string, userId: string | null) {
           try {
             // Assign one license key per quantity purchased
             for (let i = 0; i < item.quantity; i++) {
-              await assignLicenseKeyToOrder(item.productId, orderId, userId);
+              await assignLicenseKeyToOrder(item.productId, orderId, userId || undefined);
             }
           } catch (error) {
             console.error(`Error assigning license key for product ${item.productId}:`, error);

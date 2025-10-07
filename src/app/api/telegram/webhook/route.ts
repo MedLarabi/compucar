@@ -166,8 +166,8 @@ export async function POST(request: NextRequest) {
           }
         } catch (error) {
           console.error('❌ Error requesting estimated time:', error);
-          console.error('❌ Error details:', error.message);
-          console.error('❌ Error stack:', error.stack);
+          console.error('❌ Error details:', error instanceof Error ? error.message : String(error));
+          console.error('❌ Error stack:', error instanceof Error ? error.stack : undefined);
           await TelegramService.answerCallbackQuery(
             callbackQueryId,
             '❌ Error setting estimated time',

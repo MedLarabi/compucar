@@ -449,7 +449,7 @@ export function EnhancedProductForm({
                       id: img.id,
                       url: img.url,
                       alt: img.alt || "",
-                      isMain: img.isMain,
+                      isMain: img.isMain || false,
                     }));
                     console.log("Setting form images:", formattedImages);
                     form.setValue("images", formattedImages);
@@ -465,7 +465,7 @@ export function EnhancedProductForm({
                       duration: vid.duration || 0,
                       fileSize: vid.fileSize || "",
                       mimeType: vid.mimeType || "",
-                      isMain: vid.isMain,
+                      isMain: vid.isMain || false,
                     }));
                     console.log("Setting form videos:", formattedVideos);
                     form.setValue("videos", formattedVideos);

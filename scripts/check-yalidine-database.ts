@@ -40,7 +40,7 @@ async function checkDatabaseData() {
         take: 5,
         include: { wilaya: { select: { nameFr: true } } }
       });
-      console.log('   Sample communes:', sampleCommunes.map(c => `${c.name} (${c.wilaya.nameFr})`));
+      console.log('   Sample communes:', sampleCommunes.map(c => `${c.nameFr} (${c.wilaya.nameFr})`));
     }
     
     // Check stop desks

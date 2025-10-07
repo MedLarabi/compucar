@@ -667,7 +667,7 @@ export function CourseFormDialog({ open, onOpenChange, course, onSuccess }: Cour
                                         const videoId = extractYouTubeVideoId(url);
                                         updateVideo(moduleIndex, videoIndex, { 
                                           youtubeUrl: url,
-                                          youtubeVideoId: videoId 
+                                          youtubeVideoId: videoId || undefined 
                                         });
                                       }}
                                       rows={4}
@@ -698,7 +698,7 @@ export function CourseFormDialog({ open, onOpenChange, course, onSuccess }: Cour
                                         const videoId = extractVimeoVideoId(url);
                                         updateVideo(moduleIndex, videoIndex, { 
                                           vimeoUrl: url,
-                                          vimeoVideoId: videoId 
+                                          vimeoVideoId: videoId || undefined 
                                         });
                                       }}
                                       rows={4}

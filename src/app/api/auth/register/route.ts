@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     // Notify admins about new user registration
     await NotificationService.notifyAdminNewUserRegistration(
-      user.name,
+      user.name || 'Unknown User',
       user.email,
       user.id
     );

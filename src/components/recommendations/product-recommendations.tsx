@@ -29,12 +29,14 @@ interface Product {
   description: string;
   price: number;
   compareAtPrice?: number;
+  status: string;
   images: Array<{
     url: string;
     altText?: string;
   }>;
   category: {
     name: string;
+    slug: string;
   };
   reviews: Array<{
     rating: number;

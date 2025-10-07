@@ -46,31 +46,31 @@ const enhancedProductFormSchema = z.object({
   
   // Optional basic fields
   shortDescription: z.string().max(500, "Short description too long").optional(),
-  compareAtPrice: z.string().optional().transform((val) => val ? parseFloat(val) : undefined),
-  cost: z.string().optional().transform((val) => val ? parseFloat(val) : undefined),
+  compareAtPrice: z.number().optional(),
+  cost: z.number().optional(),
   
   // Optional inventory fields
   sku: z.string().optional(),
   barcode: z.string().optional(),
-  trackQuantity: z.boolean().default(true),
-  quantity: z.string().transform((val) => parseInt(val) || 0),
-  allowBackorder: z.boolean().default(false),
+  trackQuantity: z.boolean(),
+  quantity: z.number().min(0, "Quantity cannot be negative"),
+  allowBackorder: z.boolean(),
 
   // Optional organization fields
   brand: z.string().optional(),
   vendor: z.string().optional(),
-  tags: z.array(z.string()).default([]),
+  tags: z.array(z.string()),
 
   // Optional physical properties
-  weight: z.string().optional().transform((val) => val ? parseFloat(val) : undefined),
-  length: z.string().optional().transform((val) => val ? parseFloat(val) : undefined),
-  width: z.string().optional().transform((val) => val ? parseFloat(val) : undefined),
-  height: z.string().optional().transform((val) => val ? parseFloat(val) : undefined),
+  weight: z.number().optional(),
+  length: z.number().optional(),
+  width: z.number().optional(),
+  height: z.number().optional(),
 
   // Status and visibility
-  status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]).default("DRAFT"),
-  isActive: z.boolean().default(true),
-  isFeatured: z.boolean().default(false),
+  status: z.enum(["DRAFT", "ACTIVE", "ARCHIVED"]),
+  isActive: z.boolean(),
+  isFeatured: z.boolean(),
 
   // Optional SEO fields
   metaTitle: z.string().max(60).optional(),
@@ -82,11 +82,11 @@ const enhancedProductFormSchema = z.object({
     url: z.string(),
     alt: z.string().optional(),
     isMain: z.boolean().optional(),
-  })).default([]),
+  })),
   
   // Product variants
-  variants: z.array(z.any()).default([]),
-  variantOptions: z.array(z.any()).default([]),
+  variants: z.array(z.any()),
+  variantOptions: z.array(z.any()),
 });
 
 type EnhancedProductFormData = z.infer<typeof enhancedProductFormSchema>;
@@ -130,21 +130,21 @@ export function EnhancedProductFormDialog({
       description: "",
       shortDescription: "",
       price: undefined,
-      compareAtPrice: "",
-      cost: "",
+      compareAtPrice: undefined,
+      cost: undefined,
       sku: "",
       barcode: "",
       trackQuantity: true,
-      quantity: "0",
+      quantity: 0,
       allowBackorder: false,
       categoryId: "",
       brand: "",
       vendor: "",
       tags: [],
-      weight: "",
-      length: "",
-      width: "",
-      height: "",
+      weight: undefined,
+      length: undefined,
+      width: undefined,
+      height: undefined,
       status: "DRAFT",
       isActive: true,
       isFeatured: false,
@@ -163,22 +163,22 @@ export function EnhancedProductFormDialog({
         name: defaultValues.name || "",
         description: defaultValues.description || "",
         shortDescription: defaultValues.shortDescription || "",
-        price: String(defaultValues.price || 0),
-        compareAtPrice: defaultValues.compareAtPrice ? String(defaultValues.compareAtPrice) : "",
-        cost: defaultValues.cost ? String(defaultValues.cost) : "",
+        price: defaultValues.price || undefined,
+        compareAtPrice: defaultValues.compareAtPrice || undefined,
+        cost: defaultValues.cost || undefined,
         sku: defaultValues.sku || "",
         barcode: defaultValues.barcode || "",
         trackQuantity: defaultValues.trackQuantity ?? true,
-        quantity: String(defaultValues.quantity || 0),
+        quantity: defaultValues.quantity || 0,
         allowBackorder: defaultValues.allowBackorder ?? false,
         categoryId: defaultValues.categoryId || "",
         brand: defaultValues.brand || "",
         vendor: defaultValues.vendor || "",
         tags: defaultValues.tags || [],
-        weight: defaultValues.weight ? String(defaultValues.weight) : "",
-        length: defaultValues.length ? String(defaultValues.length) : "",
-        width: defaultValues.width ? String(defaultValues.width) : "",
-        height: defaultValues.height ? String(defaultValues.height) : "",
+        weight: defaultValues.weight || undefined,
+        length: defaultValues.length || undefined,
+        width: defaultValues.width || undefined,
+        height: defaultValues.height || undefined,
         status: defaultValues.status || "DRAFT",
         isActive: defaultValues.isActive ?? true,
         isFeatured: defaultValues.isFeatured ?? false,
@@ -534,7 +534,11 @@ export function EnhancedProductFormDialog({
                                   type="number" 
                                   step="0.01" 
                                   placeholder="0.00"
-                                  {...field} 
+                                  value={field.value?.toString() || ""}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    field.onChange(value === "" ? undefined : parseFloat(value) || undefined);
+                                  }}
                                 />
                               </FormControl>
                               <FormDescription>Original price for discount display</FormDescription>
@@ -554,7 +558,11 @@ export function EnhancedProductFormDialog({
                                   type="number" 
                                   step="0.01" 
                                   placeholder="0.00"
-                                  {...field} 
+                                  value={field.value?.toString() || ""}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    field.onChange(value === "" ? undefined : parseFloat(value) || undefined);
+                                  }}
                                 />
                               </FormControl>
                               <FormDescription>Cost per unit for profit tracking</FormDescription>
@@ -646,7 +654,11 @@ export function EnhancedProductFormDialog({
                                     <Input 
                                       type="number" 
                                       placeholder="0"
-                                      {...field} 
+                                      value={field.value?.toString() || ""}
+                                      onChange={(e) => {
+                                        const value = e.target.value;
+                                        field.onChange(value === "" ? 0 : parseInt(value) || 0);
+                                      }}
                                     />
                                   </FormControl>
                                   <FormMessage />

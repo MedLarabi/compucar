@@ -260,24 +260,35 @@ export class PaymentService {
         }
       });
 
-      // Create or update payment record
-      await prisma.payment.upsert({
-        where: { orderId: orderId },
-        update: {
-          status: 'SUCCEEDED',
-          transactionId: transactionId,
-          paidAt: new Date()
-        },
-        create: {
-          orderId: orderId,
-          method: paymentMethod.toUpperCase() as any,
-          status: 'SUCCEEDED',
-          amount: amount,
-          currency: 'DZD',
-          transactionId: transactionId,
-          paidAt: new Date()
-        }
+      // Find existing payment or create new one
+      const existingPayment = await prisma.payment.findFirst({
+        where: { orderId: orderId }
       });
+
+      if (existingPayment) {
+        // Update existing payment
+        await prisma.payment.update({
+          where: { id: existingPayment.id },
+          data: {
+            status: 'SUCCEEDED',
+            transactionId: transactionId,
+            paidAt: new Date()
+          }
+        });
+      } else {
+        // Create new payment
+        await prisma.payment.create({
+          data: {
+            orderId: orderId,
+            method: paymentMethod.toUpperCase() as any,
+            status: 'SUCCEEDED',
+            amount: amount,
+            currency: 'DZD',
+            transactionId: transactionId,
+            paidAt: new Date()
+          }
+        });
+      }
 
       console.log(`Payment confirmed successfully for order ${orderId}`);
       
@@ -303,21 +314,32 @@ export class PaymentService {
     transactionId?: string
   ): Promise<void> {
     try {
-      // Update payment record
-      await prisma.payment.upsert({
-        where: { orderId: orderId },
-        update: {
-          status: 'FAILED'
-        },
-        create: {
-          orderId: orderId,
-          method: 'CARD',
-          status: 'FAILED',
-          amount: 0,
-          currency: 'DZD',
-          transactionId: transactionId || `failed_${Date.now()}`
-        }
+      // Find existing payment or create new one
+      const existingPayment = await prisma.payment.findFirst({
+        where: { orderId: orderId }
       });
+
+      if (existingPayment) {
+        // Update existing payment
+        await prisma.payment.update({
+          where: { id: existingPayment.id },
+          data: {
+            status: 'FAILED'
+          }
+        });
+      } else {
+        // Create new payment
+        await prisma.payment.create({
+          data: {
+            orderId: orderId,
+            method: 'CARD',
+            status: 'FAILED',
+            amount: 0,
+            currency: 'DZD',
+            transactionId: transactionId || `failed_${Date.now()}`
+          }
+        });
+      }
 
       // Optionally update order status
       await prisma.order.update({

@@ -33,7 +33,7 @@ export async function GET(
         estimatedDelivery: true,
         shippingAddress: {
           select: {
-            address: true,
+            address1: true,
             city: true,
             state: true,
             country: true
@@ -153,7 +153,7 @@ export async function GET(
 
     // Add Yalidine specific data if available
     if (yalidineTracking) {
-      response.tracking = {
+      (response.tracking as any) = {
         ...response.tracking,
         yalidineStatus: yalidineTracking.status,
         lastUpdate: yalidineTracking.updated_at,

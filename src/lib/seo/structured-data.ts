@@ -3,11 +3,13 @@ import { Product, Category, BlogArticle, User } from '@prisma/client';
 interface ProductWithCategory extends Product {
   category?: Category;
   reviews?: any[];
+  images?: any[];
 }
 
 interface BlogArticleWithAuthor extends BlogArticle {
   author: User;
   category?: Category;
+  tags?: any[];
 }
 
 export const generateOrganizationStructuredData = () => {

@@ -593,7 +593,7 @@ export function EnhancedProductMediaUpload({
               {canUploadMoreVideos && (
                 <div className="space-y-4">
                   <UploadDropzone
-                    endpoint="productVideoUploader"
+                    endpoint="productImageUploader"
                     onClientUploadComplete={handleVideoUploadComplete}
                     onUploadError={(error) => console.error("Video upload error:", error)}
                     onUploadBegin={() => setIsUploadingVideos(true)}

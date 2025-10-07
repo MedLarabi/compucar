@@ -255,7 +255,7 @@ export function ProductManagementTable({
                               <Star className="h-3 w-3 text-yellow-500 fill-current" />
                             )}
                             {product.isVirtual && (
-                              <Key className="h-3 w-3 text-purple-500" title="Virtual Product" />
+                              <Key className="h-3 w-3 text-purple-500" />
                             )}
                           </div>
                           <div className="text-xs text-muted-foreground">

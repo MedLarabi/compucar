@@ -85,7 +85,7 @@ export function TinyMCEEditor({
           init={{
             height,
             menubar: false,
-            license_key: 'gpl',
+            licenseKey: 'gpl',
             plugins: [
               'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
               'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',

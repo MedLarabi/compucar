@@ -71,8 +71,8 @@ function headers() {
   const config = getYalidineConfig();
   return {
     "Content-Type": "application/json",
-    "X-API-ID": config.id,
-    "X-API-TOKEN": config.token,
+    "X-API-ID": config.id || '',
+    "X-API-TOKEN": config.token || '',
   };
 }
 

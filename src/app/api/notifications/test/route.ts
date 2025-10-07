@@ -45,7 +45,6 @@ export async function POST(request: NextRequest) {
       type: 'system_error',
       title: 'Test Notification',
       message: 'This is a test notification to verify the notification system is working correctly.',
-      priority: 'medium',
       data: {
         test: true,
         timestamp: new Date().toISOString()

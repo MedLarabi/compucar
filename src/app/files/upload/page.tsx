@@ -78,11 +78,11 @@ export default function FileUploadPage() {
       if (data.success) {
         setModifications(data.data);
       } else {
-        toast.error(t('upload.errors.loadModifications', 'Failed to load modification options'));
+        toast.error(t('upload.errors.loadModifications'));
       }
     } catch (error) {
       console.error('Error fetching modifications:', error);
-      toast.error(t('upload.errors.loadModifications', 'Failed to load modification options'));
+      toast.error(t('upload.errors.loadModifications'));
     }
   };
 
@@ -95,7 +95,7 @@ export default function FileUploadPage() {
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
     
     if (file.size > maxSizeBytes) {
-      toast.error(t('upload.errors.fileSize', `File size exceeds maximum allowed size of ${maxSizeMB}MB`));
+      toast.error(t('upload.errors.fileSize'));
       return;
     }
 
@@ -119,7 +119,7 @@ export default function FileUploadPage() {
 
   const handleUpload = async () => {
     if (!uploadState.file || uploadState.selectedModifications.length === 0) {
-      toast.error(t('upload.errors.selectFileAndModification', 'Please select a file and at least one modification'));
+      toast.error(t('upload.errors.selectFileAndModification'));
       return;
     }
 
@@ -190,7 +190,7 @@ export default function FileUploadPage() {
         isUploading: false
       }));
 
-      toast.success(t('upload.success.toast', 'File uploaded successfully!'));
+      toast.success(t('upload.success.toast'));
       
       // Redirect to files list after a short delay
       setTimeout(() => {
@@ -240,9 +240,9 @@ export default function FileUploadPage() {
     <TuningLayout>
       <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">{t('upload.title', 'Upload File for Tuning')}</h1>
+        <h1 className="text-3xl font-bold mb-2">{t('upload.title')}</h1>
         <p className="text-muted-foreground">
-          {t('upload.description', 'Upload your ECU file and select the modifications you want applied')}
+          {t('upload.description')}
         </p>
       </div>
 
@@ -251,16 +251,16 @@ export default function FileUploadPage() {
           <CardContent className="pt-6">
             <div className="text-center">
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-              <h2 className="text-2xl font-semibold mb-2">{t('upload.success.title', 'Upload Successful!')}</h2>
+              <h2 className="text-2xl font-semibold mb-2">{t('upload.success.title')}</h2>
               <p className="text-muted-foreground mb-4">
-                {t('upload.success.description', 'Your file has been uploaded and is being processed. You\'ll receive a notification when it\'s ready.')}
+                {t('upload.success.description')}
               </p>
               <div className="space-x-4">
                 <Button onClick={() => router.push('/files')}>
-                  {t('upload.success.viewFiles', 'View My Files')}
+                  {t('upload.success.viewFiles')}
                 </Button>
                 <Button variant="outline" onClick={resetUpload}>
-                  {t('upload.success.uploadAnother', 'Upload Another File')}
+                  {t('upload.success.uploadAnother')}
                 </Button>
               </div>
             </div>
@@ -273,10 +273,10 @@ export default function FileUploadPage() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Upload className="h-5 w-5 mr-2" />
-                {t('upload.selectFile.title', 'Select File')}
+                {t('upload.selectFile.title')}
               </CardTitle>
               <CardDescription>
-                {t('upload.selectFile.description', 'Choose your ECU file for tuning (Max: 200MB)')}
+                {t('upload.selectFile.description')}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -294,10 +294,10 @@ export default function FileUploadPage() {
                       <div className="text-center">
                         <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                         <p className="text-sm font-medium text-muted-foreground">
-                          {t('upload.browse.text', 'Click to browse or drag and drop')}
+                          {t('upload.browse.text')}
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          {t('upload.browse.maxSize', 'Max file size: 200MB')}
+                          {t('upload.browse.maxSize')}
                         </p>
                       </div>
                     </div>
@@ -328,7 +328,7 @@ export default function FileUploadPage() {
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    {t('upload.supportedTypes', 'All file types are supported')}
+                    {t('upload.supportedTypes')}
                   </AlertDescription>
                 </Alert>
               </div>
@@ -392,14 +392,14 @@ export default function FileUploadPage() {
           {/* Comments */}
           <Card>
             <CardHeader>
-              <CardTitle>{t('upload.comments.title', 'Additional Comments')}</CardTitle>
+              <CardTitle>{t('upload.comments.title')}</CardTitle>
               <CardDescription>
-                {t('upload.comments.description', 'Any special instructions or notes for the tuner (optional)')}
+                {t('upload.comments.description')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Textarea
-                placeholder={t('upload.comments.placeholder', 'Enter any special instructions or requirements...')}
+                placeholder={t('upload.comments.placeholder')}
                 value={uploadState.customerComment}
                 onChange={(e) => setUploadState(prev => ({ ...prev, customerComment: e.target.value }))}
                 disabled={uploadState.isUploading}
@@ -424,7 +424,7 @@ export default function FileUploadPage() {
               <CardContent className="pt-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">{t('upload.progress.uploading', 'Uploading...')}</span>
+                    <span className="text-sm font-medium">{t('upload.progress.uploading')}</span>
                     <span className="text-sm text-muted-foreground">{uploadState.uploadProgress}%</span>
                   </div>
                   <Progress value={uploadState.uploadProgress} />
@@ -448,12 +448,12 @@ export default function FileUploadPage() {
               {uploadState.isUploading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  {t('upload.button.uploading', 'Uploading...')}
+                  {t('upload.button.uploading')}
                 </>
               ) : (
                 <>
                   <Upload className="h-4 w-4 mr-2" />
-                  {t('upload.button.upload', 'Upload File')}
+                  {t('upload.button.upload')}
                 </>
               )}
             </Button>
