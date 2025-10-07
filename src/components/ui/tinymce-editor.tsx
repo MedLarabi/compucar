@@ -78,6 +78,7 @@ export function TinyMCEEditor({
         <Editor
           ref={editorRef}
           tinymceScriptSrc="/tinymce/tinymce.min.js"
+          licenseKey="gpl" // GPL license for self-hosted TinyMCE
           value={value}
           onEditorChange={(content: string) => {
             onChange?.(content);
@@ -85,7 +86,6 @@ export function TinyMCEEditor({
           init={{
             height,
             menubar: false,
-            licenseKey: 'gpl',
             plugins: [
               'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
               'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
