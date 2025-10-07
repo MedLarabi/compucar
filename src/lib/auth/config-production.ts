@@ -82,7 +82,7 @@ export const config = {
       name: `next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'lax' as const,
         path: '/',
         secure: process.env.NODE_ENV === 'production'
       }
@@ -175,21 +175,6 @@ export const config = {
   
   // Enable debug only in development
   debug: process.env.NODE_ENV === "development",
-  
-  // Ensure proper error handling
-  logger: {
-    error(code: string, metadata?: any) {
-      console.error(`NextAuth Error [${code}]:`, metadata);
-    },
-    warn(code: string) {
-      console.warn(`NextAuth Warning [${code}]`);
-    },
-    debug(code: string, metadata?: any) {
-      if (process.env.NODE_ENV === "development") {
-        console.debug(`NextAuth Debug [${code}]:`, metadata);
-      }
-    },
-  },
 };
 
 // Export for backward compatibility
