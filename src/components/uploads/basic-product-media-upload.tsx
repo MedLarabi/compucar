@@ -248,8 +248,17 @@ export function BasicProductMediaUpload({
         });
 
         if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.error || 'Upload failed');
+          let errorMessage = 'Video upload failed';
+          try {
+            const error = await response.json();
+            errorMessage = error.error || `HTTP ${response.status}: ${response.statusText}`;
+          } catch (jsonError) {
+            // If we can't parse JSON, the server returned HTML or plain text
+            const textResponse = await response.text();
+            console.error("Non-JSON response from video upload:", textResponse);
+            errorMessage = `Server error: ${response.status} ${response.statusText}`;
+          }
+          throw new Error(errorMessage);
         }
 
         const result = await response.json();
