@@ -228,13 +228,32 @@ export function BasicProductMediaUpload({
         let duration = 0;
         
         try {
-          thumbnail = await generateVideoThumbnail(file);
-          const metadata = await getVideoMetadata(file);
-          duration = metadata.duration;
-          console.log("Generated thumbnail and metadata:", { thumbnailLength: thumbnail.length, duration });
+          // Add timeout for thumbnail generation
+          const thumbnailPromise = generateVideoThumbnail(file);
+          const metadataPromise = getVideoMetadata(file);
+          
+          // Use Promise.race with timeout to prevent hanging
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Thumbnail generation timeout')), 10000)
+          );
+          
+          const [thumbnailResult, metadataResult] = await Promise.all([
+            Promise.race([thumbnailPromise, timeoutPromise]),
+            Promise.race([metadataPromise, timeoutPromise])
+          ]);
+          
+          thumbnail = thumbnailResult as string;
+          duration = (metadataResult as any).duration;
+          console.log("Generated thumbnail and metadata:", { 
+            thumbnailLength: thumbnail.length, 
+            duration,
+            hasValidThumbnail: thumbnail.startsWith('data:image/')
+          });
         } catch (error) {
           console.warn("Failed to generate thumbnail:", error);
-          // Continue without thumbnail
+          // Continue without thumbnail - this is not critical for upload
+          thumbnail = "";
+          duration = 0;
         }
 
         // Upload file to server
@@ -242,21 +261,43 @@ export function BasicProductMediaUpload({
         formData.append('file', file);
         formData.append('type', 'video');
 
+        console.log("Uploading video to server:", {
+          fileName: file.name,
+          fileSize: file.size,
+          fileType: file.type
+        });
+
         const response = await fetch('/api/upload/basic', {
           method: 'POST',
           body: formData,
         });
 
+        console.log("Upload response received:", {
+          status: response.status,
+          statusText: response.statusText,
+          ok: response.ok,
+          headers: Object.fromEntries(response.headers.entries())
+        });
+
         if (!response.ok) {
           let errorMessage = 'Video upload failed';
+          
+          // Clone the response to safely read it multiple times if needed
+          const responseClone = response.clone();
+          
           try {
             const error = await response.json();
             errorMessage = error.error || `HTTP ${response.status}: ${response.statusText}`;
           } catch (jsonError) {
-            // If we can't parse JSON, the server returned HTML or plain text
-            const textResponse = await response.text();
-            console.error("Non-JSON response from video upload:", textResponse);
-            errorMessage = `Server error: ${response.status} ${response.statusText}`;
+            // If we can't parse JSON, try to get text from the cloned response
+            try {
+              const textResponse = await responseClone.text();
+              console.error("Non-JSON response from video upload:", textResponse);
+              errorMessage = textResponse || `Server error: ${response.status} ${response.statusText}`;
+            } catch (textError) {
+              console.error("Could not read response as text either:", textError);
+              errorMessage = `Server error: ${response.status} ${response.statusText}`;
+            }
           }
           throw new Error(errorMessage);
         }

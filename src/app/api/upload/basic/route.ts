@@ -96,20 +96,43 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("File upload error:", error);
     
-    // Ensure we always return JSON
-    const errorMessage = error instanceof Error ? error.message : "Failed to upload file";
-    console.error("Detailed error:", {
-      message: errorMessage,
+    // Enhanced error logging for debugging VPS issues
+    console.error("Detailed error information:", {
+      message: error instanceof Error ? error.message : "Unknown error",
       stack: error instanceof Error ? error.stack : undefined,
       type: typeof error,
+      name: error instanceof Error ? error.name : undefined,
+      cause: error instanceof Error ? error.cause : undefined,
     });
+    
+    // Check if this is a specific R2/network error
+    if (error instanceof Error) {
+      if (error.message.includes('network') || error.message.includes('timeout')) {
+        console.error("Network/timeout error detected");
+      }
+      if (error.message.includes('R2') || error.message.includes('S3')) {
+        console.error("R2/S3 storage error detected");
+      }
+    }
+    
+    // Ensure we always return JSON with proper error structure
+    const errorMessage = error instanceof Error ? error.message : "Failed to upload file";
     
     return NextResponse.json(
       { 
         success: false,
-        error: errorMessage 
+        error: errorMessage,
+        details: process.env.NODE_ENV === 'development' ? {
+          stack: error instanceof Error ? error.stack : undefined,
+          type: typeof error,
+        } : undefined
       },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
     );
   }
 }
