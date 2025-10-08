@@ -15,6 +15,7 @@ const requestUploadSchema = z.object({
   fileType: z.string().min(1, 'File type is required'),
   modificationIds: z.array(z.number()).min(1, 'At least one modification must be selected'),
   customerComment: z.string().optional(),
+  dtcCodes: z.string().optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -38,6 +39,7 @@ export async function POST(request: NextRequest) {
       fileType,
       modificationIds,
       customerComment,
+      dtcCodes,
     } = validatedData;
 
     // Validate file size
@@ -167,6 +169,7 @@ export async function POST(request: NextRequest) {
         fileType,
         status: 'RECEIVED',
         customerComment,
+        dtcCodes, // Add DTC codes field
         fileModifications: {
           create: modifications.map(mod => ({
             modificationId: mod.id

@@ -117,6 +117,7 @@ export async function GET(
       uploadDate: tuningFile.uploadDate.toISOString().split('T')[0], // Date only
       updatedDate: tuningFile.updatedDate?.toISOString().split('T')[0] || null,
       customerComment: tuningFile.customerComment,
+      dtcCodes: tuningFile.dtcCodes, // Add DTC codes field
       adminNotes: tuningFile.adminNotes,
       estimatedProcessingTime: tuningFile.estimatedProcessingTime,
       estimatedProcessingTimeSetAt: tuningFile.estimatedProcessingTimeSetAt?.toISOString() || null,

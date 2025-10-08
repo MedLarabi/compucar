@@ -51,6 +51,18 @@
       "maxSize": "الحد الأقصى لحجم الملف: 200 ميجابايت"
     },
     "supportedTypes": "جميع أنواع الملفات مدعومة",
+  "modifications": {
+    "title": "اختيار التعديلات",
+    "description": "اختر التعديلات التي تريد تطبيقها على ملفك",
+    "loading": "جاري تحميل التعديلات...",
+    "selectAtLeastOne": "يرجى اختيار تعديل واحد على الأقل"
+  },
+  "dtcCodes": {
+    "title": "رموز أخطاء DTC المراد حذفها",
+    "description": "يرجى تحديد رموز أخطاء DTC (رمز مشكلة التشخيص) التي تريد حذفها من ملف ECU الخاص بك.",
+    "placeholder": "أدخل رموز DTC مفصولة بفواصل أو أسطر جديدة...\nمثال: P0171, P0174, P0300",
+    "example": "مثال: P0171, P0174, P0300, U0001, B1234"
+  },
     "comments": {
       "title": "تعليقات إضافية",
       "description": "أي تعليمات خاصة أو ملاحظات للضابط (اختياري)",
@@ -177,6 +189,10 @@
     "comments": {
       "title": "تعليقاتك"
     },
+    "dtcCodes": {
+      "title": "رموز أخطاء DTC المراد حذفها",
+      "description": "رموز التشخيص التي حددتها للحذف"
+    },
     "adminComments": {
       "title": "تعليقات المدير",
       "description": "تعليقات من المدير حول ملفك"
@@ -267,7 +283,33 @@
     "warranty": "ضمان 30 يوم",
     "returns": "دعم مجاني",
     "description": "الوصف",
-    "writeReview": "اكتب مراجعة"
+    "writeReview": "اكتب مراجعة",
+    "reviewForm": {
+      "rating": "التقييم",
+      "ratingRequired": "يرجى اختيار تقييم",
+      "name": "الاسم",
+      "nameRequired": "يجب أن يكون الاسم على الأقل حرفين",
+      "email": "البريد الإلكتروني",
+      "emailRequired": "عنوان بريد إلكتروني غير صحيح",
+      "emailPlaceholder": "your.email@example.com",
+      "yourReview": "مراجعتك",
+      "reviewRequired": "يجب أن تحتوي المراجعة على 10 أحرف على الأقل",
+      "reviewPlaceholder": "شارك تجربتك مع هذا المنتج...",
+      "submitReview": "إرسال المراجعة",
+      "submittingReview": "جارٍ الإرسال...",
+      "reviewSubmitted": "تم إرسال المراجعة!",
+      "reviewSubmittedDescription": "شكراً لك على مراجعتك. ستُنشر بعد موافقة المدير.",
+      "writeAnotherReview": "اكتب مراجعة أخرى",
+      "reviewSubmittedSuccess": "تم إرسال المراجعة بنجاح!",
+      "reviewSubmittedPending": "ستُنشر مراجعتك بعد موافقة المدير.",
+      "submitReviewFailed": "فشل في إرسال المراجعة",
+      "submitReviewError": "فشل في إرسال المراجعة. يرجى المحاولة مرة أخرى.",
+      "namePlaceholder": "اسمك",
+      "stars": "نجوم",
+      "star": "نجمة",
+      "autoFilledFromAccount": "تم ملؤه تلقائياً من حسابك",
+      "reviewOptional": "نص المراجعة اختياري - يمكنك الإرسال بالتقييم فقط"
+    }
   },
   "hero": {
     "title": "قطع غيار سيارات متميزة",

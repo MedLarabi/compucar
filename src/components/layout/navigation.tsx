@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { NotificationBell } from "@/components/notifications/notification-bell";
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCartStore, useWishlistStore } from "@/stores";
 import { CartButton } from "@/components/cart";
+import { useLanguageCleanup } from "@/hooks/useLanguageCleanup";
 
 import {
   ShoppingCart,
@@ -50,18 +51,53 @@ import {
 export function Navigation() {
   const [mounted, setMounted] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const { data: session } = useSession();
   const { totalItems } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  
+  // Use the cleanup hook to ensure proper re-rendering
+  useLanguageCleanup();
 
   // Only run on client side
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Close mobile menu when language changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setExpandedSection(null);
+  }, [language]);
+
+  // Listen for force close events
+  useEffect(() => {
+    const handleForceClose = () => {
+      setMobileMenuOpen(false);
+      setExpandedSection(null);
+    };
+
+    window.addEventListener('forceCloseOverlays', handleForceClose);
+    return () => window.removeEventListener('forceCloseOverlays', handleForceClose);
+  }, []);
+
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? null : section);
+  };
+
+  const handleMobileMenuChange = (open: boolean) => {
+    setMobileMenuOpen(open);
+    if (!open) {
+      setExpandedSection(null);
+    }
+  };
+
+  const handleMobileLanguageChange = () => {
+    // Close mobile menu immediately when language is changed inside it
+    setMobileMenuOpen(false);
+    setExpandedSection(null);
   };
 
   const navigationItems = [
@@ -99,7 +135,7 @@ export function Navigation() {
         </div>
 
         {/* Mobile menu - moved to the right */}
-        <Sheet>
+        <Sheet key={`mobile-menu-${language}`} open={mobileMenuOpen} onOpenChange={handleMobileMenuChange}>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
@@ -151,7 +187,10 @@ export function Navigation() {
                           <Globe className="mr-3 h-4 w-4 text-muted-foreground" />
                           <span className="text-sm font-medium">{t('common.language')}</span>
                         </div>
-                        <LanguageSwitcher />
+                        <LanguageSwitcher 
+                          key={`lang-switcher-${language}`} 
+                          onLanguageChange={handleMobileLanguageChange}
+                        />
                       </div>
                       
                       {/* Theme Toggle */}
@@ -344,7 +383,7 @@ export function Navigation() {
             </Link>
 
             {/* Language Switcher - Always visible */}
-            <LanguageSwitcher />
+            <LanguageSwitcher key={`desktop-lang-switcher-${language}`} />
 
             {/* Theme Toggle */}
             <ThemeToggle className="hidden sm:block" />

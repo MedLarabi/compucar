@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,15 +12,15 @@ import { Label } from "@/components/ui/label";
 import { Star, Send, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useSession } from "next-auth/react";
 
-const reviewSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  rating: z.number().min(1, "Please select a rating").max(5, "Rating cannot exceed 5 stars"),
-  content: z.string().min(10, "Review must be at least 10 characters long"),
-});
-
-type ReviewFormData = z.infer<typeof reviewSchema>;
+type ReviewFormData = {
+  name: string;
+  email: string;
+  rating: number;
+  content?: string; // Made optional to match Zod schema
+};
 
 interface ReviewFormProps {
   productSlug: string;
@@ -33,6 +33,16 @@ export function ReviewForm({ productSlug, productName, onReviewSubmitted }: Revi
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
+  const { t } = useLanguage();
+  const { data: session } = useSession();
+
+  // Create dynamic schema with translations - make content optional
+  const reviewSchema = z.object({
+    name: z.string().min(2, t('product.reviewForm.nameRequired')),
+    email: z.string().email(t('product.reviewForm.emailRequired')),
+    rating: z.number().min(1, t('product.reviewForm.ratingRequired')).max(5, "Rating cannot exceed 5 stars"),
+    content: z.string().optional(), // Made optional
+  });
 
   const {
     register,
@@ -44,11 +54,26 @@ export function ReviewForm({ productSlug, productName, onReviewSubmitted }: Revi
   } = useForm<ReviewFormData>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
-      rating: 0
+      rating: 0,
+      name: "",
+      email: "",
+      content: "" // Keep as empty string for form handling
     }
   });
 
   const currentRating = watch("rating");
+
+  // Auto-fill user data when logged in
+  useEffect(() => {
+    if (session?.user) {
+      if (session.user.name) {
+        setValue("name", session.user.name);
+      }
+      if (session.user.email) {
+        setValue("email", session.user.email);
+      }
+    }
+  }, [session, setValue]);
 
   const handleRatingClick = (value: number) => {
     setRating(value);
@@ -70,19 +95,24 @@ export function ReviewForm({ productSlug, productName, onReviewSubmitted }: Revi
       const result = await response.json();
 
       if (response.ok) {
-        toast.success("Review submitted successfully!", {
-          description: "Your review will be published after admin approval."
+        toast.success(t('product.reviewForm.reviewSubmittedSuccess'), {
+          description: t('product.reviewForm.reviewSubmittedPending')
         });
         setIsSubmitted(true);
-        reset();
+        reset({
+          rating: 0,
+          name: session?.user?.name || "",
+          email: session?.user?.email || "",
+          content: ""
+        });
         setRating(0);
         onReviewSubmitted?.();
       } else {
-        toast.error(result.error || "Failed to submit review");
+        toast.error(result.error || t('product.reviewForm.submitReviewFailed'));
       }
     } catch (error) {
       console.error('Error submitting review:', error);
-      toast.error("Failed to submit review. Please try again.");
+      toast.error(t('product.reviewForm.submitReviewError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -95,16 +125,16 @@ export function ReviewForm({ productSlug, productName, onReviewSubmitted }: Revi
           <div className="text-center space-y-4">
             <CheckCircle className="h-16 w-16 text-green-500 mx-auto" />
             <div>
-              <h3 className="text-xl font-semibold text-green-700">Review Submitted!</h3>
+              <h3 className="text-xl font-semibold text-green-700">{t('product.reviewForm.reviewSubmitted')}</h3>
               <p className="text-muted-foreground mt-2">
-                Thank you for your review. It will be published after admin approval.
+                {t('product.reviewForm.reviewSubmittedDescription')}
               </p>
             </div>
             <Button 
               variant="outline" 
               onClick={() => setIsSubmitted(false)}
             >
-              Write Another Review
+              {t('product.reviewForm.writeAnotherReview')}
             </Button>
           </div>
         </CardContent>
@@ -117,7 +147,7 @@ export function ReviewForm({ productSlug, productName, onReviewSubmitted }: Revi
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Rating Stars - First */}
         <div className="space-y-3">
-          <Label className="text-base font-medium">Rating *</Label>
+          <Label className="text-base font-medium">{t('product.reviewForm.rating')} *</Label>
           <div className="flex items-center space-x-2">
             {[1, 2, 3, 4, 5].map((value) => (
               <button
@@ -140,7 +170,7 @@ export function ReviewForm({ productSlug, productName, onReviewSubmitted }: Revi
             ))}
             {currentRating > 0 && (
               <span className="ml-3 text-sm text-muted-foreground">
-                {currentRating} star{currentRating !== 1 ? 's' : ''}
+                {currentRating} {currentRating !== 1 ? t('product.reviewForm.stars') : t('product.reviewForm.star')}
               </span>
             )}
           </div>
@@ -151,46 +181,56 @@ export function ReviewForm({ productSlug, productName, onReviewSubmitted }: Revi
 
         {/* Name Field - Second */}
         <div className="space-y-2">
-          <Label htmlFor="name" className="text-base font-medium">Name *</Label>
+          <Label htmlFor="name" className="text-base font-medium">{t('product.reviewForm.name')} *</Label>
           <Input
             id="name"
             {...register("name")}
-            placeholder="Your name"
+            placeholder={t('product.reviewForm.namePlaceholder')}
+            disabled={!!session?.user?.name}
             className={cn(
               "h-11",
-              errors.name ? "border-red-500" : ""
+              errors.name ? "border-red-500" : "",
+              session?.user?.name ? "bg-muted cursor-not-allowed" : ""
             )}
           />
           {errors.name && (
             <p className="text-sm text-red-500">{errors.name.message}</p>
           )}
+          {session?.user?.name && (
+            <p className="text-xs text-muted-foreground">{t('product.reviewForm.autoFilledFromAccount')}</p>
+          )}
         </div>
 
         {/* Email Field - Third */}
         <div className="space-y-2">
-          <Label htmlFor="email" className="text-base font-medium">Email *</Label>
+          <Label htmlFor="email" className="text-base font-medium">{t('product.reviewForm.email')} *</Label>
           <Input
             id="email"
             type="email"
             {...register("email")}
-            placeholder="your.email@example.com"
+            placeholder={t('product.reviewForm.emailPlaceholder')}
+            disabled={!!session?.user?.email}
             className={cn(
               "h-11",
-              errors.email ? "border-red-500" : ""
+              errors.email ? "border-red-500" : "",
+              session?.user?.email ? "bg-muted cursor-not-allowed" : ""
             )}
           />
           {errors.email && (
             <p className="text-sm text-red-500">{errors.email.message}</p>
           )}
+          {session?.user?.email && (
+            <p className="text-xs text-muted-foreground">{t('product.reviewForm.autoFilledFromAccount')}</p>
+          )}
         </div>
 
         {/* Review Content - Fourth */}
         <div className="space-y-2">
-          <Label htmlFor="content" className="text-base font-medium">Your Review *</Label>
+          <Label htmlFor="content" className="text-base font-medium">{t('product.reviewForm.yourReview')}</Label>
           <Textarea
             id="content"
             {...register("content")}
-            placeholder="Tell others about your experience with this product..."
+            placeholder={t('product.reviewForm.reviewPlaceholder')}
             rows={5}
             className={cn(
               "resize-none",
@@ -200,6 +240,7 @@ export function ReviewForm({ productSlug, productName, onReviewSubmitted }: Revi
           {errors.content && (
             <p className="text-sm text-red-500">{errors.content.message}</p>
           )}
+          <p className="text-xs text-muted-foreground">{t('product.reviewForm.reviewOptional')}</p>
         </div>
 
         {/* Submit Button */}
@@ -212,12 +253,12 @@ export function ReviewForm({ productSlug, productName, onReviewSubmitted }: Revi
           {isSubmitting ? (
             <>
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-              Submitting Review...
+              {t('product.reviewForm.submittingReview')}
             </>
           ) : (
             <>
               <Send className="h-4 w-4 mr-2" />
-              Submit Review
+              {t('product.reviewForm.submitReview')}
             </>
           )}
         </Button>

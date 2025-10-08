@@ -953,6 +953,7 @@ model TuningFile {
   uploadDate       DateTime @default(now()) @db.Date
   updatedDate      DateTime? @db.Date
   customerComment  String?
+  dtcCodes         String? // DTC error codes to remove when DTC_DELETE modification is selected
   adminNotes       String?
   estimatedProcessingTime Int? // Estimated time in minutes (5, 10, 15, 20, 30, 45, 60)
   estimatedProcessingTimeSetAt DateTime? // When the estimated time was set

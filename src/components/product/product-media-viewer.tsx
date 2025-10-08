@@ -43,10 +43,10 @@ export function ProductMediaViewer({
   videos = [], 
   productName 
 }: ProductMediaViewerProps) {
-  // Combine videos first, then images - videos will appear first in the gallery
+  // Combine images first, then videos - videos will appear at the end to allow more loading time
   const allMedia = [
-    ...videos.map(vid => ({ ...vid, type: 'video' as const })),
-    ...images.map(img => ({ ...img, type: 'image' as const, alt: img.altText }))
+    ...images.map(img => ({ ...img, type: 'image' as const, alt: img.altText })),
+    ...videos.map(vid => ({ ...vid, type: 'video' as const }))
   ];
 
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
@@ -57,20 +57,31 @@ export function ProductMediaViewer({
 
   const selectedMedia = allMedia[selectedMediaIndex];
 
-  // Preload videos when component mounts or when switching to a video
+  // Preload videos intelligently - start preloading when user is near the end of images
   useEffect(() => {
-    if (selectedMedia?.type === 'video' && selectedMedia.url && !videoLoaded[selectedMedia.url]) {
-      const video = document.createElement('video');
-      video.src = selectedMedia.url;
-      video.muted = true;
-      video.preload = 'auto';
-      video.oncanplaythrough = () => {
-        setVideoLoaded(prev => ({ ...prev, [selectedMedia.url]: true }));
-        console.log('Video preloaded successfully:', selectedMedia.url);
-      };
-      video.load();
+    const imageCount = images.length;
+    const totalMedia = allMedia.length;
+    
+    // Start preloading videos when user is viewing the last 2 images or directly selects a video
+    const shouldPreloadVideos = selectedMediaIndex >= Math.max(0, imageCount - 2) || 
+                               selectedMedia?.type === 'video';
+    
+    if (shouldPreloadVideos && videos.length > 0) {
+      videos.forEach(video => {
+        if (video.url && !videoLoaded[video.url]) {
+          const videoElement = document.createElement('video');
+          videoElement.src = video.url;
+          videoElement.muted = true;
+          videoElement.preload = 'auto';
+          videoElement.oncanplaythrough = () => {
+            setVideoLoaded(prev => ({ ...prev, [video.url]: true }));
+            console.log('Video preloaded successfully:', video.url);
+          };
+          videoElement.load();
+        }
+      });
     }
-  }, [selectedMedia, videoLoaded]);
+  }, [selectedMediaIndex, allMedia.length, images.length, videos, videoLoaded]);
 
   const handleVideoPlay = () => setIsVideoPlaying(true);
   const handleVideoPause = () => setIsVideoPlaying(false);

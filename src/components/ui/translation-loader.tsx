@@ -1,7 +1,7 @@
 "use client";
 
 import { useLanguage } from '@/contexts/LanguageContext';
-import { ReactNode } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 
 interface TranslationLoaderProps {
   children: ReactNode;
@@ -9,9 +9,18 @@ interface TranslationLoaderProps {
 }
 
 export function TranslationLoader({ children, fallback }: TranslationLoaderProps) {
-  const { isLoading } = useLanguage();
+  const { isLoading, isChangingLanguage, language } = useLanguage();
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  if (isLoading) {
+  useEffect(() => {
+    // Only show full loading screen on initial load
+    if (!isLoading && isInitialLoad) {
+      setIsInitialLoad(false);
+    }
+  }, [isLoading, isInitialLoad]);
+
+  // Show full loading screen only on initial load
+  if (isLoading && isInitialLoad) {
     return (
       <>
         {fallback || (
@@ -26,5 +35,20 @@ export function TranslationLoader({ children, fallback }: TranslationLoaderProps
     );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      {/* Subtle loading overlay for language changes */}
+      {isChangingLanguage && (
+        <div className="fixed top-0 left-0 right-0 z-[100] bg-background/80 backdrop-blur-sm">
+          <div className="flex items-center justify-center p-2">
+            <div className="flex items-center space-x-2 bg-background border rounded-full px-3 py-1 shadow-sm">
+              <div className="animate-spin rounded-full h-3 w-3 border-b border-primary"></div>
+              <span className="text-xs text-muted-foreground">Switching language...</span>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }

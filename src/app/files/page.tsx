@@ -335,9 +335,10 @@ export default function CustomerFilesPage() {
     <TuningLayout>
       <div className="container mx-auto px-4 py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
+      <div className="mb-8">
+        {/* Title and Description */}
+        <div className="text-center sm:text-left mb-6">
+          <div className="flex items-center justify-center sm:justify-start gap-3 mb-2">
             <h1 className="text-3xl font-bold">{t('files.title')}</h1>
             {/* Real-time connection status */}
             <div className="flex items-center gap-2">
@@ -358,12 +359,16 @@ export default function CustomerFilesPage() {
             {t('files.description')}
           </p>
         </div>
-        <Link href="/files/upload">
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            {t('files.uploadNewFile')}
-          </Button>
-        </Link>
+        
+        {/* Upload Button - Centered on mobile, right-aligned on desktop */}
+        <div className="flex justify-center sm:justify-end">
+          <Link href="/files/upload">
+            <Button size="lg" className="w-full sm:w-auto">
+              <Plus className="h-4 w-4 mr-2" />
+              {t('files.uploadNewFile')}
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Stats Cards */}

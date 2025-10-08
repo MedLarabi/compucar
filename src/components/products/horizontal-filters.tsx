@@ -151,14 +151,16 @@ export function HorizontalFilters({
           </div>
 
           {/* Sort Dropdown */}
-          <div className="flex items-center gap-2 w-full sm:w-auto sm:min-w-[200px]">
-            <SortAsc className="h-4 w-4 text-muted-foreground" />
+          <div className="w-full sm:w-auto sm:min-w-[200px]">
             <Select
               value={`${currentSort}-${currentOrder}`}
               onValueChange={handleSortChange}
             >
               <SelectTrigger className="h-9 w-full">
-                <SelectValue />
+                <div className="flex items-center gap-2">
+                  <SortAsc className="h-4 w-4 text-muted-foreground" />
+                  <SelectValue />
+                </div>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="createdAt-desc">{t('filters.newest')}</SelectItem>

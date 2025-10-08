@@ -45,6 +45,7 @@ interface FileDetail {
   uploadDate: string;
   updatedDate: string | null;
   customerComment?: string;
+  dtcCodes?: string; // Add DTC codes field
   adminNotes?: string; // Admin comments for customer
   estimatedProcessingTime?: number; // Estimated processing time in minutes
   estimatedProcessingTimeSetAt?: string; // When the estimated time was set (ISO string)
@@ -509,6 +510,26 @@ export default function FileDetailPage() {
               <CardContent>
                 <div className="p-3 bg-muted rounded-lg">
                   <p className="text-sm">{file.customerComment}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* DTC Codes */}
+          {file.dtcCodes && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <AlertCircle className="h-5 w-5 mr-2" />
+                  {t('fileDetail.dtcCodes.title') || 'DTC Error Codes to Remove'}
+                </CardTitle>
+                <CardDescription>
+                  {t('fileDetail.dtcCodes.description') || 'Diagnostic Trouble Codes you specified for deletion'}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <pre className="text-sm font-mono whitespace-pre-wrap">{file.dtcCodes}</pre>
                 </div>
               </CardContent>
             </Card>

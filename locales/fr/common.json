@@ -144,6 +144,18 @@
       "maxSize": "Taille maximale du fichier: 200MB"
     },
     "supportedTypes": "Tous les types de fichiers sont supportés",
+  "modifications": {
+    "title": "Sélectionner les Modifications",
+    "description": "Choisissez les modifications que vous souhaitez appliquer à votre fichier",
+    "loading": "Chargement des modifications...",
+    "selectAtLeastOne": "Veuillez sélectionner au moins une modification"
+  },
+  "dtcCodes": {
+    "title": "Codes d'Erreur DTC à Supprimer",
+    "description": "Veuillez spécifier quels codes d'erreur DTC (Diagnostic Trouble Code) vous souhaitez supprimer de votre fichier ECU.",
+    "placeholder": "Entrez les codes DTC séparés par des virgules ou des nouvelles lignes...\nExemple: P0171, P0174, P0300",
+    "example": "Exemple: P0171, P0174, P0300, U0001, B1234"
+  },
     "comments": {
       "title": "Commentaires supplémentaires",
       "description": "Toute instruction spéciale ou note pour le régleur (optionnel)",
@@ -269,6 +281,10 @@
     },
     "comments": {
       "title": "Vos commentaires"
+    },
+    "dtcCodes": {
+      "title": "Codes d'Erreur DTC à Supprimer",
+      "description": "Codes de diagnostic que vous avez spécifiés pour suppression"
     },
     "adminComments": {
       "title": "Commentaires de l'administrateur",
@@ -406,7 +422,33 @@
     "warranty": "30 Jours de Garantie",
     "returns": "Support Gratuit",
     "description": "Description",
-    "writeReview": "Écrire un avis"
+    "writeReview": "Écrire un avis",
+    "reviewForm": {
+      "rating": "Note",
+      "ratingRequired": "Veuillez sélectionner une note",
+      "name": "Nom",
+      "nameRequired": "Le nom doit contenir au moins 2 caractères",
+      "email": "Email",
+      "emailRequired": "Adresse email invalide",
+      "emailPlaceholder": "votre.email@exemple.com",
+      "yourReview": "Votre Avis",
+      "reviewRequired": "L'avis doit contenir au moins 10 caractères",
+      "reviewPlaceholder": "Partagez votre expérience avec ce produit...",
+      "submitReview": "Soumettre l'Avis",
+      "submittingReview": "Soumission en cours...",
+      "reviewSubmitted": "Avis Soumis !",
+      "reviewSubmittedDescription": "Merci pour votre avis. Il sera publié après approbation de l'administrateur.",
+      "writeAnotherReview": "Écrire un Autre Avis",
+      "reviewSubmittedSuccess": "Avis soumis avec succès !",
+      "reviewSubmittedPending": "Votre avis sera publié après approbation de l'administrateur.",
+      "submitReviewFailed": "Échec de la soumission de l'avis",
+      "submitReviewError": "Échec de la soumission de l'avis. Veuillez réessayer.",
+      "namePlaceholder": "Votre nom",
+      "stars": "étoiles",
+      "star": "étoile",
+      "autoFilledFromAccount": "Rempli automatiquement depuis votre compte",
+      "reviewOptional": "Le texte de l'avis est optionnel - vous pouvez soumettre avec juste une note"
+    }
   },
   "hero": {
     "title": "Pièces Auto Premium",

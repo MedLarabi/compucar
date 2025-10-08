@@ -9,7 +9,7 @@ const reviewSubmissionSchema = z.object({
   email: z.string().email("Invalid email address"),
   rating: z.number().min(1, "Rating must be at least 1").max(5, "Rating must be at most 5"),
   title: z.string().optional(),
-  content: z.string().min(10, "Review content must be at least 10 characters"),
+  content: z.string().optional(), // Made optional - no minimum length required
 });
 
 // GET - Fetch approved reviews for a product
@@ -115,7 +115,7 @@ export async function POST(
         email: validatedData.email,
         rating: validatedData.rating,
         title: validatedData.title,
-        content: validatedData.content,
+        content: validatedData.content || "", // Handle empty content gracefully
         isApproved: false, // Requires admin approval
         isVerified: false
       }

@@ -36,6 +36,7 @@ interface UploadState {
   file: File | null;
   selectedModifications: number[];
   customerComment: string;
+  dtcCodes: string; // New field for DTC codes
   isUploading: boolean;
   uploadProgress: number;
   error: string | null;
@@ -52,6 +53,7 @@ export default function FileUploadPage() {
     file: null,
     selectedModifications: [],
     customerComment: '',
+    dtcCodes: '', // Initialize DTC codes field
     isUploading: false,
     uploadProgress: 0,
     error: null,
@@ -108,6 +110,12 @@ export default function FileUploadPage() {
     }));
   }, []);
 
+  // Helper function to check if DTC_DELETE is selected
+  const isDtcDeleteSelected = () => {
+    const dtcModification = modifications.find(mod => mod.code === 'DTC_DELETE');
+    return dtcModification && uploadState.selectedModifications.includes(dtcModification.id);
+  };
+
   const handleModificationChange = (modificationId: number, checked: boolean) => {
     setUploadState(prev => ({
       ...prev,
@@ -142,7 +150,8 @@ export default function FileUploadPage() {
           fileSize: uploadState.file.size,
           fileType: uploadState.file.type || 'application/octet-stream',
           modificationIds: uploadState.selectedModifications,
-          customerComment: uploadState.customerComment || undefined
+          customerComment: uploadState.customerComment || undefined,
+          dtcCodes: uploadState.dtcCodes || undefined
         })
       });
 
@@ -217,6 +226,7 @@ export default function FileUploadPage() {
       file: null,
       selectedModifications: [],
       customerComment: '',
+      dtcCodes: '', // Reset DTC codes
       isUploading: false,
       uploadProgress: 0,
       error: null,
@@ -338,16 +348,16 @@ export default function FileUploadPage() {
           {/* Modifications */}
           <Card>
             <CardHeader>
-              <CardTitle>Select Modifications</CardTitle>
+              <CardTitle>{t('upload.modifications.title')}</CardTitle>
               <CardDescription>
-                Choose the modifications you want applied to your file
+                {t('upload.modifications.description')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {modifications.length === 0 ? (
                   <div className="col-span-full text-center py-8">
-                    <p className="text-muted-foreground">Loading modifications...</p>
+                    <p className="text-muted-foreground">{t('upload.modifications.loading')}</p>
                   </div>
                 ) : (
                   modifications.map((modification) => (
@@ -378,11 +388,35 @@ export default function FileUploadPage() {
                 )}
               </div>
 
+              {/* Conditional DTC Codes Text Area */}
+              {isDtcDeleteSelected() && (
+                <div className="mt-6">
+                  <Label htmlFor="dtc-codes" className="text-base font-medium">
+                    {t('upload.dtcCodes.title')}
+                  </Label>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    {t('upload.dtcCodes.description')}
+                  </p>
+                  <Textarea
+                    id="dtc-codes"
+                    placeholder={t('upload.dtcCodes.placeholder')}
+                    value={uploadState.dtcCodes}
+                    onChange={(e) => setUploadState(prev => ({ ...prev, dtcCodes: e.target.value }))}
+                    disabled={uploadState.isUploading}
+                    rows={4}
+                    className="resize-none"
+                  />
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {t('upload.dtcCodes.example')}
+                  </p>
+                </div>
+              )}
+
               {uploadState.selectedModifications.length === 0 && (
                 <Alert className="mt-4">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
-                    Please select at least one modification
+                    {t('upload.modifications.selectAtLeastOne')}
                   </AlertDescription>
                 </Alert>
               )}

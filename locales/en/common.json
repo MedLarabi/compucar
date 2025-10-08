@@ -51,6 +51,18 @@
       "maxSize": "Max file size: 200MB"
     },
     "supportedTypes": "All file types are supported",
+  "modifications": {
+    "title": "Select Modifications",
+    "description": "Choose the modifications you want applied to your file",
+    "loading": "Loading modifications...",
+    "selectAtLeastOne": "Please select at least one modification"
+  },
+  "dtcCodes": {
+    "title": "DTC Error Codes to Remove",
+    "description": "Please specify which DTC (Diagnostic Trouble Code) error codes you want to remove from your ECU file.",
+    "placeholder": "Enter DTC codes separated by commas or new lines...\nExample: P0171, P0174, P0300",
+    "example": "Example: P0171, P0174, P0300, U0001, B1234"
+  },
     "comments": {
       "title": "Additional Comments",
       "description": "Any special instructions or notes for the tuner (optional)",
@@ -178,6 +190,10 @@
     "comments": {
       "title": "Your Comments"
     },
+    "dtcCodes": {
+      "title": "DTC Error Codes to Remove",
+      "description": "Diagnostic Trouble Codes you specified for deletion"
+    },
     "adminComments": {
       "title": "Admin Comments",
       "description": "Comments from the administrator about your file"
@@ -301,7 +317,33 @@
     "warranty": "30 Days Warranty",
     "returns": "Free Support",
     "description": "Description",
-    "writeReview": "Write a Review"
+    "writeReview": "Write a Review",
+    "reviewForm": {
+      "rating": "Rating",
+      "ratingRequired": "Please select a rating",
+      "name": "Name",
+      "nameRequired": "Name must be at least 2 characters",
+      "email": "Email",
+      "emailRequired": "Invalid email address",
+      "emailPlaceholder": "your.email@example.com",
+      "yourReview": "Your Review",
+      "reviewRequired": "Review must be at least 10 characters long",
+      "reviewPlaceholder": "Tell others about your experience with this product...",
+      "submitReview": "Submit Review",
+      "submittingReview": "Submitting Review...",
+      "reviewSubmitted": "Review Submitted!",
+      "reviewSubmittedDescription": "Thank you for your review. It will be published after admin approval.",
+      "writeAnotherReview": "Write Another Review",
+      "reviewSubmittedSuccess": "Review submitted successfully!",
+      "reviewSubmittedPending": "Your review will be published after admin approval.",
+      "submitReviewFailed": "Failed to submit review",
+      "submitReviewError": "Failed to submit review. Please try again.",
+      "namePlaceholder": "Your name",
+      "stars": "stars",
+      "star": "star",
+      "autoFilledFromAccount": "Auto-filled from your account",
+      "reviewOptional": "Review text is optional - you can submit with just a rating"
+    }
   },
   "hero": {
     "title": "Premium Auto Parts",

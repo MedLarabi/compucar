@@ -8,6 +8,7 @@ interface LanguageContextType {
   setLanguage: (lang: Language) => void;
   t: (key: string, params?: Record<string, string | number>) => string;
   isLoading: boolean;
+  isChangingLanguage: boolean;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -19,26 +20,37 @@ interface LanguageProviderProps {
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const [language, setLanguage] = useState<Language>('en');
   const [isLoading, setIsLoading] = useState(true);
+  const [isChangingLanguage, setIsChangingLanguage] = useState(false);
   const [translations, setTranslations] = useState<Record<string, any>>({});
   const [hasMounted, setHasMounted] = useState(false);
 
-  const fetchTranslations = async (lang: Language) => {
+  const fetchTranslations = async (lang: Language, isLanguageChange = false) => {
     try {
-      setIsLoading(true);
+      // Only set loading to true on initial load or if no translations exist
+      if (Object.keys(translations).length === 0) {
+        setIsLoading(true);
+      } else if (isLanguageChange) {
+        setIsChangingLanguage(true);
+      }
+      
       const response = await fetch(`/api/locales/${lang}/common.json`);
       if (response.ok) {
         const data = await response.json();
         setTranslations(data);
         console.log(`✅ Loaded translations for ${lang}:`, data);
-        } else {
+      } else {
         console.warn(`⚠️ Failed to load translations for ${lang}:`, response.status);
       }
-      } catch (error) {
+    } catch (error) {
       console.error(`❌ Error loading translations for ${lang}:`, error);
-      } finally {
+    } finally {
+      // Add a small delay to prevent flickering on fast connections
+      setTimeout(() => {
         setIsLoading(false);
-      }
-    };
+        setIsChangingLanguage(false);
+      }, 100);
+    }
+  };
 
   useEffect(() => {
     setHasMounted(true);
@@ -60,7 +72,8 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   // Fetch translations when language changes
   useEffect(() => {
     if (language) {
-      fetchTranslations(language);
+      const isLanguageChange = hasMounted && Object.keys(translations).length > 0;
+      fetchTranslations(language, isLanguageChange);
     }
   }, [language]);
 
@@ -305,6 +318,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     setLanguage,
     t,
     isLoading,
+    isChangingLanguage,
   };
 
   return (
@@ -322,6 +336,7 @@ export function useLanguage(): LanguageContextType {
       setLanguage: () => {},
       t: (key: string) => key,
       isLoading: false,
+      isChangingLanguage: false,
     };
   }
   return context;

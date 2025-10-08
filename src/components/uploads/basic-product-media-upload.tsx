@@ -197,8 +197,11 @@ export function BasicProductMediaUpload({
     }
 
     for (const file of validVideos) {
-      if (file.size > 32 * 1024 * 1024) { // 32MB limit
-        toast.error(`Video ${file.name} is too large (max 32MB)`);
+      // Enhanced file size validation with better error message
+      const maxSizeBytes = 32 * 1024 * 1024; // 32MB limit
+      if (file.size > maxSizeBytes) {
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+        toast.error(`Video "${file.name}" is too large (${fileSizeMB}MB). Maximum size is 32MB.`);
         continue;
       }
 
@@ -282,21 +285,32 @@ export function BasicProductMediaUpload({
         if (!response.ok) {
           let errorMessage = 'Video upload failed';
           
-          // Clone the response to safely read it multiple times if needed
-          const responseClone = response.clone();
-          
-          try {
-            const error = await response.json();
-            errorMessage = error.error || `HTTP ${response.status}: ${response.statusText}`;
-          } catch (jsonError) {
-            // If we can't parse JSON, try to get text from the cloned response
+          // Handle specific HTTP status codes
+          if (response.status === 413) {
+            errorMessage = `Video file is too large for the server. The server's upload limit is smaller than your ${formatFileSize(file.size)} video. Please contact your administrator to increase the server upload limit.`;
+          } else {
+            // Clone the response to safely read it multiple times if needed
+            const responseClone = response.clone();
+            
             try {
-              const textResponse = await responseClone.text();
-              console.error("Non-JSON response from video upload:", textResponse);
-              errorMessage = textResponse || `Server error: ${response.status} ${response.statusText}`;
-            } catch (textError) {
-              console.error("Could not read response as text either:", textError);
-              errorMessage = `Server error: ${response.status} ${response.statusText}`;
+              const error = await response.json();
+              errorMessage = error.error || `HTTP ${response.status}: ${response.statusText}`;
+            } catch (jsonError) {
+              // If we can't parse JSON, try to get text from the cloned response
+              try {
+                const textResponse = await responseClone.text();
+                console.error("Non-JSON response from video upload:", textResponse);
+                
+                // Check if it's an nginx 413 error page
+                if (textResponse.includes('413 Request Entity Too Large')) {
+                  errorMessage = `Server upload limit exceeded. Your ${formatFileSize(file.size)} video is too large. Please contact your administrator to increase the nginx client_max_body_size setting.`;
+                } else {
+                  errorMessage = textResponse || `Server error: ${response.status} ${response.statusText}`;
+                }
+              } catch (textError) {
+                console.error("Could not read response as text either:", textError);
+                errorMessage = `Server error: ${response.status} ${response.statusText}`;
+              }
             }
           }
           throw new Error(errorMessage);
