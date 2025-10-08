@@ -215,6 +215,8 @@ model ProductVideo {
   mimeType    String?  // e.g., "video/mp4", "video/webm"
   sortOrder   Int      @default(0)
   isMain      Boolean  @default(false) // Main video for product showcase
+  vimeoId     String?  // Vimeo video ID for embedded videos
+  videoType   VideoType @default(DIRECT) // Video hosting type
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -1064,6 +1066,7 @@ enum EnrollmentSource {
 }
 
 enum VideoType {
+  DIRECT        // Direct video file upload
   S3            // Video stored in AWS S3
   YOUTUBE       // YouTube embedded video
   VIMEO         // Vimeo embedded video

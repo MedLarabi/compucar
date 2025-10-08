@@ -24,6 +24,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { TinyMCEEditor } from "@/components/ui/tinymce-editor";
 import { BasicProductMediaUpload } from "@/components/uploads/basic-product-media-upload";
 import { VirtualProductFileUpload } from "@/components/uploads/virtual-product-file-upload";
+import { VimeoVideoManager } from "@/components/admin/vimeo-video-manager";
 import { ProductVariants, ProductVariant, VariantOption } from "@/components/admin/product-variants";
 import { X, Plus, Save, FileText, Loader2, Package, DollarSign, Settings, Eye, Warehouse, Image, Palette } from "lucide-react";
 import { toast } from "sonner";
@@ -498,6 +499,60 @@ export function EnhancedProductForm({
                   <p className="mt-2 text-blue-600">
                     ✅ Basic Upload is ready to use without any configuration
                   </p>
+                </div>
+
+                {/* Vimeo Video Manager Section */}
+                <Separator className="my-6" />
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-medium">Professional Video Hosting</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Add Vimeo videos for professional, fast-loading video experience
+                      </p>
+                    </div>
+                  </div>
+
+                  <VimeoVideoManager
+                    videos={form.watch("videos")?.map(vid => ({
+                      id: vid.id,
+                      url: vid.url,
+                      title: vid.title,
+                      thumbnail: vid.thumbnail,
+                      duration: vid.duration,
+                      videoType: vid.url?.includes('vimeo.com') ? 'VIMEO' as const : 'DIRECT' as const,
+                      vimeoId: vid.url?.includes('vimeo.com') ? 
+                        vid.url.match(/(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/)?.[1] : 
+                        undefined
+                    })) || []}
+                    onAddVideo={async (videoData) => {
+                      const currentVideos = form.getValues("videos") || [];
+                      const newVideo = {
+                        id: `vimeo-${Date.now()}`,
+                        url: videoData.url,
+                        title: videoData.title || "",
+                        description: "",
+                        thumbnail: "",
+                        duration: 0,
+                        fileSize: "",
+                        mimeType: "video/mp4",
+                        isMain: currentVideos.length === 0,
+                      };
+                      
+                      const updatedVideos = [...currentVideos, newVideo];
+                      form.setValue("videos", updatedVideos);
+                      console.log("Added Vimeo video:", newVideo);
+                      console.log("Updated videos:", updatedVideos);
+                    }}
+                    onRemoveVideo={async (videoId) => {
+                      const currentVideos = form.getValues("videos") || [];
+                      const updatedVideos = currentVideos.filter(v => v.id !== videoId);
+                      form.setValue("videos", updatedVideos);
+                      console.log("Removed video:", videoId);
+                      console.log("Updated videos:", updatedVideos);
+                    }}
+                    isLoading={loading}
+                  />
                 </div>
               </div>
             </TabsContent>

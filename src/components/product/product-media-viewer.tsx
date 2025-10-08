@@ -9,12 +9,10 @@ import {
   ImageIcon, 
   VideoIcon,
   X,
-  Loader2,
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getVideoUrl } from "@/lib/utils/video-proxy";
 
 interface ProductImage {
   id: string;
@@ -33,6 +31,8 @@ interface ProductVideo {
   fileSize?: string;
   mimeType?: string;
   isMain?: boolean;
+  vimeoId?: string; // Add Vimeo ID support
+  videoType?: 'VIMEO' | 'DIRECT'; // Add video type
 }
 
 interface ProductMediaViewerProps {
@@ -41,22 +41,47 @@ interface ProductMediaViewerProps {
   productName: string;
 }
 
+// Helper function to extract Vimeo ID from URL
+function getVimeoId(url: string): string | null {
+  const vimeoRegex = /(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/;
+  const match = url.match(vimeoRegex);
+  return match ? match[1] : null;
+}
+
+// Helper function to get Vimeo embed URL
+function getVimeoEmbedUrl(vimeoId: string): string {
+  return `https://player.vimeo.com/video/${vimeoId}?autoplay=1&muted=1&controls=1&responsive=1`;
+}
+
+// Helper function to get Vimeo thumbnail
+function getVimeoThumbnail(vimeoId: string): string {
+  return `https://vumbnail.com/${vimeoId}.jpg`;
+}
+
 export function ProductMediaViewer({ 
   images = [], 
   videos = [], 
   productName 
 }: ProductMediaViewerProps) {
+  // Process videos to detect Vimeo URLs and extract IDs
+  const processedVideos = videos.map(video => {
+    const vimeoId = getVimeoId(video.url);
+    return {
+      ...video,
+      vimeoId,
+      videoType: vimeoId ? 'VIMEO' as const : 'DIRECT' as const,
+      thumbnail: vimeoId ? getVimeoThumbnail(vimeoId) : video.thumbnail
+    };
+  });
+
   // Simple media combination - images first, then videos
   const allMedia = [
     ...images.map(img => ({ ...img, type: 'image' as const, alt: img.altText })),
-    ...videos.map(vid => ({ ...vid, type: 'video' as const }))
+    ...processedVideos.map(vid => ({ ...vid, type: 'video' as const }))
   ];
 
   const [selectedMediaIndex, setSelectedMediaIndex] = useState(0);
-  const [isVideoMuted, setIsVideoMuted] = useState(true);
-  const [fullscreenMedia, setFullscreenMedia] = useState<{type: 'image' | 'video', url: string, index: number} | null>(null);
-  const [videoLoading, setVideoLoading] = useState<{[key: string]: boolean}>({});
-  const mainVideoRef = useRef<HTMLVideoElement>(null);
+  const [fullscreenMedia, setFullscreenMedia] = useState<{type: 'image' | 'video', url: string, index: number, vimeoId?: string} | null>(null);
 
   const selectedMedia = allMedia[selectedMediaIndex];
 
@@ -93,16 +118,9 @@ export function ProductMediaViewer({
     setSelectedMediaIndex(index);
   };
 
-  const handleVideoPlay = () => {
-    // Simple autoplay when video is ready
-    if (mainVideoRef.current) {
-      mainVideoRef.current.play().catch(console.error);
-    }
-  };
-
-  const openFullscreen = (type: 'image' | 'video', url: string, index?: number) => {
+  const openFullscreen = (type: 'image' | 'video', url: string, index?: number, vimeoId?: string) => {
     const mediaIndex = index !== undefined ? index : selectedMediaIndex;
-    setFullscreenMedia({ type, url, index: mediaIndex });
+    setFullscreenMedia({ type, url, index: mediaIndex, vimeoId });
   };
 
   const closeFullscreen = () => {
@@ -124,8 +142,9 @@ export function ProductMediaViewer({
     const newMedia = allMedia[newIndex];
     setFullscreenMedia({
       type: newMedia.type,
-      url: newMedia.type === 'video' ? getVideoUrl(newMedia.url) : newMedia.url,
-      index: newIndex
+      url: newMedia.url,
+      index: newIndex,
+      vimeoId: newMedia.type === 'video' ? (newMedia.vimeoId || undefined) : undefined
     });
   };
 
@@ -134,20 +153,6 @@ export function ProductMediaViewer({
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  // Handle video loading states
-  const handleVideoLoadStart = (url: string) => {
-    setVideoLoading(prev => ({ ...prev, [url]: true }));
-  };
-
-  const handleVideoCanPlay = (url: string) => {
-    setVideoLoading(prev => ({ ...prev, [url]: false }));
-  };
-
-  const handleVideoError = (url: string) => {
-    setVideoLoading(prev => ({ ...prev, [url]: false }));
-    console.error('Video failed to load:', url);
   };
 
   if (allMedia.length === 0) {
@@ -185,44 +190,67 @@ export function ProductMediaViewer({
           </div>
         ) : selectedMedia?.type === 'video' && selectedMedia.url ? (
           <div className="relative h-full group">
-            {/* Simple loading overlay */}
-            {videoLoading[selectedMedia.url] && (
-              <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-10">
-                <div className="text-center text-white">
-                  <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2" />
-                  <p className="text-sm">Loading video...</p>
+            {selectedMedia.videoType === 'VIMEO' && selectedMedia.vimeoId ? (
+              // Vimeo Player - Professional, fast, and reliable
+              <div className="relative w-full h-full bg-black">
+                <iframe
+                  src={`https://player.vimeo.com/video/${selectedMedia.vimeoId}?muted=1&controls=1&responsive=1&dnt=1&quality=auto&background=0&byline=0&portrait=0&title=0`}
+                  className="absolute inset-0 w-full h-full"
+                  style={{ 
+                    border: 'none',
+                    borderRadius: 'inherit'
+                  }}
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  title={selectedMedia.title || `${productName} video`}
+                  loading="lazy"
+                />
+                
+                {/* Fullscreen button overlay for Vimeo */}
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => openFullscreen('video', selectedMedia.url, selectedMediaIndex, selectedMedia.vimeoId || undefined)}
+                    className="backdrop-blur-sm"
+                  >
+                    <Maximize className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              // Enhanced HTML5 video player for direct video files
+              <div className="relative w-full h-full bg-black">
+                <video
+                  className="absolute inset-0 w-full h-full object-cover"
+                  controls
+                  preload="metadata"
+                  playsInline
+                  muted
+                  style={{ 
+                    borderRadius: 'inherit'
+                  }}
+                >
+                  <source src={selectedMedia.url} type="video/mp4" />
+                  <source src={selectedMedia.url} type="video/mov" />
+                  <source src={selectedMedia.url} type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+                
+                {/* Fullscreen button overlay for direct videos */}
+                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => openFullscreen('video', selectedMedia.url, selectedMediaIndex)}
+                    className="backdrop-blur-sm"
+                  >
+                    <Maximize className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
             )}
-            
-            <video
-              ref={mainVideoRef}
-              src={getVideoUrl(selectedMedia.url)}
-              className="w-full h-full object-cover"
-              controls
-              muted={isVideoMuted}
-              poster={selectedMedia.thumbnail || undefined}
-              preload="metadata"
-              playsInline
-              onLoadStart={() => handleVideoLoadStart(selectedMedia.url)}
-              onCanPlay={() => {
-                handleVideoCanPlay(selectedMedia.url);
-                handleVideoPlay(); // Simple autoplay
-              }}
-              onError={() => handleVideoError(selectedMedia.url)}
-            />
-
-            {/* Simple video controls overlay */}
-            <div className="absolute top-4 right-4 space-y-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => openFullscreen('video', getVideoUrl(selectedMedia.url), selectedMediaIndex)}
-                className="backdrop-blur-sm"
-              >
-                <Maximize className="h-4 w-4" />
-              </Button>
-            </div>
           </div>
         ) : (
           <div className="h-full flex items-center justify-center bg-muted">
@@ -266,13 +294,11 @@ export function ProductMediaViewer({
                   ) : (
                     <VideoIcon className="h-8 w-8 text-white" />
                   )}
-                </div>
-              )}
-
-              {/* Simple video play overlay */}
-              {media.type === 'video' && (
-                <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Play className="h-4 w-4 text-white" />
+                  
+                  {/* Simple video play overlay */}
+                  <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Play className="h-4 w-4 text-white" />
+                  </div>
                 </div>
               )}
 
@@ -316,7 +342,7 @@ export function ProductMediaViewer({
                   size="lg"
                   onClick={() => navigateFullscreen('prev')}
                   className="absolute left-4 top-1/2 -translate-y-1/2 z-10 text-white hover:bg-white/20 bg-black/50 h-12 w-12"
-                  aria-label="Previous image"
+                  aria-label="Previous media"
                 >
                   <ChevronLeft className="h-8 w-8" />
                 </Button>
@@ -327,7 +353,7 @@ export function ProductMediaViewer({
                   size="lg"
                   onClick={() => navigateFullscreen('next')}
                   className="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white hover:bg-white/20 bg-black/50 h-12 w-12"
-                  aria-label="Next image"
+                  aria-label="Next media"
                 >
                   <ChevronRight className="h-8 w-8" />
                 </Button>
@@ -353,14 +379,42 @@ export function ProductMediaViewer({
                   priority
                 />
               </div>
+            ) : fullscreenMedia.vimeoId ? (
+              // Vimeo fullscreen player
+              <div className="relative w-full h-full max-w-[90vw] max-h-[90vh] bg-black rounded-lg overflow-hidden">
+                <iframe
+                  src={`https://player.vimeo.com/video/${fullscreenMedia.vimeoId}?autoplay=1&muted=0&controls=1&responsive=1&dnt=1&quality=auto&background=0&byline=0&portrait=0&title=0`}
+                  className="w-full h-full"
+                  style={{ 
+                    border: 'none',
+                    minHeight: '400px',
+                    aspectRatio: '16/9'
+                  }}
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture"
+                  allowFullScreen
+                  title={`${productName} video fullscreen`}
+                />
+              </div>
             ) : (
-              <video
-                src={fullscreenMedia.url}
-                className="max-w-full max-h-full object-contain"
-                controls
-                autoPlay
-                playsInline
-              />
+              // Enhanced HTML5 video player for direct video files in fullscreen
+              <div className="relative w-full h-full max-w-[90vw] max-h-[90vh] bg-black rounded-lg overflow-hidden">
+                <video
+                  className="w-full h-full object-contain"
+                  controls
+                  autoPlay
+                  playsInline
+                  style={{ 
+                    border: 'none',
+                    minHeight: '400px'
+                  }}
+                >
+                  <source src={fullscreenMedia.url} type="video/mp4" />
+                  <source src={fullscreenMedia.url} type="video/mov" />
+                  <source src={fullscreenMedia.url} type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
             )}
           </div>
         </div>
