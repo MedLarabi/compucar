@@ -14,6 +14,9 @@ export async function GET(
         images: {
           orderBy: { sortOrder: "asc" },
         },
+        videos: {
+          orderBy: { sortOrder: "asc" },
+        },
         variants: {
           where: { isActive: true },
           orderBy: { createdAt: "asc" },

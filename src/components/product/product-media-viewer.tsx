@@ -12,6 +12,7 @@ import {
   Loader2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getVideoUrl } from "@/lib/utils/video-proxy";
 
 interface ProductImage {
   id: string;
@@ -69,13 +70,17 @@ export function ProductMediaViewer({
     if (shouldPreloadVideos && videos.length > 0) {
       videos.forEach(video => {
         if (video.url && !videoLoaded[video.url]) {
+          const proxiedUrl = getVideoUrl(video.url);
           const videoElement = document.createElement('video');
-          videoElement.src = video.url;
+          videoElement.src = proxiedUrl;
           videoElement.muted = true;
           videoElement.preload = 'auto';
           videoElement.oncanplaythrough = () => {
             setVideoLoaded(prev => ({ ...prev, [video.url]: true }));
             console.log('Video preloaded successfully:', video.url);
+          };
+          videoElement.onerror = (error) => {
+            console.error('Video preload failed:', video.url, error);
           };
           videoElement.load();
         }
@@ -152,7 +157,7 @@ export function ProductMediaViewer({
             )}
             
             <video
-              src={selectedMedia.url}
+              src={getVideoUrl(selectedMedia.url)}
               className="w-full h-full object-cover"
               controls
               muted={isVideoMuted}
@@ -161,7 +166,6 @@ export function ProductMediaViewer({
               poster={selectedMedia.thumbnail || undefined}
               preload="auto"
               playsInline
-              crossOrigin="anonymous"
               onLoadStart={() => console.log('Video loading started')}
               onCanPlay={() => console.log('Video can start playing')}
               onCanPlayThrough={() => {
@@ -170,6 +174,8 @@ export function ProductMediaViewer({
               }}
               onError={(e) => {
                 console.error('Video loading error:', e);
+                console.error('Failed video URL:', selectedMedia.url);
+                console.error('Proxied URL:', getVideoUrl(selectedMedia.url));
                 setVideoLoaded(prev => ({ ...prev, [selectedMedia.url]: false }));
               }}
             />
@@ -279,7 +285,7 @@ export function ProductMediaViewer({
               />
             ) : (
               <video
-                src={fullscreenMedia.url}
+                src={getVideoUrl(fullscreenMedia.url)}
                 className="max-w-full max-h-full"
                 controls
                 autoPlay
