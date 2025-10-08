@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "CompuCar - Auto Parts & Accessories",
-  description: "Premium automotive parts and accessories for all vehicle types. Quality guaranteed.",
+  title: "CompuCar - Auto Diagnostic Tools & Equipment",
+  description: "Premium auto diagnostic tools and equipment for all vehicle types. Quality guaranteed.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
   openGraph: {
     title: "CompuCar - Auto Parts & Accessories",

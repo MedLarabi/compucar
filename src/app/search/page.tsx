@@ -1,3 +1,5 @@
+"use client";
+
 import { Suspense } from "react";
 import { MainLayout } from "@/components/layout/main-layout-simple";
 import { SearchResults } from "@/components/search/search-results";

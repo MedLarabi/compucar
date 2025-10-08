@@ -10,7 +10,11 @@ export const AUTOMOTIVE_KEYWORDS = {
   // Primary categories
   PRIMARY: [
     'car accessories',
-    'automotive parts',
+    'auto diagnostic tools',
+    'car diagnostic equipment',
+    'OBD scanner',
+    'automotive diagnostics',
+    'vehicle diagnostic tools',
     'car tuning',
     'performance parts',
     'car modifications',
@@ -38,7 +42,7 @@ export const AUTOMOTIVE_KEYWORDS = {
     'car tuning parts for',
     'performance upgrades for',
     'car modification guide',
-    'automotive parts review'
+    'diagnostic tools review'
   ],
   
   // Local/Regional keywords
@@ -73,8 +77,8 @@ export const SEO_CONTENT_TEMPLATES = {
   
   // Category page SEO content
   CATEGORY: {
-    titleTemplate: '{categoryName} - Premium Car Parts | CompuCar',
-    descriptionTemplate: 'Discover our {categoryName} collection. Premium quality car parts and accessories. Free shipping on orders over 50 DA.',
+    titleTemplate: '{categoryName} - Premium Diagnostic Tools | CompuCar',
+    descriptionTemplate: 'Discover our {categoryName} collection. Premium quality diagnostic tools and equipment. Free shipping on orders over 50 DA.',
     keywordDensity: 3.0,
     minContentLength: 500,
     
@@ -195,7 +199,7 @@ export function generateProductSEOData(product: any) {
 
 export function generateCategorySEOData(category: any, productCount: number) {
   return {
-    title: `${category.name} - Premium Car Parts | CompuCar`,
+    title: `${category.name} - Premium Diagnostic Tools | CompuCar`,
     description: `Discover ${productCount}+ premium ${category.name.toLowerCase()} at CompuCar. Top brands, competitive prices, fast shipping. Shop now!`,
     keywords: [
       category.name.toLowerCase(),

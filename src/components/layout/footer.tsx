@@ -2,11 +2,11 @@ import Link from "next/link";
 import { Package, Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
-
-
+  const { t } = useLanguage();
 
   return (
     <footer className="border-t bg-background overflow-x-hidden">
@@ -22,8 +22,7 @@ export function Footer() {
                 <span className="font-bold">CompuCar</span>
               </Link>
               <p className="mt-4 text-sm text-muted-foreground max-w-md">
-                Your trusted partner for high-quality automotive parts and accessories. 
-                We provide reliable, affordable solutions to keep your vehicle running at its best.
+                {t('footer.companyDescription')}
               </p>
             </div>
               
@@ -31,15 +30,15 @@ export function Footer() {
             <div className="space-y-3">
               <div className="flex items-center justify-center lg:justify-start text-sm text-muted-foreground">
                 <Phone className="mr-2 h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
+                <span>+213559231732</span>
               </div>
               <div className="flex items-center justify-center lg:justify-start text-sm text-muted-foreground">
                 <Mail className="mr-2 h-4 w-4" />
-                <span>support@compucar.com</span>
+                <span>support@compucar.pro</span>
               </div>
               <div className="flex items-center justify-center lg:justify-start text-sm text-muted-foreground">
                 <MapPin className="mr-2 h-4 w-4" />
-                <span>123 Auto Street, Car City, CC 12345</span>
+                <span>Bd de l'Université, Bab Ezzouar, Wilaya d'Alger, DZ</span>
               </div>
             </div>
 
@@ -47,19 +46,19 @@ export function Footer() {
             <div className="flex space-x-2">
               <Button variant="ghost" size="sm" className="h-8 w-8 px-0">
                 <Facebook className="h-4 w-4" />
-                <span className="sr-only">Facebook</span>
+                <span className="sr-only">{t('footer.facebook')}</span>
               </Button>
               <Button variant="ghost" size="sm" className="h-8 w-8 px-0">
                 <Twitter className="h-4 w-4" />
-                <span className="sr-only">Twitter</span>
+                <span className="sr-only">{t('footer.twitter')}</span>
               </Button>
               <Button variant="ghost" size="sm" className="h-8 w-8 px-0">
                 <Instagram className="h-4 w-4" />
-                <span className="sr-only">Instagram</span>
+                <span className="sr-only">{t('footer.instagram')}</span>
               </Button>
               <Button variant="ghost" size="sm" className="h-8 w-8 px-0">
                 <Youtube className="h-4 w-4" />
-                <span className="sr-only">YouTube</span>
+                <span className="sr-only">{t('footer.youtube')}</span>
               </Button>
             </div>
           </div>
@@ -82,14 +81,12 @@ export function Footer() {
           </div>
         </div>
 
-
-
         <Separator className="my-4" />
 
         {/* Bottom footer */}
         <div className="flex flex-col items-center text-center">
           <p className="text-sm text-muted-foreground">
-            © {currentYear} CompuCar. All rights reserved.
+            © {currentYear} CompuCar. {t('footer.allRightsReserved')}
           </p>
         </div>
       </div>

@@ -254,8 +254,8 @@
     "performance": "Performance"
   },
   "messages": {
-    "premiumAutoParts": "Premium automotive parts and accessories",
-    "discoverWideRange": "Discover our wide range of automotive parts and accessories",
+    "premiumAutoParts": "Premium auto diagnostic tools and equipment",
+    "discoverWideRange": "Discover our wide range of professional diagnostic tools and equipment",
     "discoverQualityParts": "Discover quality automotive parts and accessories",
     "showingResults": "Showing {start}-{end} of {total} results",
     "noProductsFound": "No products found",
@@ -346,9 +346,9 @@
     }
   },
   "hero": {
-    "title": "Premium Auto Parts",
+    "title": "Premium Auto Diagnostic Tools",
     "subtitle": "Quality You Can Trust",
-    "description": "Find the best automotive parts and accessories for your vehicle",
+    "description": "Find the best diagnostic tools and equipment for professional vehicle analysis",
     "shopNow": "Shop Now",
     "browseCategories": "Browse Categories"
   },
@@ -445,7 +445,7 @@
     "company": "Company",
     "address": "Address"
   },
-  "welcome": "Welcome to our premium automotive parts store",
+  "welcome": "Welcome to our premium auto diagnostic tools store",
   "checkout": {
     "cod": {
       "title": "Cash on Delivery Checkout",
@@ -540,7 +540,7 @@
     "email": "Email",
     "address": "Address",
     "businessHours": "Business Hours",
-    "businessHoursContent": "Monday - Friday: 9:00 AM - 6:00 PM",
+    "businessHoursContent": "Saturday - Wednesday: 9:00 AM - 6:00 PM\nThursday: 9:00 AM - 2:00 PM",
     "getInTouch": "Get in Touch",
     "helpDescription": "We're here to help with any questions or concerns",
     "needQuickHelp": "Need Quick Help?",
@@ -1158,5 +1158,55 @@
     "orderNotFound": "Order not found",
     "loadingOrderDetails": "Loading order details...",
     "errorLoadingOrder": "Error loading order details. Please try again."
+  },
+  "orderSuccess": {
+    "welcome": "Welcome to CompuCar!",
+    "accountCreated": "Your account has been created and order",
+    "isConfirmed": "is confirmed",
+    "paymentPending": "Payment Pending",
+    "orderWaitingPayment": "Your order",
+    "waitingPaymentConfirmation": "is waiting for payment confirmation",
+    "paymentConfirmed": "Payment Confirmed!",
+    "thankYouPaymentConfirmed": "Thank you! Your payment has been confirmed and your order is being processed.",
+    "orderSuccessfullyPlaced": "Order Successfully Placed!",
+    "thankYouForOrder": "Thank you for your order",
+    "orderNumber": "Order #",
+    "total": "Total",
+    "overview": "Overview",
+    "items": "Items",
+    "digitalAccess": "Digital Access",
+    "delivery": "Delivery",
+    "payment": "Payment",
+    "orderSummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "discount": "Discount",
+    "customerInformation": "Customer Information",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "specialInstructions": "Special Instructions",
+    "cashOnDelivery": "Cash on Delivery (COD)",
+    "prepareExactly": "Please prepare exactly",
+    "toPayDeliveryPerson": "to pay the delivery person",
+    "digitalProductsReady": "Digital Products Ready!",
+    "digitalProductsAvailable": "Your digital products are now available for download",
+    "quickActions": "Quick Actions",
+    "continueShopping": "Continue Shopping",
+    "viewOrderHistory": "View Order History"
+  },
+  "footer": {
+    "companyDescription": "Your trusted partner for professional auto diagnostic tools and equipment. We provide reliable, cutting-edge solutions to help you diagnose and solve vehicle problems with precision.",
+    "contactInfo": "Contact Information",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "followUs": "Follow Us",
+    "facebook": "Facebook",
+    "twitter": "Twitter", 
+    "instagram": "Instagram",
+    "youtube": "YouTube",
+    "allRightsReserved": "All rights reserved."
   }
 }

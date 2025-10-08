@@ -9,11 +9,11 @@
 export const LOCAL_BUSINESS_INFO = {
   name: "CompuCar",
   type: "AutomotiveBusinessplace",
-  description: "Premium automotive parts and accessories store specializing in car tuning, performance upgrades, and quality car care products.",
+  description: "Premium auto diagnostic tools and equipment store specializing in professional vehicle diagnostics, OBD scanners, and automotive testing equipment.",
   
   // Business details
   address: {
-    streetAddress: "123 Auto Parts Street",
+    streetAddress: "123 Diagnostic Tools Street",
     addressLocality: "Your City",
     addressRegion: "Your State",
     postalCode: "12345",
@@ -57,7 +57,11 @@ export const LOCAL_SEO_KEYWORDS = {
     "car parts store near me",
     "automotive shop [city]",
     "car accessories [city]",
-    "auto parts dealer [city]",
+    "auto diagnostic tools [city]",
+    "car diagnostic equipment [city]",
+    "OBD scanner [city]",
+    "automotive diagnostics [city]",
+    "vehicle diagnostic tools [city]",
     "car tuning shop [city]"
   ],
   
@@ -93,7 +97,7 @@ export const LOCAL_SEO_KEYWORDS = {
 export const GMB_OPTIMIZATION = {
   // Business categories (primary and secondary)
   categories: [
-    "Auto Parts Store", // Primary
+    "Auto Diagnostic Tools Store", // Primary
     "Car Accessories Store",
     "Automotive Repair Shop",
     "Car Tuning Service",
@@ -161,7 +165,7 @@ export function generateLocalBusinessSchema() {
     
     "hasOfferCatalog": {
       "@type": "OfferCatalog",
-      "name": "Auto Parts & Accessories",
+      "name": "Auto Diagnostic Tools & Equipment",
       "itemListElement": [
         {
           "@type": "OfferCatalog",
@@ -242,8 +246,8 @@ export const LOCAL_CONTENT_STRATEGY = {
   // Location-specific landing pages
   locationPages: [
     {
-      title: "Auto Parts Store in [City] - CompuCar",
-      description: "Visit CompuCar's [City] location for premium car parts and accessories. Expert installation, competitive prices, and local service.",
+      title: "Auto Diagnostic Tools Store in [City] - CompuCar",
+      description: "Visit CompuCar's [City] location for premium diagnostic tools and equipment. Expert support, competitive prices, and local service.",
       content: {
         sections: [
           "local-intro",

@@ -19,7 +19,7 @@ export const generateOrganizationStructuredData = () => {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "CompuCar",
-    "description": "Premium automotive parts and accessories for car enthusiasts",
+    "description": "Premium auto diagnostic tools and equipment for automotive professionals",
     "url": baseUrl,
     "logo": `${baseUrl}/logo.png`,
     "image": `${baseUrl}/og-image.jpg`,
@@ -38,7 +38,7 @@ export const generateOrganizationStructuredData = () => {
     },
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "123 Auto Parts Blvd",
+      "streetAddress": "123 Diagnostic Tools Blvd",
       "addressLocality": "Detroit",
       "addressRegion": "MI",
       "postalCode": "48201",
@@ -62,7 +62,7 @@ export const generateWebsiteStructuredData = () => {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "CompuCar",
-    "description": "Premium automotive parts and accessories",
+    "description": "Premium auto diagnostic tools and equipment",
     "url": baseUrl,
     "potentialAction": {
       "@type": "SearchAction",
@@ -94,7 +94,7 @@ export const generateProductStructuredData = (product: ProductWithCategory) => {
       "@type": "Brand",
       "name": product.brand || "CompuCar"
     },
-    "category": product.category?.name || "Automotive Parts",
+    "category": product.category?.name || "Auto Diagnostic Tools",
     "url": `${baseUrl}/products/${product.slug}`,
     "offers": {
       "@type": "Offer",
@@ -205,13 +205,13 @@ export const generateLocalBusinessStructuredData = () => {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "CompuCar",
-    "description": "Premium automotive parts and accessories store",
+    "description": "Premium auto diagnostic tools and equipment store",
     "image": `${baseUrl}/storefront.jpg`,
     "url": baseUrl,
     "telephone": "+1-555-COMPUCAR",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "123 Auto Parts Blvd",
+      "streetAddress": "123 Diagnostic Tools Blvd",
       "addressLocality": "Detroit",
       "addressRegion": "MI",
       "postalCode": "48201",

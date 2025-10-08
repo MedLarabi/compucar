@@ -32,7 +32,7 @@ export async function generateProductMetadata(slug: string): Promise<Metadata> {
       : 0;
 
     // SEO-optimized title (under 60 characters)
-    const title = `${product.name} | CompuCar Auto Parts`;
+    const title = `${product.name} | CompuCar Diagnostic Tools`;
     
     // SEO-optimized description (under 160 characters)
     const description = product.description.length > 150 
@@ -44,9 +44,10 @@ export async function generateProductMetadata(slug: string): Promise<Metadata> {
       product.name.toLowerCase(),
       product.category?.name.toLowerCase(),
       product.brand?.toLowerCase(),
-      'automotive parts',
-      'car accessories',
-      'auto parts',
+      'auto diagnostic tools',
+      'car diagnostic equipment',
+      'automotive diagnostics',
+      'OBD scanner',
       product.sku?.toLowerCase()
     ].filter(Boolean).join(', ');
 
@@ -103,8 +104,8 @@ export async function generateProductMetadata(slug: string): Promise<Metadata> {
   } catch (error) {
     console.error('Error generating product metadata:', error);
     return {
-      title: 'CompuCar - Premium Automotive Parts',
-      description: 'Discover premium automotive parts and accessories.',
+      title: 'CompuCar - Premium Auto Diagnostic Tools',
+      description: 'Discover premium auto diagnostic tools and equipment.',
     };
   }
 }

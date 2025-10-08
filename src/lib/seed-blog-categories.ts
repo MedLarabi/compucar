@@ -21,7 +21,7 @@ export async function seedBlogCategories() {
     {
       name: 'Product Reviews',
       slug: 'product-reviews',
-      description: 'In-depth reviews of automotive parts and accessories',
+      description: 'In-depth reviews of auto diagnostic tools and equipment',
       color: '#10B981',
       sortOrder: 3,
     },

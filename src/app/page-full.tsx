@@ -79,12 +79,12 @@ export default function Home() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center space-y-4 text-center">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-              Premium Auto Parts
+              Premium Auto Diagnostic Tools
               <span className="block text-primary">For Every Vehicle</span>
             </h1>
             <p className="mx-auto max-w-[700px] text-muted-foreground text-lg md:text-xl">
-              Discover high-quality automotive parts and accessories. 
-              From engine components to exterior styling, we have everything to keep your car running perfectly.
+              Discover high-quality auto diagnostic tools and equipment. 
+              From OBD scanners to professional diagnostic systems, we have everything to help you diagnose vehicle problems accurately.
             </p>
             <div className="flex flex-col gap-2 sm:flex-row">
               <Button size="lg" className="h-12 px-8">

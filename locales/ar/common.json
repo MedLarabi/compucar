@@ -253,8 +253,8 @@
     "performance": "الأداء"
   },
   "messages": {
-    "premiumAutoParts": "قطع غيار ومستلزمات سيارات عالية الجودة",
-    "discoverWideRange": "اكتشف مجموعتنا الواسعة من قطع غيار ومستلزمات السيارات",
+    "premiumAutoParts": "أدوات تشخيص السيارات المهنية والمعدات",
+    "discoverWideRange": "اكتشف مجموعتنا الواسعة من أدوات التشخيص المهنية والمعدات",
     "discoverQualityParts": "اكتشف قطع غيار ومستلزمات سيارات عالية الجودة",
     "showingResults": "عرض {start}-{end} من {total} نتيجة",
     "noProductsFound": "لم يتم العثور على منتجات",
@@ -312,9 +312,9 @@
     }
   },
   "hero": {
-    "title": "قطع غيار سيارات متميزة",
+    "title": "أدوات تشخيص السيارات المتميزة",
     "subtitle": "جودة يمكنك الوثوق بها",
-    "description": "اعثر على أفضل قطع غيار ومستلزمات السيارات لمركبتك",
+    "description": "اعثر على أفضل أدوات التشخيص والمعدات للتحليل المهني للمركبات",
     "shopNow": "تسوق الآن",
     "browseCategories": "تصفح الفئات"
   },
@@ -477,7 +477,7 @@
     "company": "الشركة",
     "address": "العنوان"
   },
-  "welcome": "مرحباً بك في متجر قطع غيار السيارات المتميز",
+  "welcome": "مرحباً بك في متجر أدوات تشخيص السيارات المتميز",
   "checkout": {
     "cod": {
       "title": "الدفع عند الاستلام",
@@ -572,7 +572,7 @@
     "email": "البريد الإلكتروني",
     "address": "العنوان",
     "businessHours": "ساعات العمل",
-    "businessHoursContent": "الاثنين - الجمعة: 9:00 ص - 6:00 م",
+    "businessHoursContent": "السبت - الأربعاء: 9:00 ص - 6:00 م\nالخميس: 9:00 ص - 2:00 م",
     "getInTouch": "تواصل معنا",
     "helpDescription": "نحن هنا للمساعدة في أي أسئلة أو مخاوف",
     "needQuickHelp": "تحتاج مساعدة سريعة؟",
@@ -1148,5 +1148,55 @@
       "storePickup": "الاستلام من المتجر",
       "standardDelivery": "التوصيل العادي"
     }
+  },
+  "orderSuccess": {
+    "welcome": "مرحباً بك في CompuCar!",
+    "accountCreated": "تم إنشاء حسابك والطلب",
+    "isConfirmed": "مؤكد",
+    "paymentPending": "الدفع معلق",
+    "orderWaitingPayment": "طلبك",
+    "waitingPaymentConfirmation": "في انتظار تأكيد الدفع",
+    "paymentConfirmed": "تم تأكيد الدفع!",
+    "thankYouPaymentConfirmed": "شكراً لك! تم تأكيد دفعتك وطلبك قيد المعالجة.",
+    "orderSuccessfullyPlaced": "تم تقديم الطلب بنجاح!",
+    "thankYouForOrder": "شكراً لك على طلبك",
+    "orderNumber": "الطلب #",
+    "total": "المجموع",
+    "overview": "نظرة عامة",
+    "items": "العناصر",
+    "digitalAccess": "الوصول الرقمي",
+    "delivery": "التوصيل",
+    "payment": "الدفع",
+    "orderSummary": "ملخص الطلب",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "الشحن",
+    "tax": "الضريبة",
+    "discount": "الخصم",
+    "customerInformation": "معلومات العميل",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "phone": "الهاتف",
+    "specialInstructions": "تعليمات خاصة",
+    "cashOnDelivery": "الدفع عند الاستلام (COD)",
+    "prepareExactly": "يرجى تحضير بالضبط",
+    "toPayDeliveryPerson": "لدفعها لعامل التوصيل",
+    "digitalProductsReady": "المنتجات الرقمية جاهزة!",
+    "digitalProductsAvailable": "منتجاتك الرقمية متاحة الآن للتحميل",
+    "quickActions": "إجراءات سريعة",
+    "continueShopping": "متابعة التسوق",
+    "viewOrderHistory": "عرض تاريخ الطلبات"
+  },
+  "footer": {
+    "companyDescription": "شريكك الموثوق لأدوات ومعدات تشخيص السيارات المهنية. نحن نقدم حلول موثوقة ومتطورة لمساعدتك في تشخيص وحل مشاكل المركبات بدقة.",
+    "contactInfo": "معلومات الاتصال",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "address": "العنوان",
+    "followUs": "تابعنا",
+    "facebook": "فيسبوك",
+    "twitter": "تويتر",
+    "instagram": "إنستغرام",
+    "youtube": "يوتيوب",
+    "allRightsReserved": "جميع الحقوق محفوظة."
   }
 }

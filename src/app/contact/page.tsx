@@ -160,19 +160,19 @@ Time: ${new Date().toLocaleString()}
     {
       icon: Phone,
       title: t('contact.phone'),
-      content: "+1 (555) 123-4567",
-      link: "tel:+15551234567"
+      content: "+213559231732",
+      link: "tel:+213559231732"
     },
     {
       icon: Mail,
       title: t('contact.email'),
-      content: "support@compucar.com",
-      link: "mailto:support@compucar.com"
+      content: "support@compucar.pro",
+      link: "mailto:support@compucar.pro"
     },
     {
       icon: MapPin,
       title: t('contact.address'),
-      content: "123 Auto Street, Car City, CC 12345",
+      content: "Bd de l'Université, Bab Ezzouar, Wilaya d'Alger, DZ",
       link: null
     },
     {
@@ -246,13 +246,13 @@ Time: ${new Date().toLocaleString()}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Button variant="outline" size="sm" className="flex-1" asChild>
-                    <a href="tel:+15551234567">
+                    <a href="tel:+213559231732">
                       <Phone className="h-4 w-4 mr-2" />
                       {t('contact.callNow')}
                     </a>
                   </Button>
                   <Button variant="outline" size="sm" className="flex-1" asChild>
-                    <a href="mailto:support@compucar.com">
+                    <a href="mailto:support@compucar.pro">
                       <Mail className="h-4 w-4 mr-2" />
                       {t('contact.emailUs')}
                     </a>

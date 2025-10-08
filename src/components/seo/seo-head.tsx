@@ -19,9 +19,9 @@ interface SEOHeadProps {
 }
 
 export function SEOHead({
-  title = "CompuCar - Premium Automotive Parts & Accessories",
-  description = "Discover premium automotive parts, accessories, and expert advice at CompuCar. Quality products for car enthusiasts with fast shipping and expert support.",
-  keywords = "automotive parts, car accessories, auto parts, CompuCar, vehicle upgrades, car modification, automotive tools",
+  title = "CompuCar - Premium Auto Diagnostic Tools & Equipment",
+  description = "Discover premium auto diagnostic tools, equipment, and expert advice at CompuCar. Quality diagnostic solutions for professionals with fast shipping and expert support.",
+  keywords = "auto diagnostic tools, car diagnostic equipment, automotive diagnostics, CompuCar, vehicle diagnosis, car scanner, OBD tools, professional diagnostics",
   image,
   url,
   type = 'website',
@@ -120,7 +120,7 @@ export function SEOHead({
       <meta name="ICBM" content="42.3314, -83.0458" />
 
       {/* Business Tags */}
-      <meta name="business:contact_data:street_address" content="123 Auto Parts Blvd" />
+      <meta name="business:contact_data:street_address" content="123 Diagnostic Tools Blvd" />
       <meta name="business:contact_data:locality" content="Detroit" />
       <meta name="business:contact_data:region" content="MI" />
       <meta name="business:contact_data:postal_code" content="48201" />
