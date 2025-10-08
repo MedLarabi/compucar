@@ -52,10 +52,18 @@ export function getVideoUrl(originalUrl: string): string {
   }
   
   const currentDomain = window.location.hostname;
+  console.log('Video URL processing:', {
+    originalUrl,
+    currentDomain,
+    needsProxy: needsVideoProxy(originalUrl, currentDomain)
+  });
   
   if (needsVideoProxy(originalUrl, currentDomain)) {
-    return getProxiedVideoUrl(originalUrl);
+    const proxiedUrl = getProxiedVideoUrl(originalUrl);
+    console.log('Using proxied URL:', proxiedUrl);
+    return proxiedUrl;
   }
   
+  console.log('Using original URL:', originalUrl);
   return originalUrl;
 }

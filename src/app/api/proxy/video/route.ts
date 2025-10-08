@@ -33,13 +33,19 @@ export async function GET(request: NextRequest) {
     const videoResponse = await fetch(videoUrl, {
       headers: {
         'User-Agent': 'CompuCar-VideoProxy/1.0',
+        'Accept': 'video/*,*/*;q=0.9',
+        'Accept-Encoding': 'identity', // Disable compression for video
       },
     });
 
+    console.log('Video response status:', videoResponse.status, videoResponse.statusText);
+    console.log('Video response headers:', Object.fromEntries(videoResponse.headers.entries()));
+
     if (!videoResponse.ok) {
       console.error('Failed to fetch video:', videoResponse.status, videoResponse.statusText);
+      console.error('Response headers:', Object.fromEntries(videoResponse.headers.entries()));
       return NextResponse.json(
-        { error: 'Failed to fetch video from source' }, 
+        { error: 'Failed to fetch video from source', status: videoResponse.status, statusText: videoResponse.statusText }, 
         { status: videoResponse.status }
       );
     }
@@ -62,31 +68,43 @@ export async function GET(request: NextRequest) {
       'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
       'Access-Control-Allow-Headers': 'Range, Content-Range, Content-Length',
       'Cache-Control': 'public, max-age=31536000', // Cache for 1 year
+      'Accept-Ranges': 'bytes',
     });
 
     if (contentLength) {
       headers.set('Content-Length', contentLength);
     }
-    
-    if (acceptRanges) {
-      headers.set('Accept-Ranges', acceptRanges);
-    }
 
     // Handle range requests for video streaming
     const range = request.headers.get('range');
     if (range && contentLength) {
+      console.log('Range request received:', range);
       const parts = range.replace(/bytes=/, '').split('-');
       const start = parseInt(parts[0], 10);
       const end = parts[1] ? parseInt(parts[1], 10) : parseInt(contentLength) - 1;
       const chunksize = (end - start) + 1;
       
-      headers.set('Content-Range', `bytes ${start}-${end}/${contentLength}`);
-      headers.set('Content-Length', chunksize.toString());
+      console.log('Range details:', { start, end, chunksize, contentLength });
       
-      return new NextResponse(videoStream, {
-        status: 206, // Partial Content
-        headers,
+      // Make a range request to the original server
+      const rangeResponse = await fetch(videoUrl, {
+        headers: {
+          'User-Agent': 'CompuCar-VideoProxy/1.0',
+          'Accept': 'video/*,*/*;q=0.9',
+          'Accept-Encoding': 'identity',
+          'Range': range,
+        },
       });
+
+      if (rangeResponse.status === 206) {
+        headers.set('Content-Range', `bytes ${start}-${end}/${contentLength}`);
+        headers.set('Content-Length', chunksize.toString());
+        
+        return new NextResponse(rangeResponse.body, {
+          status: 206, // Partial Content
+          headers,
+        });
+      }
     }
 
     return new NextResponse(videoStream, {
