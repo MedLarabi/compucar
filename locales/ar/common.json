@@ -1198,5 +1198,106 @@
     "instagram": "إنستغرام",
     "youtube": "يوتيوب",
     "allRightsReserved": "جميع الحقوق محفوظة."
+  },
+  "admin": {
+    "navigation": {
+      "dashboard": "لوحة التحكم",
+      "products": "المنتجات",
+      "orders": "الطلبات",
+      "files": "الملفات",
+      "users": "المستخدمون",
+      "courses": "الدورات",
+      "reviews": "المراجعات",
+      "notifications": "الإشعارات",
+      "blog": "المدونة",
+      "seo": "تحسين محركات البحث",
+      "analytics": "التحليلات"
+    },
+    "quickActions": {
+      "addProduct": "إضافة منتج",
+      "addCourse": "إضافة دورة",
+      "viewOrders": "عرض الطلبات",
+      "manageFiles": "إدارة الملفات",
+      "analytics": "التحليلات"
+    },
+    "files": {
+      "description": "إدارة جميع ملفات التيونينغ التي رفعها العملاء",
+      "allFiles": "جميع الملفات",
+      "received": "مستلمة",
+      "inProgress": "قيد المعالجة",
+      "ready": "جاهزة"
+    },
+    "analytics": {
+      "title": "لوحة التحليلات",
+      "subtitle": "رؤى تجارية في الوقت الفعلي لآخر",
+      "loadingSubtitle": "جاري تحميل الرؤى التجارية الشاملة...",
+      "days": "أيام",
+      "timeRanges": {
+        "7": "آخر 7 أيام",
+        "14": "آخر 14 يوم",
+        "30": "آخر 30 يوم",
+        "60": "آخر 60 يوم",
+        "90": "آخر 90 يوم"
+      },
+      "refresh": "تحديث",
+      "metrics": {
+        "totalRevenue": "إجمالي الإيرادات",
+        "totalOrders": "إجمالي الطلبات",
+        "averageOrderValue": "متوسط قيمة الطلب",
+        "conversionRate": "معدل التحويل",
+        "fromLastPeriod": "من الفترة السابقة",
+        "perOrderAverage": "متوسط كل طلب",
+        "ordersPerCustomer": "طلبات لكل عميل"
+      },
+      "tabs": {
+        "overview": "نظرة عامة",
+        "sales": "تحليل المبيعات",
+        "products": "المنتجات",
+        "customers": "العملاء"
+      },
+      "charts": {
+        "salesTrend": {
+          "title": "اتجاه المبيعات",
+          "description": "الإيرادات اليومية عبر الوقت"
+        },
+        "orderStatus": {
+          "title": "توزيع حالة الطلبات",
+          "description": "تفصيل حالة الطلبات الحالية"
+        },
+        "topProducts": {
+          "title": "أفضل المنتجات حسب الإيرادات",
+          "description": "المنتجات الأفضل أداءً هذه الفترة"
+        },
+        "customerGrowth": {
+          "title": "نمو العملاء",
+          "description": "اكتساب العملاء الشهري"
+        },
+        "paymentMethods": {
+          "title": "طرق الدفع",
+          "description": "الإيرادات حسب طريقة الدفع"
+        }
+      },
+      "productInsights": {
+        "totalProducts": "إجمالي المنتجات",
+        "activeProducts": "المنتجات النشطة",
+        "averageRating": "متوسط التقييم",
+        "fromReviews": "من {count} مراجعة",
+        "stockAlerts": "تنبيهات المخزون",
+        "outOfStock": "{count} نفد من المخزون"
+      },
+      "customerInsights": {
+        "totalCustomers": "إجمالي العملاء",
+        "registeredCustomers": "العملاء المسجلون",
+        "newCustomers": "عملاء جدد",
+        "thisPeriod": "هذه الفترة",
+        "retentionRate": "معدل الاحتفاظ",
+        "repeatCustomers": "{count} عملاء متكررون"
+      },
+      "chartLabels": {
+        "newCustomers": "عملاء جدد",
+        "totalCustomers": "إجمالي العملاء",
+        "transactions": "معاملات"
+      }
+    }
   }
 }

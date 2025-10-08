@@ -1129,5 +1129,106 @@
     "instagram": "Instagram", 
     "youtube": "YouTube",
     "allRightsReserved": "Tous droits réservés."
+  },
+  "admin": {
+    "navigation": {
+      "dashboard": "Tableau de Bord",
+      "products": "Produits",
+      "orders": "Commandes",
+      "files": "Fichiers",
+      "users": "Utilisateurs",
+      "courses": "Cours",
+      "reviews": "Avis",
+      "notifications": "Notifications",
+      "blog": "Blog",
+      "seo": "SEO",
+      "analytics": "Analytiques"
+    },
+    "quickActions": {
+      "addProduct": "Ajouter un Produit",
+      "addCourse": "Ajouter un Cours",
+      "viewOrders": "Voir les Commandes",
+      "manageFiles": "Gérer les Fichiers",
+      "analytics": "Analytiques"
+    },
+    "files": {
+      "description": "Gérez tous les fichiers de tuning téléchargés par les clients",
+      "allFiles": "Tous les Fichiers",
+      "received": "Reçus",
+      "inProgress": "En Cours",
+      "ready": "Prêts"
+    },
+    "analytics": {
+      "title": "Tableau de Bord Analytique",
+      "subtitle": "Informations commerciales en temps réel pour les derniers",
+      "loadingSubtitle": "Chargement des informations commerciales complètes...",
+      "days": "jours",
+      "timeRanges": {
+        "7": "7 derniers jours",
+        "14": "14 derniers jours",
+        "30": "30 derniers jours",
+        "60": "60 derniers jours",
+        "90": "90 derniers jours"
+      },
+      "refresh": "Actualiser",
+      "metrics": {
+        "totalRevenue": "Chiffre d'Affaires Total",
+        "totalOrders": "Commandes Totales",
+        "averageOrderValue": "Valeur Moyenne des Commandes",
+        "conversionRate": "Taux de Conversion",
+        "fromLastPeriod": "par rapport à la période précédente",
+        "perOrderAverage": "Moyenne par commande",
+        "ordersPerCustomer": "Commandes par client"
+      },
+      "tabs": {
+        "overview": "Aperçu",
+        "sales": "Analyse des Ventes",
+        "products": "Produits",
+        "customers": "Clients"
+      },
+      "charts": {
+        "salesTrend": {
+          "title": "Tendance des Ventes",
+          "description": "Chiffre d'affaires quotidien dans le temps"
+        },
+        "orderStatus": {
+          "title": "Répartition du Statut des Commandes",
+          "description": "Répartition actuelle du statut des commandes"
+        },
+        "topProducts": {
+          "title": "Top Produits par Chiffre d'Affaires",
+          "description": "Produits les plus performants cette période"
+        },
+        "customerGrowth": {
+          "title": "Croissance de la Clientèle",
+          "description": "Acquisition mensuelle de clients"
+        },
+        "paymentMethods": {
+          "title": "Méthodes de Paiement",
+          "description": "Chiffre d'affaires par méthode de paiement"
+        }
+      },
+      "productInsights": {
+        "totalProducts": "Total des Produits",
+        "activeProducts": "Produits actifs",
+        "averageRating": "Note Moyenne",
+        "fromReviews": "À partir de {count} avis",
+        "stockAlerts": "Alertes de Stock",
+        "outOfStock": "{count} en rupture de stock"
+      },
+      "customerInsights": {
+        "totalCustomers": "Total des Clients",
+        "registeredCustomers": "Clients enregistrés",
+        "newCustomers": "Nouveaux Clients",
+        "thisPeriod": "Cette période",
+        "retentionRate": "Taux de Rétention",
+        "repeatCustomers": "{count} clients fidèles"
+      },
+      "chartLabels": {
+        "newCustomers": "Nouveaux Clients",
+        "totalCustomers": "Total des Clients",
+        "transactions": "transactions"
+      }
+    }
   }
 }

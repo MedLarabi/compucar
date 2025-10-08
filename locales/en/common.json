@@ -1208,5 +1208,106 @@
     "instagram": "Instagram",
     "youtube": "YouTube",
     "allRightsReserved": "All rights reserved."
+  },
+  "admin": {
+    "navigation": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "orders": "Orders",
+      "files": "Files",
+      "users": "Users",
+      "courses": "Courses",
+      "reviews": "Reviews",
+      "notifications": "Notifications",
+      "blog": "Blog",
+      "seo": "SEO",
+      "analytics": "Analytics"
+    },
+    "quickActions": {
+      "addProduct": "Add Product",
+      "addCourse": "Add Course",
+      "viewOrders": "View Orders",
+      "manageFiles": "Manage Files",
+      "analytics": "Analytics"
+    },
+    "files": {
+      "description": "Manage all tuning files uploaded by customers",
+      "allFiles": "All Files",
+      "received": "Received",
+      "inProgress": "In Progress",
+      "ready": "Ready"
+    },
+    "analytics": {
+      "title": "Analytics Dashboard",
+      "subtitle": "Real-time business insights for the last",
+      "loadingSubtitle": "Loading comprehensive business insights...",
+      "days": "days",
+      "timeRanges": {
+        "7": "Last 7 days",
+        "14": "Last 14 days",
+        "30": "Last 30 days",
+        "60": "Last 60 days",
+        "90": "Last 90 days"
+      },
+      "refresh": "Refresh",
+      "metrics": {
+        "totalRevenue": "Total Revenue",
+        "totalOrders": "Total Orders",
+        "averageOrderValue": "Average Order Value",
+        "conversionRate": "Conversion Rate",
+        "fromLastPeriod": "from last period",
+        "perOrderAverage": "Per order average",
+        "ordersPerCustomer": "Orders per customer"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "sales": "Sales Analysis",
+        "products": "Products",
+        "customers": "Customers"
+      },
+      "charts": {
+        "salesTrend": {
+          "title": "Sales Trend",
+          "description": "Daily revenue over time"
+        },
+        "orderStatus": {
+          "title": "Order Status Distribution",
+          "description": "Current order status breakdown"
+        },
+        "topProducts": {
+          "title": "Top Products by Revenue",
+          "description": "Best performing products this period"
+        },
+        "customerGrowth": {
+          "title": "Customer Growth",
+          "description": "Monthly customer acquisition"
+        },
+        "paymentMethods": {
+          "title": "Payment Methods",
+          "description": "Revenue by payment method"
+        }
+      },
+      "productInsights": {
+        "totalProducts": "Total Products",
+        "activeProducts": "Active products",
+        "averageRating": "Average Rating",
+        "fromReviews": "From {count} reviews",
+        "stockAlerts": "Stock Alerts",
+        "outOfStock": "{count} out of stock"
+      },
+      "customerInsights": {
+        "totalCustomers": "Total Customers",
+        "registeredCustomers": "Registered customers",
+        "newCustomers": "New Customers",
+        "thisPeriod": "This period",
+        "retentionRate": "Retention Rate",
+        "repeatCustomers": "{count} repeat customers"
+      },
+      "chartLabels": {
+        "newCustomers": "New Customers",
+        "totalCustomers": "Total Customers",
+        "transactions": "transactions"
+      }
+    }
   }
 }

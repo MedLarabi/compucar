@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   BarChart,
   Bar,
@@ -53,6 +54,7 @@ export default function AdminAnalyticsPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState("30");
+  const { t } = useLanguage();
 
   useEffect(() => {
     fetchAnalytics();
@@ -108,8 +110,8 @@ export default function AdminAnalyticsPage() {
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-3xl font-bold tracking-tight">Analytics Dashboard</h1>
-                <p className="text-muted-foreground">Loading comprehensive business insights...</p>
+                <h1 className="text-3xl font-bold tracking-tight">{t('admin.analytics.title')}</h1>
+                <p className="text-muted-foreground">{t('admin.analytics.loadingSubtitle')}</p>
               </div>
             </div>
             <div className="grid gap-6 md:grid-cols-4">
@@ -138,9 +140,9 @@ export default function AdminAnalyticsPage() {
           {/* Header */}
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">Analytics Dashboard</h1>
+              <h1 className="text-3xl font-bold tracking-tight">{t('admin.analytics.title')}</h1>
               <p className="text-muted-foreground">
-                Real-time business insights for the last {data.summary?.period || timeRange + ' days'}
+                {t('admin.analytics.subtitle')} {data.summary?.period || timeRange + ' ' + t('admin.analytics.days')}
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -149,16 +151,16 @@ export default function AdminAnalyticsPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="7">Last 7 days</SelectItem>
-                  <SelectItem value="14">Last 14 days</SelectItem>
-                  <SelectItem value="30">Last 30 days</SelectItem>
-                  <SelectItem value="60">Last 60 days</SelectItem>
-                  <SelectItem value="90">Last 90 days</SelectItem>
+                  <SelectItem value="7">{t('admin.analytics.timeRanges.7')}</SelectItem>
+                  <SelectItem value="14">{t('admin.analytics.timeRanges.14')}</SelectItem>
+                  <SelectItem value="30">{t('admin.analytics.timeRanges.30')}</SelectItem>
+                  <SelectItem value="60">{t('admin.analytics.timeRanges.60')}</SelectItem>
+                  <SelectItem value="90">{t('admin.analytics.timeRanges.90')}</SelectItem>
                 </SelectContent>
               </Select>
               <Button variant="outline" onClick={fetchAnalytics}>
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Refresh
+                {t('admin.analytics.refresh')}
               </Button>
             </div>
           </div>
@@ -167,7 +169,7 @@ export default function AdminAnalyticsPage() {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('admin.analytics.metrics.totalRevenue')}</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -177,14 +179,14 @@ export default function AdminAnalyticsPage() {
                   <span className={cn("ml-1", getChangeColor(data.stats?.revenueChange || 0))}>
                     {(data.stats?.revenueChange || 0) > 0 ? '+' : ''}{(data.stats?.revenueChange || 0).toFixed(1)}%
                   </span>
-                  <span className="text-muted-foreground ml-1">from last period</span>
+                  <span className="text-muted-foreground ml-1">{t('admin.analytics.metrics.fromLastPeriod')}</span>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('admin.analytics.metrics.totalOrders')}</CardTitle>
                 <ShoppingCart className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
@@ -194,33 +196,33 @@ export default function AdminAnalyticsPage() {
                   <span className={cn("ml-1", getChangeColor(data.stats?.ordersChange || 0))}>
                     {(data.stats?.ordersChange || 0) > 0 ? '+' : ''}{(data.stats?.ordersChange || 0).toFixed(1)}%
                   </span>
-                  <span className="text-muted-foreground ml-1">from last period</span>
+                  <span className="text-muted-foreground ml-1">{t('admin.analytics.metrics.fromLastPeriod')}</span>
                 </div>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Average Order Value</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('admin.analytics.metrics.averageOrderValue')}</CardTitle>
                 <Target className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{formatCurrency(data.stats?.averageOrderValue || 0)}</div>
                 <p className="text-xs text-muted-foreground">
-                  Per order average
+                  {t('admin.analytics.metrics.perOrderAverage')}
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('admin.analytics.metrics.conversionRate')}</CardTitle>
                 <Activity className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{(data.stats?.conversionRate || 0).toFixed(2)}%</div>
                 <p className="text-xs text-muted-foreground">
-                  Orders per customer
+                  {t('admin.analytics.metrics.ordersPerCustomer')}
                 </p>
               </CardContent>
             </Card>
@@ -229,10 +231,10 @@ export default function AdminAnalyticsPage() {
           {/* Charts and more content */}
           <Tabs defaultValue="overview" className="space-y-4">
             <TabsList>
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="sales">Sales Analysis</TabsTrigger>
-              <TabsTrigger value="products">Products</TabsTrigger>
-              <TabsTrigger value="customers">Customers</TabsTrigger>
+              <TabsTrigger value="overview">{t('admin.analytics.tabs.overview')}</TabsTrigger>
+              <TabsTrigger value="sales">{t('admin.analytics.tabs.sales')}</TabsTrigger>
+              <TabsTrigger value="products">{t('admin.analytics.tabs.products')}</TabsTrigger>
+              <TabsTrigger value="customers">{t('admin.analytics.tabs.customers')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
@@ -240,8 +242,8 @@ export default function AdminAnalyticsPage() {
                 {/* Sales Trend */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Sales Trend</CardTitle>
-                    <CardDescription>Daily revenue over time</CardDescription>
+                    <CardTitle>{t('admin.analytics.charts.salesTrend.title')}</CardTitle>
+                    <CardDescription>{t('admin.analytics.charts.salesTrend.description')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
@@ -259,8 +261,8 @@ export default function AdminAnalyticsPage() {
                 {/* Order Status Distribution */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Order Status Distribution</CardTitle>
-                    <CardDescription>Current order status breakdown</CardDescription>
+                    <CardTitle>{t('admin.analytics.charts.orderStatus.title')}</CardTitle>
+                    <CardDescription>{t('admin.analytics.charts.orderStatus.description')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
@@ -288,8 +290,8 @@ export default function AdminAnalyticsPage() {
               {/* Top Products */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Top Products by Revenue</CardTitle>
-                  <CardDescription>Best performing products this period</CardDescription>
+                  <CardTitle>{t('admin.analytics.charts.topProducts.title')}</CardTitle>
+                  <CardDescription>{t('admin.analytics.charts.topProducts.description')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
@@ -310,8 +312,8 @@ export default function AdminAnalyticsPage() {
                 {/* Customer Growth */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Customer Growth</CardTitle>
-                    <CardDescription>Monthly customer acquisition</CardDescription>
+                    <CardTitle>{t('admin.analytics.charts.customerGrowth.title')}</CardTitle>
+                    <CardDescription>{t('admin.analytics.charts.customerGrowth.description')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
@@ -320,8 +322,8 @@ export default function AdminAnalyticsPage() {
                         <XAxis dataKey="month" />
                         <YAxis />
                         <Tooltip />
-                        <Line type="monotone" dataKey="newCustomers" stroke="#3b82f6" name="New Customers" />
-                        <Line type="monotone" dataKey="totalCustomers" stroke="#10b981" name="Total Customers" />
+                        <Line type="monotone" dataKey="newCustomers" stroke="#3b82f6" name={t('admin.analytics.chartLabels.newCustomers')} />
+                        <Line type="monotone" dataKey="totalCustomers" stroke="#10b981" name={t('admin.analytics.chartLabels.totalCustomers')} />
                       </LineChart>
                     </ResponsiveContainer>
                   </CardContent>
@@ -330,8 +332,8 @@ export default function AdminAnalyticsPage() {
                 {/* Payment Methods */}
                 <Card>
                   <CardHeader>
-                    <CardTitle>Payment Methods</CardTitle>
-                    <CardDescription>Revenue by payment method</CardDescription>
+                    <CardTitle>{t('admin.analytics.charts.paymentMethods.title')}</CardTitle>
+                    <CardDescription>{t('admin.analytics.charts.paymentMethods.description')}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
@@ -346,7 +348,7 @@ export default function AdminAnalyticsPage() {
                           </div>
                           <div className="text-right">
                             <div className="font-semibold">{formatCurrency(method.revenue)}</div>
-                            <div className="text-sm text-muted-foreground">{method.count} transactions</div>
+                            <div className="text-sm text-muted-foreground">{method.count} {t('admin.analytics.chartLabels.transactions')}</div>
                           </div>
                         </div>
                       ))}
@@ -360,31 +362,31 @@ export default function AdminAnalyticsPage() {
               <div className="grid gap-6 md:grid-cols-3">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+                    <CardTitle className="text-sm font-medium">{t('admin.analytics.productInsights.totalProducts')}</CardTitle>
                     <Package className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{formatNumber(data.productInsights?.totalProducts || 0)}</div>
-                    <p className="text-xs text-muted-foreground">Active products</p>
+                    <p className="text-xs text-muted-foreground">{t('admin.analytics.productInsights.activeProducts')}</p>
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Average Rating</CardTitle>
+                    <CardTitle className="text-sm font-medium">{t('admin.analytics.productInsights.averageRating')}</CardTitle>
                     <Star className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{data.productInsights?.averageRating || 0}/5</div>
                     <p className="text-xs text-muted-foreground">
-                      From {formatNumber(data.productInsights?.totalReviews || 0)} reviews
+                      {t('admin.analytics.productInsights.fromReviews', { count: formatNumber(data.productInsights?.totalReviews || 0) })}
                     </p>
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Stock Alerts</CardTitle>
+                    <CardTitle className="text-sm font-medium">{t('admin.analytics.productInsights.stockAlerts')}</CardTitle>
                     <AlertTriangle className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
@@ -392,7 +394,7 @@ export default function AdminAnalyticsPage() {
                       {data.productInsights?.lowStockProducts || 0}
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      {data.productInsights?.outOfStockProducts || 0} out of stock
+                      {t('admin.analytics.productInsights.outOfStock', { count: data.productInsights?.outOfStockProducts || 0 })}
                     </p>
                   </CardContent>
                 </Card>
@@ -403,35 +405,35 @@ export default function AdminAnalyticsPage() {
               <div className="grid gap-6 md:grid-cols-3">
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
+                    <CardTitle className="text-sm font-medium">{t('admin.analytics.customerInsights.totalCustomers')}</CardTitle>
                     <Users className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{formatNumber(data.customerInsights?.totalCustomers || 0)}</div>
-                    <p className="text-xs text-muted-foreground">Registered customers</p>
+                    <p className="text-xs text-muted-foreground">{t('admin.analytics.customerInsights.registeredCustomers')}</p>
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">New Customers</CardTitle>
+                    <CardTitle className="text-sm font-medium">{t('admin.analytics.customerInsights.newCustomers')}</CardTitle>
                     <TrendingUp className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{formatNumber(data.customerInsights?.newCustomers || 0)}</div>
-                    <p className="text-xs text-muted-foreground">This period</p>
+                    <p className="text-xs text-muted-foreground">{t('admin.analytics.customerInsights.thisPeriod')}</p>
                   </CardContent>
                 </Card>
 
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Retention Rate</CardTitle>
+                    <CardTitle className="text-sm font-medium">{t('admin.analytics.customerInsights.retentionRate')}</CardTitle>
                     <CheckCircle className="h-4 w-4 text-muted-foreground" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{data.customerInsights?.customerRetentionRate || 0}%</div>
                     <p className="text-xs text-muted-foreground">
-                      {formatNumber(data.customerInsights?.repeatCustomers || 0)} repeat customers
+                      {t('admin.analytics.customerInsights.repeatCustomers', { count: formatNumber(data.customerInsights?.repeatCustomers || 0) })}
                     </p>
                   </CardContent>
                 </Card>
