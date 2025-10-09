@@ -75,8 +75,10 @@ export default function RootLayout({
         <meta httpEquiv="x-dns-prefetch-control" content="on" />
         
         {/* Favicon */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+        <link rel="icon" href="/car-logo.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/car-logo.png" type="image/png" sizes="16x16" />
+        <link rel="shortcut icon" href="/car-logo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={inter.className} suppressHydrationWarning>

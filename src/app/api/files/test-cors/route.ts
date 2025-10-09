@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       currentOrigin: request.headers.get('origin') || 'localhost:3003',
       requiredCorsPolicy: {
         AllowedOrigins: [
-          'http://localhost:3000',
+          process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro',
           'http://localhost:3003'
         ],
         AllowedMethods: ['GET', 'PUT', 'POST', 'DELETE', 'HEAD'],

@@ -97,7 +97,7 @@ export default function EmailTestPage() {
           <hr style="margin: 30px 0;">
           <p style="color: #6b7280; font-size: 14px;">
             Sent from CompuCar Email System<br>
-            <a href="http://localhost:3000" style="color: #2563eb;">Visit CompuCar</a>
+            <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}" style="color: #2563eb;">Visit CompuCar</a>
           </p>
         </div>
       `,

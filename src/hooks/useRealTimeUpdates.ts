@@ -35,9 +35,15 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
       return;
     }
 
-    if (eventSourceRef.current) {
-      console.log('📡 SSE already connected');
+    if (eventSourceRef.current && eventSourceRef.current.readyState === EventSource.OPEN) {
+      console.log('📡 SSE already connected and open');
       return;
+    }
+
+    // Clean up any existing connection
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+      eventSourceRef.current = null;
     }
 
     console.log('📡 Connecting to SSE...');
@@ -139,7 +145,7 @@ export function useRealTimeUpdates(options: UseRealTimeUpdatesOptions = {}) {
     return () => {
       disconnect();
     };
-  }, [session?.user]);
+  }, [session?.user?.id]); // Only reconnect if user ID changes, not on every session change
 
   return {
     isConnected,

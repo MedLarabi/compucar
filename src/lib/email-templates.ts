@@ -63,7 +63,7 @@ ${shippingAddress.country}
 
 ${estimatedDelivery ? `Estimated Delivery: ${estimatedDelivery}` : ''}
 
-You can track your order status in your account dashboard: http://localhost:3000/account/orders
+You can track your order status in your account dashboard: ${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}/account/orders
 
 Thank you for choosing CompuCar!
 
@@ -139,7 +139,7 @@ The CompuCar Team
       </div>
 
       <div style="text-align: center; margin: 30px 0;">
-        <a href="http://localhost:3000/account/orders" 
+        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}/account/orders" 
            style="display: inline-block; background: #2563eb; color: white; padding: 12px 24px; 
                   text-decoration: none; border-radius: 8px; font-weight: bold;">
           Track Your Order
@@ -151,8 +151,8 @@ The CompuCar Team
       <footer style="text-align: center; color: #9ca3af; font-size: 12px;">
         <p>Thank you for choosing CompuCar!</p>
         <p>
-          <a href="http://localhost:3000" style="color: #2563eb;">Visit our website</a> | 
-          <a href="http://localhost:3000/contact" style="color: #2563eb;">Contact Support</a>
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}" style="color: #2563eb;">Visit our website</a> | 
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}/contact" style="color: #2563eb;">Contact Support</a>
         </p>
         <p>© 2024 CompuCar. All rights reserved.</p>
       </footer>
@@ -177,9 +177,9 @@ Here's what you can do with your new account:
 - Manage your shipping addresses
 - Access exclusive member deals and promotions
 
-Get started by exploring our products: http://localhost:3000/products
+Get started by exploring our products: ${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}/products
 
-If you have any questions, our support team is here to help: http://localhost:3000/contact
+If you have any questions, our support team is here to help: ${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}/contact
 
 Happy shopping!
 
@@ -212,12 +212,12 @@ The CompuCar Team
       </div>
 
       <div style="text-align: center; margin: 30px 0;">
-        <a href="http://localhost:3000/products" 
+        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}/products" 
            style="display: inline-block; background: #2563eb; color: white; padding: 15px 30px; 
                   text-decoration: none; border-radius: 8px; font-weight: bold; margin: 0 10px 10px;">
           🛍️ Start Shopping
         </a>
-        <a href="http://localhost:3000/account" 
+        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}/account" 
            style="display: inline-block; background: #6b7280; color: white; padding: 15px 30px; 
                   text-decoration: none; border-radius: 8px; font-weight: bold; margin: 0 10px 10px;">
           👤 View Account
@@ -229,7 +229,7 @@ The CompuCar Team
         <p style="color: #6b7280; margin-bottom: 15px;">
           Our support team is here to help with any questions you might have.
         </p>
-        <a href="http://localhost:3000/contact" 
+        <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}/contact" 
            style="color: #2563eb; text-decoration: none; font-weight: bold;">
           Contact Support →
         </a>
@@ -238,7 +238,7 @@ The CompuCar Team
       <footer style="text-align: center; color: #9ca3af; font-size: 12px; margin-top: 40px;">
         <p>Happy shopping!</p>
         <p style="margin: 10px 0;">
-          <a href="http://localhost:3000" style="color: #2563eb;">CompuCar.com</a>
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}" style="color: #2563eb;">CompuCar.com</a>
         </p>
         <p>© 2024 CompuCar. All rights reserved.</p>
       </footer>
@@ -306,15 +306,15 @@ The CompuCar Security Team
           • If you didn't request this reset, please ignore this email<br>
           • Don't share this link with anyone<br>
           • Contact support if you have concerns: 
-          <a href="http://localhost:3000/contact" style="color: #dc2626;">Contact Us</a>
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}/contact" style="color: #dc2626;">Contact Us</a>
         </p>
       </div>
 
       <footer style="text-align: center; color: #9ca3af; font-size: 12px; margin-top: 40px;">
         <p>This link will expire in ${expiresIn}</p>
         <p>
-          <a href="http://localhost:3000" style="color: #2563eb;">CompuCar.com</a> | 
-          <a href="http://localhost:3000/contact" style="color: #2563eb;">Support</a>
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}" style="color: #2563eb;">CompuCar.com</a> | 
+          <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://compucar.pro'}/contact" style="color: #2563eb;">Support</a>
         </p>
         <p>© 2024 CompuCar Security Team. All rights reserved.</p>
       </footer>

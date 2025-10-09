@@ -116,7 +116,11 @@ export function Navigation() {
         <div className="mr-4 lg:mr-6 hidden md:flex">
           <Link href="/" className="mr-2 lg:mr-4 flex items-center space-x-2 group">
             <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <Package className="h-5 w-5 text-primary" />
+              <img 
+                src="/car-logo.png" 
+                alt="CompuCar Logo" 
+                className="h-5 w-5 object-contain"
+              />
             </div>
             <span className="hidden lg:inline-block font-bold text-lg bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
               CompuCar
@@ -128,7 +132,11 @@ export function Navigation() {
         <div className="flex md:hidden">
           <Link href="/" className="flex items-center">
             <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
-              <Package className="h-5 w-5 text-primary" />
+              <img 
+                src="/car-logo.png" 
+                alt="CompuCar Logo" 
+                className="h-5 w-5 object-contain"
+              />
             </div>
             {/* Hide text on mobile to save space */}
           </Link>
@@ -149,7 +157,11 @@ export function Navigation() {
             <SheetHeader className="text-left">
               <SheetTitle className="flex items-center text-xl">
                 <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 mr-3">
-                  <Package className="h-6 w-6 text-primary" />
+                  <img 
+                    src="/car-logo.png" 
+                    alt="CompuCar Logo" 
+                    className="h-6 w-6 object-contain"
+                  />
                 </div>
                 <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                   CompuCar
