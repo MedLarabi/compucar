@@ -17,10 +17,90 @@ export async function POST(request: NextRequest) {
 
       console.log('🔧 Super Admin bot callback query:', callbackData);
 
-      // Parse callback data - Super Admin bot uses shortened callback data
+      // Parse callback data - Super Admin bot handles multiple formats
       const parts = callbackData.split('_');
       
-      if (parts[0] === 'sa') { // Super Admin shortened format
+      // Handle file_admin_status format (for backward compatibility)
+      if (parts[0] === 'file' && parts[1] === 'admin' && parts[2] === 'status') {
+        const fileId = parts[3];
+        const newStatus = parts[4];
+        
+        console.log('📁 Super Admin processing file_admin_status format:', { fileId, newStatus });
+        
+        try {
+          // Update file status in database
+          const file = await prisma.tuningFile.findUnique({
+            where: { id: fileId },
+            include: {
+              user: {
+                select: { 
+                  id: true, 
+                  firstName: true, 
+                  lastName: true
+                }
+              },
+              fileModifications: {
+                include: { modification: true }
+              }
+            }
+          });
+
+          if (!file) {
+            await MultiBotTelegramService.answerCallbackQuery(
+              BotType.SUPER_ADMIN,
+              callbackQueryId,
+              '❌ File not found',
+              true
+            );
+            return NextResponse.json({ success: true });
+          }
+
+          // Update file status
+          await prisma.tuningFile.update({
+            where: { id: fileId },
+            data: { status: newStatus }
+          });
+
+          // Notify customer about status change
+          await NotificationService.notifyCustomerFileStatusUpdate(
+            file.userId,
+            file.originalFilename,
+            file.id,
+            newStatus
+          );
+
+          // Send real-time update to customer's browser
+          const { sendUpdateToUser } = await import('@/lib/sse-utils');
+          sendUpdateToUser(file.userId, {
+            type: 'file_status_update',
+            fileId: file.id,
+            fileName: file.originalFilename,
+            oldStatus: file.status,
+            newStatus: newStatus,
+            message: `File status updated to ${newStatus}`
+          });
+
+          // Answer callback query
+          await MultiBotTelegramService.answerCallbackQuery(
+            BotType.SUPER_ADMIN,
+            callbackQueryId,
+            `✅ File status updated to ${newStatus}`,
+            false
+          );
+
+          console.log('✅ File status updated successfully:', { fileId, newStatus });
+
+        } catch (error) {
+          console.error('❌ Error updating file status:', error);
+          await MultiBotTelegramService.answerCallbackQuery(
+            BotType.SUPER_ADMIN,
+            callbackQueryId,
+            '❌ Error updating file status',
+            true
+          );
+        }
+      }
+      else if (parts[0] === 'sa') { // Super Admin shortened format
         const action = parts[1]; // fs (file status), et (estimated time), t (time), c (cancel)
         
         switch (action) {
