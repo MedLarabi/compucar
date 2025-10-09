@@ -125,6 +125,75 @@ export default function FileDetailPage() {
     }
   });
 
+  // Set document title dynamically
+  useEffect(() => {
+    if (file?.originalFilename) {
+      const truncatedName = file.originalFilename.length > 50 
+        ? file.originalFilename.substring(0, 50) + '...' 
+        : file.originalFilename;
+      document.title = `${truncatedName} - CompuCar`;
+    } else {
+      document.title = 'File Details - CompuCar';
+    }
+    
+    // Cleanup: restore default title when component unmounts
+    return () => {
+      document.title = 'CompuCar - Auto Diagnostic Tools & Equipment';
+    };
+  }, [file?.originalFilename]);
+
+  // Smart text truncation utility
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
+  };
+
+  // Get file extension
+  const getFileExtension = (filename: string) => {
+    const lastDot = filename.lastIndexOf('.');
+    return lastDot > 0 ? filename.substring(lastDot) : '';
+  };
+
+  // Smart filename truncation that preserves extension
+  const truncateFilename = (filename: string, maxLength: number) => {
+    if (filename.length <= maxLength) return filename;
+    
+    const extension = getFileExtension(filename);
+    const nameWithoutExt = filename.substring(0, filename.lastIndexOf('.')) || filename;
+    
+    if (extension && extension.length < maxLength - 3) {
+      const availableLength = maxLength - extension.length - 3; // 3 for "..."
+      return nameWithoutExt.substring(0, availableLength) + '...' + extension;
+    }
+    
+    return filename.substring(0, maxLength) + '...';
+  };
+
+  // Get appropriate button text based on screen size
+  const getButtonText = (type: 'original' | 'modified', isLoading: boolean) => {
+    if (isLoading) {
+      return {
+        mobile: 'Wait',
+        desktop: t('fileDetail.download.downloading') || 'Downloading...'
+      };
+    }
+
+    const filename = file?.originalFilename || '';
+    
+    if (type === 'original') {
+      return {
+        mobile: truncateFilename(filename, 10), // Show first 10 chars + extension on mobile
+        desktop: truncateFilename(filename, 30) // Show first 30 chars + extension on desktop
+      };
+    } else {
+      const modifiedName = file?.modifiedFilename || filename;
+      return {
+        mobile: truncateFilename(modifiedName, 10), // Show first 10 chars + extension on mobile
+        desktop: truncateFilename(modifiedName, 30) // Show first 30 chars + extension on desktop
+      };
+    }
+  };
+
   // Redirect if not authenticated
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -329,17 +398,17 @@ export default function FileDetailPage() {
     <TuningLayout>
       <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 min-w-0 flex-1">
           <Link href="/files">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="self-start">
               <ArrowLeft className="h-4 w-4 mr-2" />
               {t('fileDetail.actions.backToFiles') || 'Back to Files'}
             </Button>
           </Link>
-          <div>
-            <h1 className="text-3xl font-bold">{file.originalFilename}</h1>
-            <p className="text-muted-foreground mt-2">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold break-words leading-tight">{file.originalFilename}</h1>
+            <p className="text-muted-foreground mt-2 text-sm sm:text-base">
               {t('fileDetail.header.description') || 'File details and download information'}
             </p>
           </div>
@@ -367,9 +436,9 @@ export default function FileDetailPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="xl:col-span-2 space-y-6">
           {/* File Status */}
           <Card>
             <CardHeader>
@@ -569,7 +638,7 @@ export default function FileDetailPage() {
             <CardContent className="space-y-4">
               <div>
                 <Label className="text-sm font-medium text-muted-foreground">{t('fileDetail.fileInfo.fileName') || 'File Name'}</Label>
-                <p className="text-sm break-all">{file.originalFilename}</p>
+                <p className="text-sm break-words hyphens-auto">{file.originalFilename}</p>
               </div>
               
               <Separator />
@@ -662,19 +731,32 @@ export default function FileDetailPage() {
                     <Button 
                       onClick={handleDownload} 
                       disabled={downloading}
-                      className="w-full bg-white hover:bg-gray-100 text-gray-900 border border-gray-300 transition-colors duration-200"
+                      className="w-full bg-white hover:bg-gray-100 text-gray-900 border border-gray-300 transition-colors duration-200 min-h-[44px] px-2 sm:px-4"
+                      title={`${t('fileDetail.actions.downloadOriginal') || 'Download Original'}: ${file.originalFilename}`}
                     >
-                      {downloading ? (
-                        <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          {t('fileDetail.download.downloading') || 'Downloading...'}
-                        </>
-                      ) : (
-                        <>
-                          <Download className="h-4 w-4 mr-2" />
-                          {t('fileDetail.actions.downloadOriginal') || 'Download Original'}
-                        </>
-                      )}
+                      <div className="flex items-center justify-center gap-1 sm:gap-2 w-full overflow-hidden">
+                        {downloading ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" />
+                            <span className="hidden sm:inline truncate">
+                              {getButtonText('original', true).desktop}
+                            </span>
+                            <span className="sm:hidden text-xs truncate">
+                              {getButtonText('original', true).mobile}
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <Download className="h-4 w-4 flex-shrink-0" />
+                            <span className="hidden sm:inline text-sm truncate max-w-[150px]">
+                              {getButtonText('original', false).desktop}
+                            </span>
+                            <span className="sm:hidden text-xs truncate max-w-[60px]">
+                              {getButtonText('original', false).mobile}
+                            </span>
+                          </>
+                        )}
+                      </div>
                     </Button>
                   )}
 
@@ -684,19 +766,32 @@ export default function FileDetailPage() {
                       onClick={handleDownloadModified} 
                       disabled={downloadingModified}
                       variant="outline"
-                      className="w-full"
+                      className="w-full min-h-[44px] px-2 sm:px-4"
+                      title={`${t('fileDetail.actions.downloadModified') || 'Download Modified'}: ${file.modifiedFilename}`}
                     >
-                      {downloadingModified ? (
-                        <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          {t('fileDetail.download.downloading') || 'Downloading...'}
-                        </>
-                      ) : (
-                        <>
-                          <Download className="h-4 w-4 mr-2" />
-                          {t('fileDetail.actions.downloadModified') || 'Download Modified'}
-                        </>
-                      )}
+                      <div className="flex items-center justify-center gap-1 sm:gap-2 w-full overflow-hidden">
+                        {downloadingModified ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" />
+                            <span className="hidden sm:inline truncate">
+                              {getButtonText('modified', true).desktop}
+                            </span>
+                            <span className="sm:hidden text-xs truncate">
+                              {getButtonText('modified', true).mobile}
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <Download className="h-4 w-4 flex-shrink-0" />
+                            <span className="hidden sm:inline text-sm truncate max-w-[150px]">
+                              {getButtonText('modified', false).desktop}
+                            </span>
+                            <span className="sm:hidden text-xs truncate max-w-[60px]">
+                              {getButtonText('modified', false).mobile}
+                            </span>
+                          </>
+                        )}
+                      </div>
                     </Button>
                   )}
                 </div>
