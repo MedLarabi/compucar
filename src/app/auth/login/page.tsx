@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { signIn, getSession } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { signIn, getSession, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,29 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
   const { t } = useLanguage();
+  const { data: session, status } = useSession();
+
+  // Redirect logged-in users to home page
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      router.push("/");
+      return;
+    }
+  }, [session, status, router]);
+
+  // Show loading while checking authentication
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  // Don't render login form if user is authenticated
+  if (status === "authenticated") {
+    return null;
+  }
 
   const handleCredentialsSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,20 +134,6 @@ export default function LoginPage() {
             >
               {t('auth.signUp')}
             </Link>
-          </div>
-
-          {/* Quick Admin Test Account Info */}
-          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
-            <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
-              🛡️ {t('auth.adminTestAccount')}
-            </h4>
-            <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
-              <p><strong>Email:</strong> admin@compucar.com</p>
-              <p><strong>Password:</strong> admin123</p>
-              <p className="text-blue-600 dark:text-blue-400 mt-2">
-                {t('auth.useAdminAccount')}
-              </p>
-            </div>
           </div>
         </CardContent>
         </Card>

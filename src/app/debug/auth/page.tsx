@@ -101,10 +101,6 @@ Role: ${session.user?.role}`}
                   <Button onClick={handleLogin} className="w-full h-12">
                     Login
                   </Button>
-                  
-                  <div className="text-sm text-muted-foreground">
-                    Try: admin@compucar.com / admin123
-                  </div>
                 </div>
               )}
 

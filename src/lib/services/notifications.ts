@@ -1296,24 +1296,50 @@ export class NotificationService {
     
     await MultiBotTelegramService.notifySuperAdmin({
       type: 'new_file_upload',
-      title: 'New File Upload',
+      title: 'File Upload - Received',
       message: `${customerName} uploaded a new file: "${fileName}"`,
       details: `File Size: ${(fileSize / 1024 / 1024).toFixed(2)} MB\nModifications: ${modifications.join(', ')}`,
       actionUrl: `${process.env.NEXTAUTH_URL}/admin/files/${fileId}`,
       fileId: fileId,
-      filename: fileName
+      filename: fileName,
+      customerName: customerName,
+      modifications: modifications,
+      status: 'RECEIVED',
+      estimatedTime: 'Not set'
     });
     
     console.log('✅ Super Admin notification sent');
 
-    // Send File Admin notification with management buttons (if configured)
-    await MultiBotTelegramService.notifyFileAdminNewUpload({
-      fileId,
-      filename: fileName,
-      customerName,
-      fileSize,
-      modifications
+    // Check if Super Admin and File Admin bots are the same (to prevent duplicate notifications)
+    const superAdminToken = process.env.TELEGRAM_SUPER_ADMIN_BOT_TOKEN;
+    const fileAdminToken = process.env.TELEGRAM_FILE_ADMIN_BOT_TOKEN;
+    const superAdminChatId = process.env.TELEGRAM_SUPER_ADMIN_CHAT_ID;
+    const fileAdminChatId = process.env.TELEGRAM_FILE_ADMIN_CHAT_ID;
+    
+    const isSameBot = superAdminToken === fileAdminToken && superAdminChatId === fileAdminChatId;
+    
+    console.log('🔍 Checking for duplicate bot configuration:', {
+      isSameBot,
+      superAdminEnabled: process.env.TELEGRAM_SUPER_ADMIN_ENABLED === 'true',
+      fileAdminEnabled: process.env.TELEGRAM_FILE_ADMIN_ENABLED === 'true',
+      hasSuperAdminToken: !!superAdminToken,
+      hasFileAdminToken: !!fileAdminToken
     });
+
+    // Only send File Admin notification if it's a different bot/chat to avoid duplicates
+    if (!isSameBot) {
+      console.log('📱 Sending separate File Admin notification (different bot configuration)');
+      await MultiBotTelegramService.notifyFileAdminNewUpload({
+        fileId,
+        filename: fileName,
+        customerName,
+        fileSize,
+        modifications
+      });
+      console.log('✅ File Admin notification sent');
+    } else {
+      console.log('⚠️ Skipping File Admin notification (same as Super Admin to prevent duplicates)');
+    }
 
     return dbResult;
   }

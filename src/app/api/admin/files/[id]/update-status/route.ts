@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth/config';
 import { prisma } from '@/lib/database/prisma';
 import { notifyCustomerFileReady } from '@/lib/email/service';
 import { NotificationService } from '@/lib/services/notifications';
+import { sendUpdateToUser } from '@/lib/sse-utils';
 import { z } from 'zod';
 
 const updateStatusSchema = z.object({
@@ -115,6 +116,17 @@ export async function POST(
         currentFile.id
       );
     }
+
+    // Send real-time update to customer's browser
+    sendUpdateToUser(currentFile.userId, {
+      type: 'file_status_update',
+      fileId: currentFile.id,
+      fileName: currentFile.originalFilename,
+      oldStatus: currentFile.status,
+      newStatus: status,
+      message: `File status updated to ${status}`,
+      estimatedProcessingTime: estimatedProcessingTime
+    });
 
     // Notify admins about file update
     await NotificationService.notifyAdminFileUpdateByAdmin(

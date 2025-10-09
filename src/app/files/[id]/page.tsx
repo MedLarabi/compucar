@@ -480,19 +480,32 @@ export default function FileDetailPage() {
                        <Button 
                          onClick={handleDownload} 
                          disabled={downloading} 
-                         className="w-full bg-white hover:bg-gray-100 text-gray-900 border border-gray-300 transition-colors duration-200"
+                         className="w-full bg-white hover:bg-gray-100 text-gray-900 border border-gray-300 transition-colors duration-200 min-h-[44px] px-2 sm:px-4 text-left"
+                         title={`${t('fileDetail.actions.downloadOriginal') || 'Download Original'}: ${file.originalFilename}`}
                        >
-                        {downloading ? (
-                          <>
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            {t('fileDetail.download.downloading') || 'Downloading...'}
-                          </>
-                        ) : (
-                          <>
-                            <Download className="h-4 w-4 mr-2" />
-                            {file.originalFilename}
-                          </>
-                        )}
+                        <div className="flex items-center justify-start gap-2 w-full overflow-hidden">
+                          <Download className="h-4 w-4 flex-shrink-0" />
+                          {downloading ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" />
+                              <span className="hidden sm:inline truncate text-left">
+                                {t('fileDetail.download.downloading') || 'Downloading...'}
+                              </span>
+                              <span className="sm:hidden text-xs truncate text-left">
+                                Wait
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="hidden sm:inline text-sm truncate text-left flex-1">
+                                {file.originalFilename}
+                              </span>
+                              <span className="sm:hidden text-xs truncate text-left flex-1">
+                                {file.originalFilename}
+                              </span>
+                            </>
+                          )}
+                        </div>
                       </Button>
                       <p className="text-xs text-muted-foreground mt-1">
                         {t('fileDetail.download.submittedFile') || 'Your submitted file'} ({formatFileSize(file.fileSize)})
@@ -506,19 +519,32 @@ export default function FileDetailPage() {
                       <Button 
                         onClick={handleDownloadModified} 
                         disabled={downloadingModified}
-                        className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                        className="w-full bg-blue-500 hover:bg-blue-600 text-white min-h-[44px] px-2 sm:px-4 text-left"
+                        title={`${t('fileDetail.actions.downloadModified') || 'Download Modified'}: ${file.modifiedFilename}`}
                       >
-                        {downloadingModified ? (
-                          <>
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                            {t('fileDetail.download.downloading') || 'Downloading...'}
-                          </>
-                        ) : (
-                          <>
-                            <Download className="h-4 w-4 mr-2" />
-                            {file.modifiedFilename}
-                          </>
-                        )}
+                        <div className="flex items-center justify-start gap-2 w-full overflow-hidden">
+                          <Download className="h-4 w-4 flex-shrink-0" />
+                          {downloadingModified ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" />
+                              <span className="hidden sm:inline truncate text-left">
+                                {t('fileDetail.download.downloading') || 'Downloading...'}
+                              </span>
+                              <span className="sm:hidden text-xs truncate text-left">
+                                Wait
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="hidden sm:inline text-sm truncate text-left flex-1">
+                                {file.modifiedFilename}
+                              </span>
+                              <span className="sm:hidden text-xs truncate text-left flex-1">
+                                {file.modifiedFilename}
+                              </span>
+                            </>
+                          )}
+                        </div>
                       </Button>
                       <p className="text-xs text-muted-foreground mt-1">
                         {t('fileDetail.download.tunedFile') || 'Tuned file'} ({file.modifiedFileSize ? formatFileSize(file.modifiedFileSize) : t('fileDetail.download.unknownSize') || 'Unknown size'})
@@ -725,33 +751,33 @@ export default function FileDetailPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               {file.status === 'READY' && (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {/* Original File Download */}
                   {file.downloadUrl && (
                     <Button 
                       onClick={handleDownload} 
                       disabled={downloading}
-                      className="w-full bg-white hover:bg-gray-100 text-gray-900 border border-gray-300 transition-colors duration-200 min-h-[44px] px-2 sm:px-4"
+                      className="w-full bg-white hover:bg-gray-100 text-gray-900 border border-gray-300 transition-colors duration-200 min-h-[44px] px-2 sm:px-4 text-left"
                       title={`${t('fileDetail.actions.downloadOriginal') || 'Download Original'}: ${file.originalFilename}`}
                     >
-                      <div className="flex items-center justify-center gap-1 sm:gap-2 w-full overflow-hidden">
+                      <div className="flex items-center justify-start gap-2 w-full overflow-hidden">
+                        <Download className="h-4 w-4 flex-shrink-0" />
                         {downloading ? (
                           <>
                             <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" />
-                            <span className="hidden sm:inline truncate">
+                            <span className="hidden sm:inline truncate text-left">
                               {getButtonText('original', true).desktop}
                             </span>
-                            <span className="sm:hidden text-xs truncate">
+                            <span className="sm:hidden text-xs truncate text-left">
                               {getButtonText('original', true).mobile}
                             </span>
                           </>
                         ) : (
                           <>
-                            <Download className="h-4 w-4 flex-shrink-0" />
-                            <span className="hidden sm:inline text-sm truncate max-w-[150px]">
+                            <span className="hidden sm:inline text-sm truncate text-left flex-1">
                               {getButtonText('original', false).desktop}
                             </span>
-                            <span className="sm:hidden text-xs truncate max-w-[60px]">
+                            <span className="sm:hidden text-xs truncate text-left flex-1">
                               {getButtonText('original', false).mobile}
                             </span>
                           </>
@@ -766,27 +792,27 @@ export default function FileDetailPage() {
                       onClick={handleDownloadModified} 
                       disabled={downloadingModified}
                       variant="outline"
-                      className="w-full min-h-[44px] px-2 sm:px-4"
+                      className="w-full min-h-[44px] px-2 sm:px-4 text-left"
                       title={`${t('fileDetail.actions.downloadModified') || 'Download Modified'}: ${file.modifiedFilename}`}
                     >
-                      <div className="flex items-center justify-center gap-1 sm:gap-2 w-full overflow-hidden">
+                      <div className="flex items-center justify-start gap-2 w-full overflow-hidden">
+                        <Download className="h-4 w-4 flex-shrink-0" />
                         {downloadingModified ? (
                           <>
                             <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" />
-                            <span className="hidden sm:inline truncate">
+                            <span className="hidden sm:inline truncate text-left">
                               {getButtonText('modified', true).desktop}
                             </span>
-                            <span className="sm:hidden text-xs truncate">
+                            <span className="sm:hidden text-xs truncate text-left">
                               {getButtonText('modified', true).mobile}
                             </span>
                           </>
                         ) : (
                           <>
-                            <Download className="h-4 w-4 flex-shrink-0" />
-                            <span className="hidden sm:inline text-sm truncate max-w-[150px]">
+                            <span className="hidden sm:inline text-sm truncate text-left flex-1">
                               {getButtonText('modified', false).desktop}
                             </span>
-                            <span className="sm:hidden text-xs truncate max-w-[60px]">
+                            <span className="sm:hidden text-xs truncate text-left flex-1">
                               {getButtonText('modified', false).mobile}
                             </span>
                           </>

@@ -32,14 +32,14 @@ async function checkDatabase() {
     
     if (allFiles.length > 0) {
       console.log('\n📋 All files:');
-      allFiles.forEach((file, index) => {
+      allFiles.forEach((file: any, index: number) => {
         console.log(`  ${index + 1}. ${file.originalFilename} (User: ${file.userId})`);
       });
     }
     
     if (allOrders.length > 0) {
       console.log('\n🛒 All orders:');
-      allOrders.forEach((order, index) => {
+      allOrders.forEach((order: any, index: number) => {
         console.log(`  ${index + 1}. ${order.orderNumber} (User: ${order.userId})`);
       });
     }

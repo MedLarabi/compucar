@@ -28,18 +28,12 @@ export async function POST(request: NextRequest) {
         const newStatus = parts[3];
         
         try {
-          // Update file status in database
-          await prisma.tuningFile.update({
-            where: { id: fileId },
-            data: { status: newStatus }
-          });
-
-          // Get file details for notification
+          // Get file details first to store old status
           const file = await prisma.tuningFile.findUnique({
             where: { id: fileId },
             include: {
               user: {
-                select: { firstName: true, lastName: true }
+                select: { id: true, firstName: true, lastName: true }
               },
               fileModifications: {
                 include: { modification: true }
@@ -47,24 +41,40 @@ export async function POST(request: NextRequest) {
             }
           });
 
-          if (file) {
-            // Notify customer about status change
-            await NotificationService.notifyCustomerFileStatusUpdate(
-              file.userId,
-              file.originalFilename,
-              fileId,
-              newStatus
+          if (!file) {
+            await TelegramService.answerCallbackQuery(
+              callbackQueryId,
+              '❌ File not found',
+              true
             );
+            return NextResponse.json({ success: true });
+          }
 
-            // Send real-time update to customer
-            sendUpdateToUser(file.userId, {
-              type: 'file_status_update',
-              fileId: fileId,
-              fileName: file.originalFilename,
-              oldStatus: file.status,
-              newStatus: newStatus,
-              message: `File status updated to ${newStatus}`
-            });
+          const oldStatus = file.status; // Store old status before update
+
+          // Update file status in database
+          await prisma.tuningFile.update({
+            where: { id: fileId },
+            data: { status: newStatus }
+          });
+
+          // Notify customer about status change
+          await NotificationService.notifyCustomerFileStatusUpdate(
+            file.userId,
+            file.originalFilename,
+            fileId,
+            newStatus
+          );
+
+          // Send real-time update to customer
+          sendUpdateToUser(file.userId, {
+            type: 'file_status_update',
+            fileId: fileId,
+            fileName: file.originalFilename,
+            oldStatus: oldStatus, // Use stored old status
+            newStatus: newStatus,
+            message: `File status updated to ${newStatus}`
+          });
 
             // Answer callback query
             await TelegramService.answerCallbackQuery(
@@ -110,7 +120,6 @@ export async function POST(request: NextRequest) {
             };
 
             await TelegramService.editMessageText(chatId, messageId, updatedMessage, replyMarkup);
-          }
         } catch (error) {
           console.error('Error updating file status:', error);
           await TelegramService.answerCallbackQuery(

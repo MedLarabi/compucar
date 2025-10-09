@@ -213,6 +213,10 @@ export class MultiBotTelegramService {
     actionUrl?: string;
     fileId?: string; // Add fileId for file management
     filename?: string; // Add filename for file management
+    customerName?: string; // Add customer name
+    modifications?: string[]; // Add modifications array
+    status?: string; // Add status
+    estimatedTime?: string; // Add estimated time
   }): Promise<boolean> {
     console.log('📱 MultiBotTelegramService.notifySuperAdmin called with:', data);
 
@@ -243,7 +247,26 @@ export class MultiBotTelegramService {
       new_file_upload: '📁'
     };
 
-    const message = `
+    // Create message based on type
+    let message: string;
+    
+    if (data.type === 'new_file_upload') {
+      message = `
+📁 <b>File Upload - ${data.status || 'Received'}</b>
+
+📄 <b>File:</b> ${data.filename || 'Unknown'}
+👤 <b>Customer:</b> ${data.customerName || 'Unknown'}
+📊 <b>Status:</b> ${data.status || 'RECEIVED'}
+⏰ <b>Estimated Time:</b> ${data.estimatedTime || 'Not set'}
+${data.modifications && data.modifications.length > 0 ? `🔧 <b>Modifications:</b> ${data.modifications.join(', ')}` : ''}
+
+${data.actionUrl ? `🔗 <a href="${data.actionUrl}">View in Admin Panel</a>` : ''}
+
+🕐 <b>Updated:</b> ${new Date().toLocaleString()}
+      `.trim();
+    } else {
+      // Default format for other notification types
+      message = `
 ${emoji[data.type]} <b>${data.title}</b>
 
 📝 ${data.message}
@@ -251,7 +274,8 @@ ${data.details ? `\n🔍 <b>Details:</b> ${data.details}` : ''}
 ${data.actionUrl ? `\n🔗 <a href="${data.actionUrl}">Take Action</a>` : ''}
 
 🕐 <b>Time:</b> ${new Date().toLocaleString()}
-    `.trim();
+      `.trim();
+    }
 
     // Add interactive buttons for file uploads
     if (data.type === 'new_file_upload' && data.fileId) {

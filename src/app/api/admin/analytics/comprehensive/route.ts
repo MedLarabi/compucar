@@ -378,8 +378,8 @@ export async function GET(request: NextRequest) {
       customerInsights: {
         totalCustomers: customerStats[0],
         newCustomers: customerStats[1],
-        repeatCustomers: customerStats[2].filter(group => typeof group._count === 'number' && group._count > 1).length,
-        customerRetentionRate: customerStats[0] > 0 ? Math.round(((customerStats[2].filter(group => typeof group._count === 'number' && group._count > 1).length) / customerStats[0]) * 100 * 100) / 100 : 0,
+        repeatCustomers: customerStats[2].filter((group: any) => typeof group._count === 'number' && group._count > 1).length,
+        customerRetentionRate: customerStats[0] > 0 ? Math.round(((customerStats[2].filter((group: any) => typeof group._count === 'number' && group._count > 1).length) / customerStats[0]) * 100 * 100) / 100 : 0,
       },
       
       // Charts data

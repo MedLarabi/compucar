@@ -29,13 +29,7 @@ export async function POST(request: NextRequest) {
         console.log('📁 File Admin processing status update:', { fileId, newStatus });
         
         try {
-          // Update file status in database
-          const updatedFile = await prisma.tuningFile.update({
-            where: { id: fileId },
-            data: { status: newStatus }
-          });
-
-          // Get file details for notifications
+          // Get file details first to store old status
           const file = await prisma.tuningFile.findUnique({
             where: { id: fileId },
             include: {
@@ -54,24 +48,41 @@ export async function POST(request: NextRequest) {
             }
           });
 
-          if (file) {
-            // Notify customer about status change
-            await NotificationService.notifyCustomerFileStatusUpdate(
-              file.userId,
-              file.originalFilename,
-              fileId,
-              newStatus
+          if (!file) {
+            await MultiBotTelegramService.answerCallbackQuery(
+              BotType.FILE_ADMIN,
+              callbackQueryId,
+              '❌ File not found',
+              true
             );
+            return NextResponse.json({ success: true });
+          }
 
-            // Send real-time update to customer's browser
-            sendUpdateToUser(file.userId, {
-              type: 'file_status_update',
-              fileId: fileId,
-              fileName: file.originalFilename,
-              oldStatus: file.status,
-              newStatus: newStatus,
-              message: `File status updated to ${newStatus}`
-            });
+          const oldStatus = file.status; // Store old status before update
+
+          // Update file status in database
+          const updatedFile = await prisma.tuningFile.update({
+            where: { id: fileId },
+            data: { status: newStatus }
+          });
+
+          // Notify customer about status change
+          await NotificationService.notifyCustomerFileStatusUpdate(
+            file.userId,
+            file.originalFilename,
+            fileId,
+            newStatus
+          );
+
+          // Send real-time update to customer's browser
+          sendUpdateToUser(file.userId, {
+            type: 'file_status_update',
+            fileId: fileId,
+            fileName: file.originalFilename,
+            oldStatus: oldStatus, // Use stored old status
+            newStatus: newStatus,
+            message: `File status updated to ${newStatus}`
+          });
 
             // TODO: Send notification to customer's Telegram bot
             // This would require storing customer's Telegram chat ID
@@ -135,7 +146,6 @@ export async function POST(request: NextRequest) {
               updatedMessage, 
               replyMarkup
             );
-          }
         } catch (error) {
           console.error('Error updating file status:', error);
           await MultiBotTelegramService.answerCallbackQuery(

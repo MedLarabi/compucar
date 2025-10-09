@@ -25,7 +25,7 @@ async function checkAdminUsers() {
 
     console.log(`📊 Found ${users.length} users:\n`);
     
-    users.forEach((user, index) => {
+    users.forEach((user: any, index: number) => {
       console.log(`${index + 1}. ${user.email}`);
       console.log(`   Name: ${user.firstName} ${user.lastName}`);
       console.log(`   Role: ${user.role}`);
@@ -36,12 +36,12 @@ async function checkAdminUsers() {
     });
 
     // Check for admin users
-    const adminUsers = users.filter(user => 
+    const adminUsers = users.filter((user: any) => 
       user.role === 'ADMIN' || user.role === 'SUPER_ADMIN' || user.isAdmin
     );
 
     console.log(`\n👑 Admin users: ${adminUsers.length}`);
-    adminUsers.forEach(user => {
+    adminUsers.forEach((user: any) => {
       console.log(`   - ${user.email} (${user.role})`);
     });
 
