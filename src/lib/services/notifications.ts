@@ -1562,8 +1562,9 @@ export class NotificationService {
    */
   static async notifyCustomerFileStatusUpdate(userId: string, fileName: string, fileId: string, newStatus: string): Promise<boolean> {
     const statusMessages = {
-      'PENDING': 'Your file has been received and is pending processing.',
-      'READY': 'Your file is ready for download.',
+      'RECEIVED': 'Your file has been received and is in queue for processing.',
+      'PENDING': 'Your file is currently being processed by our team.',
+      'READY': 'Your file is ready for download!',
       'IN_PROGRESS': 'Your file is currently being processed.',
       'CANCELLED': 'Your file processing has been cancelled.'
     };
@@ -1571,25 +1572,93 @@ export class NotificationService {
     const message = statusMessages[newStatus as keyof typeof statusMessages] || 
                    `Your file status has been updated to ${newStatus}.`;
 
-    // Send database notification
-    const dbResult = await this.sendNotification({
-      userId,
-      type: 'FILE_STATUS_UPDATE',
-      title: 'File Status Updated',
-      message: `"${fileName}" - ${message}`,
-      fileId,
-      data: {
-        fileName,
+    try {
+      // Send database notification
+      const dbResult = await this.sendNotification({
+        userId,
+        type: 'FILE_STATUS_UPDATE',
+        title: 'File Status Updated',
+        message: `"${fileName}" - ${message}`,
         fileId,
-        newStatus,
-        timestamp: new Date().toISOString()
+        data: {
+          fileName,
+          fileId,
+          newStatus,
+          timestamp: new Date().toISOString()
+        }
+      });
+
+      // Send Telegram notification to customer if they have linked account
+      try {
+        const user = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { 
+            telegramChatId: true, 
+            firstName: true, 
+            lastName: true 
+          }
+        });
+
+        if (user?.telegramChatId) {
+          console.log('📱 Sending Telegram notification to customer...');
+          
+          const statusEmojis = {
+            'RECEIVED': '📥',
+            'PENDING': '⏳',
+            'READY': '✅',
+            'IN_PROGRESS': '🔄',
+            'CANCELLED': '❌'
+          };
+
+          const emoji = statusEmojis[newStatus as keyof typeof statusEmojis] || '📄';
+          
+          const telegramMessage = `
+${emoji} <b>File Status Update</b>
+
+📄 <b>File:</b> ${fileName}
+📊 <b>Status:</b> ${newStatus}
+💬 <b>Update:</b> ${message}
+
+🔗 <a href="https://compucar.pro/files">View Your Files</a>
+
+🕐 <b>Updated:</b> ${new Date().toLocaleString()}
+          `.trim();
+
+          const botToken = process.env.TELEGRAM_CUSTOMER_BOT_TOKEN;
+          if (botToken) {
+            const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: user.telegramChatId,
+                text: telegramMessage,
+                parse_mode: 'HTML',
+                disable_web_page_preview: true
+              })
+            });
+
+            const result = await response.json();
+            if (result.ok) {
+              console.log(`✅ Telegram notification sent to ${user.firstName} ${user.lastName}`);
+            } else {
+              console.error('❌ Failed to send Telegram notification:', result.description);
+            }
+          } else {
+            console.log('⚠️ TELEGRAM_CUSTOMER_BOT_TOKEN not configured');
+          }
+        } else {
+          console.log('📱 User does not have Telegram linked');
+        }
+      } catch (telegramError) {
+        console.error('⚠️ Error sending Telegram notification:', telegramError);
+        // Continue execution - don't let Telegram errors break the main notification
       }
-    });
 
-    // TODO: Send Customer bot notification when customer Telegram integration is implemented
-    // This would require adding telegramChatId field to User model and customer bot registration
-
-    return dbResult;
+      return dbResult;
+    } catch (error) {
+      console.error('💥 Error in notifyCustomerFileStatusUpdate:', error);
+      throw error;
+    }
   }
 
   /**

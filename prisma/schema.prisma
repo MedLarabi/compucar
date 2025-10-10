@@ -32,6 +32,10 @@ model User {
   language     String    @default("en")
   currency     String    @default("DZD")
   timezone     String    @default("America/New_York")
+  // Telegram integration
+  telegramChatId String?  @unique // Customer's Telegram chat ID for notifications
+  telegramUsername String? // Optional: store Telegram username
+  telegramLinkedAt DateTime? // When customer linked their Telegram account
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   lastLoginAt   DateTime?
