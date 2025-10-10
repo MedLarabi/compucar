@@ -161,27 +161,23 @@ You'll receive instant notifications for file status updates! 🚀
                 `
 📱 <b>Welcome to CompuCar Customer Bot!</b>
 
-🔗 To receive personalized notifications, you need to link your Telegram account to your CompuCar account.
+🔗 To receive personalized notifications about your files and orders, I need to connect your Telegram account to your CompuCar account.
 
-<b>How to link your account:</b>
+<b>It's very simple:</b>
+Just send me your email address that you use on compucar.pro
 
-<b>Method 1: Quick Link</b>
-Send your email address like this:
-<code>/link your-email@example.com</code>
+<b>Example:</b>
+Just type: <code>ahmed@gmail.com</code>
 
-<b>Method 2: Manual Link</b>
-1. Visit your CompuCar account settings
-2. Go to Notifications section
-3. Click "Link Telegram Account"
-4. Enter the code we provide
+That's it! No commands needed, just your email. 😊
 
-<b>After linking, you'll receive:</b>
-📁 File status updates (received, processing, ready)
+<b>After linking, you'll receive instant notifications for:</b>
+📁 File status updates (received → processing → ready)
 🛒 Order confirmations and tracking
 💳 Payment confirmations
 ⏰ Processing time estimates
 
-Ready to get started? 🚀
+Ready? Just send me your email! 🚀
                 `.trim(),
                 chatId
               );
@@ -388,31 +384,96 @@ We'll respond as quickly as possible! 🚀
             );
             break;
             
+          case '/unlink':
+            if (linkedUser) {
+              // Unlink the account
+              try {
+                await prisma.user.update({
+                  where: { id: linkedUser.id },
+                  data: {
+                    telegramChatId: null,
+                    telegramUsername: null,
+                    telegramLinkedAt: null
+                  }
+                });
+                
+                await MultiBotTelegramService.sendMessage(
+                  BotType.CUSTOMER,
+                  `
+🔓 <b>Account Successfully Unlinked!</b>
+
+✅ Your Telegram account has been disconnected from your CompuCar account.
+
+<b>What this means:</b>
+• You'll no longer receive notifications here
+• Your account data remains safe on compucar.pro
+• You can re-link anytime by sending your email
+
+<b>To link again:</b>
+Just send me your email address (e.g., <code>ahmed@gmail.com</code>)
+
+Thanks for using CompuCar notifications! 👋
+                  `.trim(),
+                  chatId
+                );
+              } catch (error) {
+                console.error('Error unlinking account:', error);
+                await MultiBotTelegramService.sendMessage(
+                  BotType.CUSTOMER,
+                  `
+❌ <b>Error Unlinking Account</b>
+
+Sorry, there was a technical issue unlinking your account.
+
+Please try again or contact support: /support
+                  `.trim(),
+                  chatId
+                );
+              }
+            } else {
+              await MultiBotTelegramService.sendMessage(
+                BotType.CUSTOMER,
+                `
+ℹ️ <b>No Account Linked</b>
+
+You don't have a linked account to unlink.
+
+<b>To link an account:</b>
+Just send me your email address (e.g., <code>ahmed@gmail.com</code>)
+                `.trim(),
+                chatId
+              );
+            }
+            break;
+            
           case '/help':
             await MultiBotTelegramService.sendMessage(
               BotType.CUSTOMER,
               `
 ℹ️ <b>Help & Commands</b>
 
-<b>Available Commands:</b>
-🔗 <code>/link email@example.com</code> - Link your account
+<b>🔗 Getting Started:</b>
+1. Just send me your email address (e.g., <code>ahmed@gmail.com</code>)
+2. I'll link your Telegram to your CompuCar account
+3. You'll receive instant notifications!
+
+<b>📱 Available Commands:</b>
 📁 <code>/files</code> - View your files
 🛒 <code>/orders</code> - Track your orders
 📞 <code>/support</code> - Contact support
+🔓 <code>/unlink</code> - Unlink your account
 ℹ️ <code>/help</code> - Show this help
 
-<b>Getting Started:</b>
-1. Link your account with <code>/link your-email@example.com</code>
-2. Upload files at https://compucar.pro
-3. Receive instant notifications here!
-
-<b>Notifications You'll Receive:</b>
+<b>🔔 Notifications You'll Receive:</b>
 📁 File status updates (received → processing → ready)
 🛒 Order confirmations and tracking
 💳 Payment confirmations
 ⏰ Processing time estimates
 
-Need more help? Use <code>/support</code> 🚀
+<b>🚀 It's that simple!</b>
+No commands, no complicated steps. Just send your email and start receiving notifications!
+
+Need more help? Use <code>/support</code> 😊
               `.trim(),
               chatId
             );
@@ -457,18 +518,123 @@ For general questions, use <code>/support</code> to contact our team! 🚀
             chatId
           );
         } else {
-          await MultiBotTelegramService.sendMessage(
-            BotType.CUSTOMER,
-            `
+          // Check if the message contains an email address
+          const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/;
+          const emailMatch = text?.match(emailRegex);
+          
+          if (emailMatch) {
+            const email = emailMatch[1].toLowerCase();
+            
+            // Show processing message
+            await MultiBotTelegramService.sendMessage(
+              BotType.CUSTOMER,
+              `
+🔍 <b>Checking your email...</b>
+
+Looking for account with email: <code>${email}</code>
+
+Please wait a moment... ⏳
+              `.trim(),
+              chatId
+            );
+            
+            // Check if user exists
+            const user = await prisma.user.findUnique({
+              where: { email }
+            });
+            
+            if (user) {
+              const success = await linkTelegramAccount(chatId, telegramUser, email);
+              
+              if (success) {
+                await MultiBotTelegramService.sendMessage(
+                  BotType.CUSTOMER,
+                  `
+🎉 <b>Perfect! Account Successfully Linked!</b>
+
+✅ Your Telegram account is now connected to ${user.firstName} ${user.lastName}'s CompuCar account.
+
+<b>🔔 You'll now receive instant notifications for:</b>
+📁 File status updates (received → processing → ready)
+🛒 Order confirmations and tracking
+💳 Payment confirmations
+⏰ Processing time estimates
+
+<b>📱 Available Commands:</b>
+📁 /files - View your files
+🛒 /orders - Track your orders
+📞 /support - Contact support
+ℹ️ /help - Get help
+
+<b>🚀 Welcome to instant notifications!</b>
+You're all set! Upload a file at compucar.pro and I'll notify you when it's ready.
+                  `.trim(),
+                  chatId
+                );
+              } else {
+                await MultiBotTelegramService.sendMessage(
+                  BotType.CUSTOMER,
+                  `
+❌ <b>Oops! Something went wrong</b>
+
+I found your account but couldn't link it. This might happen if:
+• Your email is already linked to another Telegram account
+• There was a technical issue
+
+<b>What to do:</b>
+• Try again by sending your email
+• Contact support if the problem continues: /support
+
+Please try sending your email again. 🔄
+                  `.trim(),
+                  chatId
+                );
+              }
+            } else {
+              await MultiBotTelegramService.sendMessage(
+                BotType.CUSTOMER,
+                `
+❌ <b>Account Not Found</b>
+
+I couldn't find a CompuCar account with email: <code>${email}</code>
+
+<b>Please check:</b>
+• Email address is spelled correctly
+• You have an account at compucar.pro
+• Your email is verified
+
+<b>Need help?</b>
+• Try typing your email again
+• Contact support: /support
+• Create an account at: https://compucar.pro
+
+Just send me your correct email address to try again! 📧
+                `.trim(),
+                chatId
+              );
+            }
+          } else {
+            // Message doesn't contain email
+            await MultiBotTelegramService.sendMessage(
+              BotType.CUSTOMER,
+              `
 👋 Hello!
 
-To get started, please link your CompuCar account:
-<code>/link your-email@example.com</code>
+I'm here to send you notifications about your CompuCar account.
 
-Or type <code>/help</code> for more information.
-            `.trim(),
-            chatId
-          );
+<b>🔗 To get started:</b>
+Just send me your email address that you use on compucar.pro
+
+<b>Example:</b>
+<code>ahmed@gmail.com</code>
+
+That's all! No commands needed. 😊
+
+<b>Need help?</b> Type /help for more information.
+              `.trim(),
+              chatId
+            );
+          }
         }
       }
     }

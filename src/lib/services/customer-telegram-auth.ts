@@ -1,11 +1,4 @@
-#!/usr/bin/env tsx
-
-import { config } from 'dotenv';
-import { join } from 'path';
 import { prisma } from '@/lib/database/prisma';
-
-// Load environment variables
-config({ path: join(process.cwd(), '.env.local') });
 
 interface TelegramUser {
   id: number;

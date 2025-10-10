@@ -4,7 +4,7 @@ import { config } from 'dotenv';
 import { join } from 'path';
 
 // Load environment variables
-config({ path: join(process.cwd(), '.env.local') });
+config({ path: join(process.cwd(), '.env') });
 
 async function setupCustomerBot() {
   const domain = 'https://compucar.pro';
@@ -19,7 +19,7 @@ async function setupCustomerBot() {
   
   if (!botToken) {
     console.log('❌ TELEGRAM_CUSTOMER_BOT_TOKEN not found in environment');
-    console.log('   Add TELEGRAM_CUSTOMER_BOT_TOKEN=your-bot-token to your .env.local');
+    console.log('   Add TELEGRAM_CUSTOMER_BOT_TOKEN=your-bot-token to your .env');
     return;
   }
   
