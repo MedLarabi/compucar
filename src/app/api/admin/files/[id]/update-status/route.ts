@@ -101,21 +101,13 @@ export async function POST(
       }
     });
 
-    // Notify customer about status change
-    if (status === 'PENDING') {
-      await NotificationService.notifyCustomerFileInProgress(
-        currentFile.userId,
-        currentFile.originalFilename,
-        currentFile.id,
-        estimatedProcessingTime || undefined
-      );
-    } else if (status === 'READY') {
-      await NotificationService.notifyCustomerFileReady(
-        currentFile.userId,
-        currentFile.originalFilename,
-        currentFile.id
-      );
-    }
+    // Notify customer about status change (includes Telegram notifications)
+    await NotificationService.notifyCustomerFileStatusUpdate(
+      currentFile.userId,
+      currentFile.originalFilename,
+      currentFile.id,
+      status
+    );
 
     // Send real-time update to customer's browser
     sendUpdateToUser(currentFile.userId, {

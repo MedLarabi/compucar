@@ -69,11 +69,12 @@ export async function POST(request: NextRequest) {
       // Continue anyway - we'll verify on first download
     }
 
-    // Notify customer that their file was received
-    await NotificationService.notifyCustomerFileReceived(
+    // Notify customer that their file was received (includes Telegram notifications)
+    await NotificationService.notifyCustomerFileStatusUpdate(
       tuningFile.userId,
       tuningFile.originalFilename,
-      tuningFile.id
+      tuningFile.id,
+      'RECEIVED'
     );
 
     // Notify admins about new file upload with URGENT priority (call notification)

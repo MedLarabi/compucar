@@ -150,11 +150,12 @@ export async function POST(
       }
     });
 
-    // Send notification to customer that their file is ready
-    await NotificationService.notifyCustomerFileReady(
+    // Send notification to customer that their file is ready (includes Telegram notifications)
+    await NotificationService.notifyCustomerFileStatusUpdate(
       tuningFile.userId,
-      fileId,
-      file.name
+      tuningFile.originalFilename,
+      tuningFile.id,
+      'READY'
     );
 
     return NextResponse.json({
