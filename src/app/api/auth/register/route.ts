@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import { registerUserSchema } from "@/lib/validations";
 import { prisma } from "@/lib/database/prisma";
 import { NotificationService } from "@/lib/services/notifications";
+import { sendWelcomeEmail } from "@/lib/email/hostinger-service";
 
 export async function POST(request: NextRequest) {
   try {
@@ -60,6 +61,20 @@ export async function POST(request: NextRequest) {
       user.email,
       user.id
     );
+
+    // Send welcome email to the new user
+    try {
+      console.log(`📧 Sending welcome email to ${user.email}...`);
+      const emailSent = await sendWelcomeEmail(
+        user.firstName || user.name || 'User',
+        user.email,
+        `https://compucar.pro/auth/login`
+      );
+      console.log(`✅ Welcome email sent: ${emailSent}`);
+    } catch (emailError) {
+      console.error('❌ Failed to send welcome email:', emailError);
+      // Don't fail registration if email fails
+    }
 
     return NextResponse.json(
       { 

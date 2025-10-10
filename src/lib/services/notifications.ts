@@ -805,38 +805,94 @@ export class NotificationService {
   }
 
   /**
-   * Send email notification (placeholder for email service integration)
+   * Send email notification using Hostinger email service
    */
   private static async sendEmailNotification(data: NotificationData): Promise<void> {
     try {
       // Get user email preferences
       const user = await prisma.user.findUnique({
         where: { id: data.userId },
-        select: { email: true, newsletter: true }
+        select: { email: true, newsletter: true, firstName: true, lastName: true }
       });
 
-      if (!user || !user.newsletter) {
+      if (!user) {
+        console.log('⚠️ User not found for email notification');
         return;
       }
 
-      // Here you would integrate with your email service (Resend, SendGrid, etc.)
-      console.log(`Sending email notification to ${user.email}:`, {
-        subject: data.title,
-        message: data.message,
-        type: data.type
-      });
+      // Skip email if user has opted out of newsletters/notifications
+      if (!user.newsletter) {
+        console.log(`⚠️ User ${user.email} has opted out of email notifications`);
+        return;
+      }
 
-      // Example with Resend:
-      // await resend.emails.send({
-      //   from: 'noreply@yourstore.com',
-      //   to: user.email,
-      //   subject: data.title,
-      //   html: generateEmailTemplate(data)
-      // });
+      // Import and use Hostinger email service
+      try {
+        const { sendEmail } = await import('@/lib/email/hostinger-service');
+        
+        const emailSent = await sendEmail({
+          to: user.email,
+          subject: data.title,
+          html: this.generateEmailTemplate(data, user),
+          text: data.message
+        });
+
+        if (emailSent) {
+          console.log(`✅ Email notification sent to ${user.email}: ${data.title}`);
+        } else {
+          console.error(`❌ Failed to send email notification to ${user.email}`);
+        }
+      } catch (importError) {
+        console.error('❌ Failed to import email service:', importError);
+      }
 
     } catch (error) {
-      console.error('Error sending email notification:', error);
+      console.error('❌ Error sending email notification:', error);
     }
+  }
+
+  /**
+   * Generate HTML email template for notifications
+   */
+  private static generateEmailTemplate(data: NotificationData, user: { firstName?: string | null; lastName?: string | null; email: string }): string {
+    const userName = user.firstName || user.email.split('@')[0];
+    
+    return `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: #2563eb; color: white; padding: 20px; text-align: center;">
+          <h1 style="margin: 0;">📧 ${data.title}</h1>
+        </div>
+        
+        <div style="padding: 20px;">
+          <p>Hi <strong>${userName}</strong>,</p>
+          
+          <p>${data.message}</p>
+          
+          ${data.fileId ? `
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="https://compucar.pro/files/${data.fileId}" 
+               style="background: #2563eb; color: white; padding: 12px 24px; 
+                      text-decoration: none; border-radius: 6px; display: inline-block;">
+              📄 View File Details
+            </a>
+          </div>
+          ` : ''}
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="https://compucar.pro/files" 
+               style="background: #10b981; color: white; padding: 12px 24px; 
+                      text-decoration: none; border-radius: 6px; display: inline-block;">
+              📊 View All Files
+            </a>
+          </div>
+        </div>
+        
+        <div style="background: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #6b7280;">
+          <p>CompuCar File Tuning System | <a href="https://compucar.pro">compucar.pro</a></p>
+          <p>Notification sent at: ${new Date().toLocaleString()}</p>
+        </div>
+      </div>
+    `;
   }
 
   /**
@@ -852,24 +908,124 @@ export class NotificationService {
           id: { in: userIds },
           newsletter: true
         },
-        select: { email: true }
+        select: { email: true, firstName: true, lastName: true, id: true }
       });
 
-      const emails = users.map(user => user.email);
-
-      if (emails.length === 0) {
+      if (users.length === 0) {
+        console.log('⚠️ No users found for bulk email notifications');
         return;
       }
 
-      // Here you would integrate with your email service for bulk sending
-      console.log(`Sending bulk email notifications to ${emails.length} users:`, {
-        subject: data.title,
-        message: data.message,
-        type: data.type
-      });
+      // Import email service
+      const { sendEmail } = await import('@/lib/email/hostinger-service');
+
+      // Send email to each user
+      for (const user of users) {
+        try {
+          const notificationData: NotificationData = {
+            ...data,
+            userId: user.id
+          };
+
+          const emailSent = await sendEmail({
+            to: user.email,
+            subject: data.title,
+            html: this.generateEmailTemplate(notificationData, user),
+            text: data.message
+          });
+
+          if (emailSent) {
+            console.log(`✅ Bulk email sent to ${user.email}: ${data.title}`);
+          } else {
+            console.error(`❌ Failed to send bulk email to ${user.email}`);
+          }
+        } catch (emailError) {
+          console.error(`❌ Error sending email to ${user.email}:`, emailError);
+        }
+      }
 
     } catch (error) {
-      console.error('Error sending bulk email notifications:', error);
+      console.error('❌ Error sending bulk email notifications:', error);
+    }
+  }
+
+  /**
+   * Send email notifications to admins
+   */
+  private static async sendAdminEmailNotifications(
+    data: Omit<NotificationData, 'userId'>,
+    isUrgent: boolean = false
+  ): Promise<void> {
+    try {
+      // Get admin emails from environment variable
+      const adminEmails = process.env.ADMIN_EMAIL?.split(',').map(email => email.trim()) || [];
+      
+      if (adminEmails.length === 0) {
+        console.log('⚠️ No admin emails configured in ADMIN_EMAIL environment variable');
+        return;
+      }
+
+      // Import email service
+      const { sendEmail } = await import('@/lib/email/hostinger-service');
+
+      const subject = isUrgent ? `🚨 URGENT: ${data.title}` : `📧 ${data.title}`;
+      
+      const html = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: ${isUrgent ? '#dc2626' : '#2563eb'}; color: white; padding: 20px; text-align: center;">
+            <h1 style="margin: 0;">${isUrgent ? '🚨' : '📧'} ${data.title}</h1>
+          </div>
+          
+          <div style="padding: 20px;">
+            <p><strong>Admin Notification</strong></p>
+            
+            <p>${data.message}</p>
+            
+            ${data.data ? `
+            <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="margin: 0 0 10px 0;">📋 Details:</h3>
+              <pre style="font-size: 12px; background: #e5e7eb; padding: 10px; border-radius: 4px; overflow-x: auto;">${JSON.stringify(data.data, null, 2)}</pre>
+            </div>
+            ` : ''}
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="https://compucar.pro/admin" 
+                 style="background: #2563eb; color: white; padding: 12px 24px; 
+                        text-decoration: none; border-radius: 6px; display: inline-block;">
+                🔗 Go to Admin Panel
+              </a>
+            </div>
+          </div>
+          
+          <div style="background: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #6b7280;">
+            <p>CompuCar Admin System | <a href="https://compucar.pro/admin">Admin Panel</a></p>
+            <p>Notification sent at: ${new Date().toLocaleString()}</p>
+          </div>
+        </div>
+      `;
+
+      // Send to all admin emails
+      for (const adminEmail of adminEmails) {
+        try {
+          const emailSent = await sendEmail({
+            to: adminEmail,
+            subject: subject,
+            html: html,
+            text: data.message
+          });
+
+          if (emailSent) {
+            console.log(`✅ Admin email sent to ${adminEmail}: ${data.title}`);
+          } else {
+            console.error(`❌ Failed to send admin email to ${adminEmail}`);
+          }
+        } catch (emailError) {
+          console.error(`❌ Error sending admin email to ${adminEmail}:`, emailError);
+        }
+      }
+
+    } catch (error) {
+      console.error('❌ Error sending admin email notifications:', error);
     }
   }
 
@@ -1357,8 +1513,8 @@ export class NotificationService {
 
     const adminIds = admins.map(admin => admin.id);
     
-    return this.sendBulkNotifications(adminIds, {
-      type: 'NEW_USER_REGISTRATION',
+    const notificationData = {
+      type: 'NEW_USER_REGISTRATION' as NotificationType,
       title: 'New User Registration',
       message: `New user registered: ${userName} (${userEmail})`,
       data: {
@@ -1367,7 +1523,15 @@ export class NotificationService {
         userId,
         timestamp: new Date().toISOString()
       }
-    });
+    };
+
+    // Send database notifications to admin users
+    const dbResult = this.sendBulkNotifications(adminIds, notificationData);
+
+    // Send email notifications to admin emails
+    await this.sendAdminEmailNotifications(notificationData, false);
+
+    return dbResult;
   }
 
   /**
