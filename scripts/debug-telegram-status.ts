@@ -129,19 +129,19 @@ async function testTelegramBot() {
         [
           {
             text: testFile.status === 'RECEIVED' ? '📥 RECEIVED ✓' : '📥 Set to RECEIVED',
-            callback_data: `file_status_${testFile.id}_RECEIVED`
+            callback_data: `file_admin_status_${testFile.id}_RECEIVED`
           }
         ],
         [
           {
             text: testFile.status === 'PENDING' ? '⏳ PENDING ✓' : '⏳ Set to PENDING',
-            callback_data: `file_status_${testFile.id}_PENDING`
+            callback_data: `file_admin_status_${testFile.id}_PENDING`
           }
         ],
         [
           {
             text: testFile.status === 'READY' ? '✅ READY ✓' : '✅ Set to READY',
-            callback_data: `file_status_${testFile.id}_READY`
+            callback_data: `file_admin_status_${testFile.id}_READY`
           }
         ]
       ]

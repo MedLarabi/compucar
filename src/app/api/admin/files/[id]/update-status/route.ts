@@ -102,13 +102,20 @@ export async function POST(
     });
 
     // Notify customer about status change (includes Telegram notifications)
-    await NotificationService.notifyCustomerFileStatusUpdate(
-      currentFile.userId,
-      currentFile.originalFilename,
-      currentFile.id,
-      status,
-      estimatedProcessingTime
-    );
+    try {
+      console.log('📱 Sending customer notification for status change...');
+      await NotificationService.notifyCustomerFileStatusUpdate(
+        currentFile.userId,
+        currentFile.originalFilename,
+        currentFile.id,
+        status,
+        estimatedProcessingTime
+      );
+      console.log('✅ Customer notification sent successfully');
+    } catch (notificationError) {
+      console.error('❌ Failed to send customer notification:', notificationError);
+      // Continue execution - don't let notification errors break the status update
+    }
 
     // Send real-time update to customer's browser
     sendUpdateToUser(currentFile.userId, {
@@ -130,14 +137,21 @@ export async function POST(
     );
 
     // Send Super Admin Bot notification about status change
-    const { MultiBotTelegramService } = await import('@/lib/services/multi-bot-telegram');
-    await MultiBotTelegramService.notifySuperAdmin({
-      type: 'system_alert',
-      title: 'File Status Updated',
-      message: `${user.firstName} ${user.lastName} changed file status to ${status}`,
-      details: `File: ${currentFile.originalFilename}\nCustomer: ${currentFile.user.firstName} ${currentFile.user.lastName}${estimatedProcessingTime ? `\nEstimated Time: ${estimatedProcessingTime} minutes` : ''}`,
-      actionUrl: `${process.env.NEXTAUTH_URL}/admin/files/${fileId}`
-    });
+    try {
+      console.log('📱 Sending super admin notification...');
+      const { MultiBotTelegramService } = await import('@/lib/services/multi-bot-telegram');
+      await MultiBotTelegramService.notifySuperAdmin({
+        type: 'system_alert',
+        title: 'File Status Updated',
+        message: `${user.firstName} ${user.lastName} changed file status to ${status}`,
+        details: `File: ${currentFile.originalFilename}\nCustomer: ${currentFile.user.firstName} ${currentFile.user.lastName}${estimatedProcessingTime ? `\nEstimated Time: ${estimatedProcessingTime} minutes` : ''}`,
+        actionUrl: `https://compucar.pro/admin/files/${fileId}`
+      });
+      console.log('✅ Super admin notification sent successfully');
+    } catch (superAdminError) {
+      console.error('❌ Failed to send super admin notification:', superAdminError);
+      // Continue execution - don't let notification errors break the status update
+    }
 
     // Send email notification if status is READY (keep existing email functionality)
     if (status === 'READY') {

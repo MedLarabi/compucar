@@ -1299,7 +1299,7 @@ export class NotificationService {
       title: 'File Upload - Received',
       message: `${customerName} uploaded a new file: "${fileName}"`,
       details: `File Size: ${(fileSize / 1024 / 1024).toFixed(2)} MB\nModifications: ${modifications.join(', ')}`,
-      actionUrl: `${process.env.NEXTAUTH_URL}/admin/files/${fileId}`,
+      actionUrl: `https://compucar.pro/admin/files/${fileId}`,
       fileId: fileId,
       filename: fileName,
       customerName: customerName,
