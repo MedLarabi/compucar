@@ -257,13 +257,9 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             </Button>
           </div>
           
-          <div className="space-y-6">
-            <ReviewsDisplay 
-              productSlug={product.slug}
-              initialReviews={product.reviews || []}
-            />
-            
-            {showReviewForm && (
+          {/* Show review form right below the button when toggled */}
+          {showReviewForm && (
+            <div className="mb-8">
               <Card>
                 <CardHeader>
                   <CardTitle>{t('product.writeReview')}</CardTitle>
@@ -276,7 +272,14 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   />
                 </CardContent>
               </Card>
-            )}
+            </div>
+          )}
+          
+          <div className="space-y-6">
+            <ReviewsDisplay 
+              productSlug={product.slug}
+              initialReviews={product.reviews || []}
+            />
           </div>
         </div>
       </div>

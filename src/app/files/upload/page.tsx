@@ -110,12 +110,6 @@ export default function FileUploadPage() {
     }));
   }, []);
 
-  // Helper function to check if DTC_DELETE is selected
-  const isDtcDeleteSelected = () => {
-    const dtcModification = modifications.find(mod => mod.code === 'DTC_DELETE');
-    return dtcModification && uploadState.selectedModifications.includes(dtcModification.id);
-  };
-
   const handleModificationChange = (modificationId: number, checked: boolean) => {
     setUploadState(prev => ({
       ...prev,
@@ -361,56 +355,57 @@ export default function FileUploadPage() {
                   </div>
                 ) : (
                   modifications.map((modification) => (
-                    <div key={modification.id} className="flex items-start space-x-3 p-3 border rounded-lg">
-                      <Checkbox
-                        id={`mod-${modification.id}`}
-                        checked={uploadState.selectedModifications.includes(modification.id)}
-                        onCheckedChange={(checked) => 
-                          handleModificationChange(modification.id, checked as boolean)
-                        }
-                        disabled={uploadState.isUploading}
-                      />
-                      <div className="flex-1">
-                        <Label 
-                          htmlFor={`mod-${modification.id}`}
-                          className="font-medium cursor-pointer"
-                        >
-                          {modification.label}
-                        </Label>
-                        {modification.description && (
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {modification.description}
-                          </p>
-                        )}
+                    <div key={modification.id} className="border rounded-lg">
+                      <div className="flex items-start space-x-3 p-3">
+                        <Checkbox
+                          id={`mod-${modification.id}`}
+                          checked={uploadState.selectedModifications.includes(modification.id)}
+                          onCheckedChange={(checked) => 
+                            handleModificationChange(modification.id, checked as boolean)
+                          }
+                          disabled={uploadState.isUploading}
+                        />
+                        <div className="flex-1">
+                          <Label 
+                            htmlFor={`mod-${modification.id}`}
+                            className="font-medium cursor-pointer"
+                          >
+                            {modification.label}
+                          </Label>
+                          {modification.description && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {modification.description}
+                            </p>
+                          )}
+                        </div>
                       </div>
+                      
+                      {/* DTC Codes Text Area - Show right below DTC_DELETE checkbox when selected */}
+                      {modification.code === 'DTC_DELETE' && uploadState.selectedModifications.includes(modification.id) && (
+                        <div className="px-3 pb-3 pt-0">
+                          <div className="ml-6 space-y-2">
+                            <Label htmlFor="dtc-codes" className="text-sm font-medium text-muted-foreground">
+                              {t('upload.dtcCodes.title')}
+                            </Label>
+                            <Textarea
+                              id="dtc-codes"
+                              placeholder="Enter DTC codes"
+                              value={uploadState.dtcCodes}
+                              onChange={(e) => setUploadState(prev => ({ ...prev, dtcCodes: e.target.value }))}
+                              disabled={uploadState.isUploading}
+                              rows={3}
+                              className="resize-none text-sm"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              {t('upload.dtcCodes.example')}
+                            </p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))
                 )}
               </div>
-
-              {/* Conditional DTC Codes Text Area */}
-              {isDtcDeleteSelected() && (
-                <div className="mt-6">
-                  <Label htmlFor="dtc-codes" className="text-base font-medium">
-                    {t('upload.dtcCodes.title')}
-                  </Label>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    {t('upload.dtcCodes.description')}
-                  </p>
-                  <Textarea
-                    id="dtc-codes"
-                    placeholder={t('upload.dtcCodes.placeholder')}
-                    value={uploadState.dtcCodes}
-                    onChange={(e) => setUploadState(prev => ({ ...prev, dtcCodes: e.target.value }))}
-                    disabled={uploadState.isUploading}
-                    rows={4}
-                    className="resize-none"
-                  />
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {t('upload.dtcCodes.example')}
-                  </p>
-                </div>
-              )}
 
               {uploadState.selectedModifications.length === 0 && (
                 <Alert className="mt-4">
