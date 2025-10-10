@@ -88,7 +88,7 @@ async function testTelegramBot() {
   console.log('\n📁 Finding test file...');
   try {
     const testFile = await prisma.tuningFile.findFirst({
-      orderBy: { createdDate: 'desc' },
+      orderBy: { createdAt: 'desc' },
       include: {
         user: {
           select: { firstName: true, lastName: true }
