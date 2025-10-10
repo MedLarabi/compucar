@@ -514,7 +514,7 @@ export default function CODCheckoutPage() {
                               <FormItem>
                                 <FormLabel className="text-sm">{t('checkout.cod.firstName')} *</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Ahmed" {...field} className="h-9 text-sm" />
+                                  <Input placeholder={t('checkout.cod.firstNamePlaceholder')} {...field} className="h-9 text-sm" />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -528,7 +528,7 @@ export default function CODCheckoutPage() {
                               <FormItem>
                                 <FormLabel className="text-sm">{t('checkout.cod.lastName')} *</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Benali" {...field} className="h-9 text-sm" />
+                                  <Input placeholder={t('checkout.cod.lastNamePlaceholder')} {...field} className="h-9 text-sm" />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -794,21 +794,11 @@ export default function CODCheckoutPage() {
                   {/* Shipping Info */}
                   {selectedWilaya && (
                     <div className="bg-muted/50 rounded-lg p-3 text-xs space-y-2">
-                      <div className="flex items-start justify-between">
-                        <span className="font-medium break-words flex-1 mr-2">{t('checkout.cod.shippingTo')}:</span>
-                        <span className="text-muted-foreground font-medium whitespace-nowrap">{selectedWilaya}</span>
-                      </div>
                       {form.watch('deliveryType') === 'stopdesk' && (
                         <div className="text-muted-foreground break-words">
                           {t('checkout.cod.stopdeskPickupDiscount')}
                         </div>
                       )}
-                      {shipping > 0 && (
-                        <div className="text-muted-foreground break-words">
-                          {t('checkout.cod.estimatedDelivery')}: {form.watch('deliveryType') === 'stopdesk' ? '2-3' : '3-5'} {t('checkout.cod.days')}
-                        </div>
-                      )}
-                      <div className="text-muted-foreground mt-1">{t('checkout.cod.allPricesInDA')}</div>
                     </div>
                   )}
 
