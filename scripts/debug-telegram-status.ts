@@ -15,16 +15,16 @@ interface TelegramConfig {
 
 function getTelegramConfig(): TelegramConfig {
   return {
-    botToken: process.env.TELEGRAM_BOT_TOKEN,
-    chatId: process.env.TELEGRAM_CHAT_ID,
-    enabled: process.env.TELEGRAM_ENABLED === 'true'
+    botToken: process.env.TELEGRAM_SUPER_ADMIN_BOT_TOKEN,
+    chatId: process.env.TELEGRAM_SUPER_ADMIN_CHAT_ID,
+    enabled: process.env.TELEGRAM_SUPER_ADMIN_ENABLED === 'true'
   };
 }
 
 async function testTelegramBot() {
   const config = getTelegramConfig();
   
-  console.log('🤖 Telegram Bot Status Test\n');
+  console.log('🤖 Super Admin Telegram Bot Status Test\n');
   
   // Check configuration
   console.log('📋 Configuration:');
@@ -38,12 +38,12 @@ async function testTelegramBot() {
   }
   
   if (!config.botToken) {
-    console.log('❌ TELEGRAM_BOT_TOKEN not configured');
+    console.log('❌ TELEGRAM_SUPER_ADMIN_BOT_TOKEN not configured');
     return;
   }
   
   if (!config.chatId) {
-    console.log('❌ TELEGRAM_CHAT_ID not configured');
+    console.log('❌ TELEGRAM_SUPER_ADMIN_CHAT_ID not configured');
     return;
   }
   
@@ -112,14 +112,14 @@ async function testTelegramBot() {
     console.log('\n📤 Sending test message with status buttons...');
     
     const message = `
-🧪 <b>Telegram Bot Status Test</b>
+🧪 <b>Super Admin Bot Status Test</b>
 
 📄 <b>File:</b> ${testFile.originalFilename}
 👤 <b>Customer:</b> ${testFile.user.firstName} ${testFile.user.lastName}
 📊 <b>Current Status:</b> ${testFile.status}
 🔧 <b>Modifications:</b> ${testFile.fileModifications.map(fm => fm.modification.label).join(', ')}
 
-🔗 <a href="${process.env.NEXTAUTH_URL}/admin/files/${testFile.id}">View in Admin Panel</a>
+🔗 <a href="https://compucar.pro/admin/files/${testFile.id}">View in Admin Panel</a>
 
 <b>Test the buttons below:</b>
     `.trim();
