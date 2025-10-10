@@ -1560,7 +1560,7 @@ export class NotificationService {
   /**
    * Notify customer when file status is updated
    */
-  static async notifyCustomerFileStatusUpdate(userId: string, fileName: string, fileId: string, newStatus: string): Promise<boolean> {
+  static async notifyCustomerFileStatusUpdate(userId: string, fileName: string, fileId: string, newStatus: string, estimatedMinutes?: number): Promise<boolean> {
     const statusMessages = {
       'RECEIVED': 'Your file has been received and is in queue for processing.',
       'PENDING': 'Your file is currently being processed by our team.',
@@ -1612,11 +1612,28 @@ export class NotificationService {
 
           const emoji = statusEmojis[newStatus as keyof typeof statusEmojis] || '📄';
           
+          // Format estimated time if provided
+          let estimatedTimeText = '';
+          if (estimatedMinutes) {
+            const timeText = estimatedMinutes === 1440 ? '1 day' : 
+                           estimatedMinutes === 240 ? '4 hours' :
+                           estimatedMinutes === 120 ? '2 hours' :
+                           estimatedMinutes === 60 ? '1 hour' :
+                           estimatedMinutes === 45 ? '45 minutes' :
+                           estimatedMinutes === 30 ? '30 minutes' :
+                           estimatedMinutes === 20 ? '20 minutes' :
+                           estimatedMinutes === 15 ? '15 minutes' :
+                           estimatedMinutes === 10 ? '10 minutes' :
+                           estimatedMinutes === 5 ? '5 minutes' :
+                           `${estimatedMinutes} minutes`;
+            estimatedTimeText = `\n⏰ <b>Estimated Time:</b> ${timeText}`;
+          }
+          
           const telegramMessage = `
 ${emoji} <b>File Status Update</b>
 
 📄 <b>File:</b> ${fileName}
-📊 <b>Status:</b> ${newStatus}
+📊 <b>Status:</b> ${newStatus}${estimatedTimeText}
 💬 <b>Update:</b> ${message}
 
 🔗 <a href="https://compucar.pro/files">View Your Files</a>
@@ -1677,26 +1694,86 @@ ${emoji} <b>File Status Update</b>
                      estimatedMinutes === 5 ? '5 minutes' :
                      `${estimatedMinutes} minutes`;
 
-    // Send database notification
-    const dbResult = await this.sendNotification({
-      userId,
-      type: 'FILE_STATUS_UPDATE',
-      title: 'Estimated Time Set',
-      message: `Your file "${fileName}" is now being processed. Estimated completion time: ${timeText}.`,
-      fileId,
-      data: {
-        fileName,
+    try {
+      // Send database notification
+      const dbResult = await this.sendNotification({
+        userId,
+        type: 'FILE_STATUS_UPDATE',
+        title: 'Estimated Time Set',
+        message: `Your file "${fileName}" is now being processed. Estimated completion time: ${timeText}.`,
         fileId,
-        estimatedMinutes,
-        timeText,
-        timestamp: new Date().toISOString()
+        data: {
+          fileName,
+          fileId,
+          estimatedMinutes,
+          timeText,
+          timestamp: new Date().toISOString()
+        }
+      });
+
+      // Send Telegram notification to customer if they have linked account
+      try {
+        const user = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { 
+            telegramChatId: true, 
+            firstName: true, 
+            lastName: true 
+          }
+        });
+
+        if (user?.telegramChatId) {
+          console.log('📱 Sending Telegram estimated time notification to customer...');
+          
+          const telegramMessage = `
+⏰ <b>Processing Time Estimate</b>
+
+📄 <b>File:</b> ${fileName}
+📊 <b>Status:</b> PENDING (Processing)
+⏰ <b>Estimated Time:</b> ${timeText}
+
+💬 <b>Update:</b> Your file is currently being processed by our team. We'll notify you when it's ready!
+
+🔗 <a href="https://compucar.pro/files">View Your Files</a>
+
+🕐 <b>Updated:</b> ${new Date().toLocaleString()}
+          `.trim();
+
+          const botToken = process.env.TELEGRAM_CUSTOMER_BOT_TOKEN;
+          if (botToken) {
+            const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: user.telegramChatId,
+                text: telegramMessage,
+                parse_mode: 'HTML',
+                disable_web_page_preview: true
+              })
+            });
+
+            const result = await response.json();
+            if (result.ok) {
+              console.log(`✅ Telegram estimated time notification sent to ${user.firstName} ${user.lastName}`);
+            } else {
+              console.error('❌ Failed to send Telegram estimated time notification:', result.description);
+            }
+          } else {
+            console.log('⚠️ TELEGRAM_CUSTOMER_BOT_TOKEN not configured');
+          }
+        } else {
+          console.log('📱 User does not have Telegram linked');
+        }
+      } catch (telegramError) {
+        console.error('⚠️ Error sending Telegram estimated time notification:', telegramError);
+        // Continue execution - don't let Telegram errors break the main notification
       }
-    });
 
-    // TODO: Send Customer bot notification when customer Telegram integration is implemented
-    // This would require adding telegramChatId field to User model and customer bot registration
-
-    return dbResult;
+      return dbResult;
+    } catch (error) {
+      console.error('💥 Error in notifyCustomerEstimatedTime:', error);
+      return false;
+    }
   }
 
   /**

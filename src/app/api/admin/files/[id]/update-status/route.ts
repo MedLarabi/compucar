@@ -106,7 +106,8 @@ export async function POST(
       currentFile.userId,
       currentFile.originalFilename,
       currentFile.id,
-      status
+      status,
+      estimatedProcessingTime
     );
 
     // Send real-time update to customer's browser

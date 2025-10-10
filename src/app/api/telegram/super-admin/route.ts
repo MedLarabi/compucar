@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { MultiBotTelegramService, BotType } from '@/lib/services/multi-bot-telegram';
 import { prisma } from '@/lib/database/prisma';
 import { NotificationService } from '@/lib/services/notifications';
+import { sendUpdateToUser } from '@/lib/sse-utils';
 
 export async function POST(request: NextRequest) {
   try {
@@ -70,7 +71,6 @@ export async function POST(request: NextRequest) {
           );
 
           // Send real-time update to customer's browser
-          const { sendUpdateToUser } = await import('@/lib/sse-utils');
           sendUpdateToUser(file.userId, {
             type: 'file_status_update',
             fileId: file.id,
@@ -158,7 +158,6 @@ export async function POST(request: NextRequest) {
               );
 
               // Send real-time update to customer's browser
-              const { sendUpdateToUser } = await import('@/lib/sse-utils');
               sendUpdateToUser(file.userId, {
                 type: 'file_status_update',
                 fileId: file.id,
@@ -185,7 +184,7 @@ export async function POST(request: NextRequest) {
 📊 <b>Status:</b> ${newStatus}
 🔧 <b>Modifications:</b> ${file.fileModifications.map(fm => fm.modification.label).join(', ')}
 
-🔗 <a href="${process.env.NEXTAUTH_URL}/admin/files/${file.id}">View in Admin Panel</a>
+🔗 <a href="https://compucar.pro/admin/files/${file.id}">View in Admin Panel</a>
 
 🕐 <b>Updated:</b> ${new Date().toLocaleString()}
               `.trim();
@@ -346,7 +345,6 @@ export async function POST(request: NextRequest) {
                              minutes === '5' ? '5 minutes' :
                              `${minutes} minutes`;
 
-              const { sendUpdateToUser } = await import('@/lib/sse-utils');
               sendUpdateToUser(file.userId, {
                 type: 'estimated_time_update',
                 fileId: file.id,
@@ -375,7 +373,7 @@ export async function POST(request: NextRequest) {
 ⏰ <b>Estimated Time:</b> ${timeText}
 🔧 <b>Modifications:</b> ${file.fileModifications.map(fm => fm.modification.label).join(', ')}
 
-🔗 <a href="${process.env.NEXTAUTH_URL}/admin/files/${file.id}">View in Admin Panel</a>
+🔗 <a href="https://compucar.pro/admin/files/${file.id}">View in Admin Panel</a>
 
 🕐 <b>Updated:</b> ${new Date().toLocaleString()}
               `.trim();
@@ -488,7 +486,6 @@ export async function POST(request: NextRequest) {
                   );
 
                   // Send real-time update to customer's browser
-                  const { sendUpdateToUser } = await import('@/lib/sse-utils');
                   sendUpdateToUser(file.userId, {
                     type: 'file_status_update',
                     fileId: fileId,
@@ -515,7 +512,7 @@ export async function POST(request: NextRequest) {
 📊 <b>Status:</b> ${newStatus}
 🔧 <b>Modifications:</b> ${file.fileModifications.map(fm => fm.modification.label).join(', ')}
 
-🔗 <a href="${process.env.NEXTAUTH_URL}/admin/files/${fileId}">View in Admin Panel</a>
+🔗 <a href="https://compucar.pro/admin/files/${fileId}">View in Admin Panel</a>
 
 🕐 <b>Updated:</b> ${new Date().toLocaleString()}
                   `.trim();
@@ -663,7 +660,6 @@ export async function POST(request: NextRequest) {
                                minutes === '5' ? '5 minutes' :
                                `${minutes} minutes`;
 
-                const { sendUpdateToUser } = await import('@/lib/sse-utils');
                 sendUpdateToUser(file.userId, {
                   type: 'estimated_time_update',
                   fileId: fileId,
@@ -692,7 +688,7 @@ export async function POST(request: NextRequest) {
 ⏰ <b>Estimated Time:</b> ${timeText}
 🔧 <b>Modifications:</b> ${file.fileModifications.map(fm => fm.modification.label).join(', ')}
 
-🔗 <a href="${process.env.NEXTAUTH_URL}/admin/files/${fileId}">View in Admin Panel</a>
+🔗 <a href="https://compucar.pro/admin/files/${fileId}">View in Admin Panel</a>
 
 🕐 <b>Updated:</b> ${new Date().toLocaleString()}
                 `.trim();
@@ -822,6 +818,8 @@ Welcome to CompuCar Super Admin Control Center.
 💰 /payments - Payment overview
 🔧 /system - System status
 
+🌐 <b>Admin Panel:</b> <a href="https://compucar.pro/admin">compucar.pro/admin</a>
+
 You have full administrative control over the system.
               `.trim(),
               chatId
@@ -841,6 +839,8 @@ You have full administrative control over the system.
 📁 <b>Files:</b> ${stats.totalFiles}
 💰 <b>Revenue:</b> $${stats.totalRevenue}
 
+🌐 <b>Admin Panel:</b> <a href="https://compucar.pro/admin">compucar.pro/admin</a>
+
 🕐 <b>Last Updated:</b> ${new Date().toLocaleString()}
               `.trim(),
               chatId
@@ -857,6 +857,9 @@ You have full administrative control over the system.
 ✅ <b>Storage:</b> Online
 ✅ <b>Payment:</b> Active
 ✅ <b>Email:</b> Working
+
+🌐 <b>Website:</b> <a href="https://compucar.pro">compucar.pro</a>
+🔧 <b>Admin Panel:</b> <a href="https://compucar.pro/admin">compucar.pro/admin</a>
 
 🌐 <b>Environment:</b> ${process.env.NODE_ENV}
 🕐 <b>Uptime:</b> ${process.uptime()} seconds
