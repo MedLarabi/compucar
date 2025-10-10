@@ -16,9 +16,14 @@ export function LanguageWrapper({ children }: LanguageWrapperProps) {
       // Set the HTML lang attribute
       document.documentElement.lang = language;
       
-      // Remove RTL changes - keep layout as LTR for all languages
-      document.documentElement.dir = 'ltr';
-      document.body.classList.remove('rtl');
+      // Set RTL for Arabic, LTR for others
+      if (language === 'ar') {
+        document.documentElement.dir = 'rtl';
+        document.body.classList.add('rtl');
+      } else {
+        document.documentElement.dir = 'ltr';
+        document.body.classList.remove('rtl');
+      }
     }
   }, [language, isLoading]);
 

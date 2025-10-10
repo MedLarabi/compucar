@@ -18,7 +18,7 @@ interface LanguageProviderProps {
 }
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>('ar'); // Default to Arabic
   const [isLoading, setIsLoading] = useState(true);
   const [isChangingLanguage, setIsChangingLanguage] = useState(false);
   const [translations, setTranslations] = useState<Record<string, any>>({});
@@ -52,20 +52,69 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     }
   };
 
+  // Function to detect user's preferred language
+  const detectUserLanguage = (): Language => {
+    if (typeof window === 'undefined') {
+      return 'ar'; // Default to Arabic on server
+    }
+
+    // Check if there's a saved language preference
+    const savedLanguage = localStorage.getItem('language') as Language;
+    if (savedLanguage && ['en', 'fr', 'ar'].includes(savedLanguage)) {
+      console.log(`🔍 Found saved language: ${savedLanguage}`);
+      return savedLanguage;
+    }
+
+    // Detect browser language
+    const browserLanguage = navigator.language || navigator.languages?.[0] || '';
+    console.log(`🌐 Browser language detected: ${browserLanguage}`);
+    
+    // Map browser language codes to our supported languages
+    if (browserLanguage.startsWith('ar')) {
+      console.log('✅ Arabic language detected from browser');
+      return 'ar';
+    } else if (browserLanguage.startsWith('fr')) {
+      console.log('✅ French language detected from browser');
+      return 'fr';
+    } else if (browserLanguage.startsWith('en')) {
+      console.log('✅ English language detected from browser');
+      return 'en';
+    }
+
+    // Check secondary languages from navigator.languages
+    if (navigator.languages) {
+      for (const lang of navigator.languages) {
+        if (lang.startsWith('ar')) {
+          console.log('✅ Arabic found in secondary languages');
+          return 'ar';
+        } else if (lang.startsWith('fr')) {
+          console.log('✅ French found in secondary languages');
+          return 'fr';
+        } else if (lang.startsWith('en')) {
+          console.log('✅ English found in secondary languages');
+          return 'en';
+        }
+      }
+    }
+
+    // Default to Arabic if no supported language is detected
+    console.log('🔄 No supported language detected, defaulting to Arabic');
+    return 'ar';
+  };
+
   useEffect(() => {
     setHasMounted(true);
-    // Only access localStorage after component has mounted
+    
     if (typeof window !== 'undefined') {
-      const savedLanguage = localStorage.getItem('language') as Language;
-      if (savedLanguage && ['en', 'fr', 'ar'].includes(savedLanguage)) {
-        setLanguage(savedLanguage);
-      } else {
-        // If no saved language, still need to load default English translations
-        fetchTranslations('en');
-      }
+      const detectedLanguage = detectUserLanguage();
+      console.log(`🎯 Setting initial language to: ${detectedLanguage}`);
+      setLanguage(detectedLanguage);
+      fetchTranslations(detectedLanguage);
     } else {
-      // On server, load default English translations
-      fetchTranslations('en');
+      // On server, default to Arabic
+      console.log('🖥️ Server-side: defaulting to Arabic');
+      setLanguage('ar');
+      fetchTranslations('ar');
     }
   }, []);
 
