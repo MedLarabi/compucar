@@ -7,6 +7,7 @@ import { sendUpdateToUser } from '@/lib/sse-utils';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    console.log('📁 File Admin Bot webhook received:', JSON.stringify(body, null, 2));
     
     // Handle callback queries from File Admin bot
     if (body.callback_query) {
@@ -17,6 +18,8 @@ export async function POST(request: NextRequest) {
       const callbackQueryId = callbackQuery.id;
 
       console.log('📱 File Admin bot callback query:', callbackData);
+      console.log('📱 Chat ID:', chatId);
+      console.log('📱 Message ID:', messageId);
 
       // Parse callback data - File Admin bot uses prefixed callback data
       const parts = callbackData.split('_');
@@ -29,6 +32,19 @@ export async function POST(request: NextRequest) {
         console.log('📁 File Admin processing status update:', { fileId, newStatus });
         
         try {
+          // Validate status
+          const validStatuses = ['RECEIVED', 'PENDING', 'READY'];
+          if (!validStatuses.includes(newStatus)) {
+            console.error('❌ Invalid status:', newStatus);
+            await MultiBotTelegramService.answerCallbackQuery(
+              BotType.FILE_ADMIN,
+              callbackQueryId,
+              `❌ Invalid status: ${newStatus}`,
+              true
+            );
+            return NextResponse.json({ success: false, error: 'Invalid status' });
+          }
+          
           // Get file details first to store old status
           const file = await prisma.tuningFile.findUnique({
             where: { id: fileId },
@@ -49,40 +65,84 @@ export async function POST(request: NextRequest) {
           });
 
           if (!file) {
+            console.error('❌ File not found:', fileId);
             await MultiBotTelegramService.answerCallbackQuery(
               BotType.FILE_ADMIN,
               callbackQueryId,
               '❌ File not found',
               true
             );
-            return NextResponse.json({ success: true });
+            return NextResponse.json({ success: false, error: 'File not found' });
           }
+
+          console.log('📁 Found file:', {
+            id: file.id,
+            filename: file.originalFilename,
+            currentStatus: file.status,
+            newStatus: newStatus
+          });
 
           const oldStatus = file.status; // Store old status before update
 
           // Update file status in database
+          console.log('💾 Updating file status in database...');
           const updatedFile = await prisma.tuningFile.update({
             where: { id: fileId },
-            data: { status: newStatus }
+            data: { 
+              status: newStatus,
+              updatedDate: new Date()
+            }
           });
+          console.log('✅ File status updated successfully:', updatedFile.status);
+
+          // Create audit log
+          try {
+            await prisma.auditLog.create({
+              data: {
+                fileId,
+                actorId: 'file-admin-bot', // Since we don't have user session in webhook
+                action: 'STATUS_CHANGE',
+                oldValue: oldStatus,
+                newValue: newStatus
+              }
+            });
+            console.log('📝 Audit log created');
+          } catch (auditError) {
+            console.error('⚠️ Failed to create audit log:', auditError);
+            // Continue execution even if audit log fails
+          }
 
           // Notify customer about status change
-          await NotificationService.notifyCustomerFileStatusUpdate(
-            file.userId,
-            file.originalFilename,
-            fileId,
-            newStatus
-          );
+          try {
+            console.log('📢 Sending customer notification...');
+            await NotificationService.notifyCustomerFileStatusUpdate(
+              file.userId,
+              file.originalFilename,
+              fileId,
+              newStatus
+            );
+            console.log('✅ Customer notification sent');
+          } catch (notificationError) {
+            console.error('⚠️ Failed to send customer notification:', notificationError);
+            // Continue execution even if notification fails
+          }
 
           // Send real-time update to customer's browser
-          sendUpdateToUser(file.userId, {
-            type: 'file_status_update',
-            fileId: fileId,
-            fileName: file.originalFilename,
-            oldStatus: oldStatus, // Use stored old status
-            newStatus: newStatus,
-            message: `File status updated to ${newStatus}`
-          });
+          try {
+            console.log('⚡ Sending real-time update...');
+            sendUpdateToUser(file.userId, {
+              type: 'file_status_update',
+              fileId: fileId,
+              fileName: file.originalFilename,
+              oldStatus: oldStatus, // Use stored old status
+              newStatus: newStatus,
+              message: `File status updated to ${newStatus}`
+            });
+            console.log('✅ Real-time update sent');
+          } catch (realtimeError) {
+            console.error('⚠️ Failed to send real-time update:', realtimeError);
+            // Continue execution even if real-time update fails
+          }
 
             // TODO: Send notification to customer's Telegram bot
             // This would require storing customer's Telegram chat ID

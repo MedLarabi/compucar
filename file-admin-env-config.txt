@@ -1,0 +1,6 @@
+# Add these to your existing .env.local file:
+
+# File Admin Bot (File tuning system only)
+TELEGRAM_FILE_ADMIN_BOT_TOKEN=YOUR_FILE_ADMIN_BOT_TOKEN_HERE
+TELEGRAM_FILE_ADMIN_CHAT_ID=YOUR_FILE_ADMIN_CHAT_ID_HERE
+TELEGRAM_FILE_ADMIN_ENABLED=true
