@@ -7,6 +7,7 @@ import { sendUpdateToUser } from '@/lib/sse-utils';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    console.log('🤖 Telegram webhook received:', JSON.stringify(body, null, 2));
     
     // Handle callback queries from inline keyboards
     if (body.callback_query) {
@@ -17,6 +18,8 @@ export async function POST(request: NextRequest) {
       const callbackQueryId = callbackQuery.id;
 
       console.log('📱 Received callback query:', callbackData);
+      console.log('📱 Chat ID:', chatId);
+      console.log('📱 Message ID:', messageId);
 
       // Parse callback data
       const parts = callbackData.split('_');
@@ -28,6 +31,8 @@ export async function POST(request: NextRequest) {
         const newStatus = parts[3];
         
         try {
+          console.log('🔄 Processing file status change:', { fileId, newStatus });
+          
           // Get file details first to store old status
           const file = await prisma.tuningFile.findUnique({
             where: { id: fileId },
@@ -42,41 +47,98 @@ export async function POST(request: NextRequest) {
           });
 
           if (!file) {
+            console.error('❌ File not found:', fileId);
             await TelegramService.answerCallbackQuery(
               callbackQueryId,
               '❌ File not found',
               true
             );
-            return NextResponse.json({ success: true });
+            return NextResponse.json({ success: false, error: 'File not found' });
           }
+
+          console.log('📁 Found file:', {
+            id: file.id,
+            filename: file.originalFilename,
+            currentStatus: file.status,
+            newStatus: newStatus
+          });
 
           const oldStatus = file.status; // Store old status before update
 
+          // Validate status transition
+          const validStatuses = ['RECEIVED', 'PENDING', 'READY'];
+          if (!validStatuses.includes(newStatus)) {
+            console.error('❌ Invalid status:', newStatus);
+            await TelegramService.answerCallbackQuery(
+              callbackQueryId,
+              `❌ Invalid status: ${newStatus}`,
+              true
+            );
+            return NextResponse.json({ success: false, error: 'Invalid status' });
+          }
+
           // Update file status in database
-          await prisma.tuningFile.update({
+          console.log('💾 Updating file status in database...');
+          const updatedFile = await prisma.tuningFile.update({
             where: { id: fileId },
-            data: { status: newStatus }
+            data: { 
+              status: newStatus,
+              updatedDate: new Date()
+            }
           });
+          console.log('✅ File status updated successfully:', updatedFile.status);
+
+          // Create audit log
+          try {
+            await prisma.auditLog.create({
+              data: {
+                fileId,
+                actorId: 'telegram-bot', // Since we don't have user session in webhook
+                action: 'STATUS_CHANGE',
+                oldValue: oldStatus,
+                newValue: newStatus
+              }
+            });
+            console.log('📝 Audit log created');
+          } catch (auditError) {
+            console.error('⚠️ Failed to create audit log:', auditError);
+            // Continue execution even if audit log fails
+          }
 
           // Notify customer about status change
-          await NotificationService.notifyCustomerFileStatusUpdate(
-            file.userId,
-            file.originalFilename,
-            fileId,
-            newStatus
-          );
+          try {
+            console.log('📢 Sending customer notification...');
+            await NotificationService.notifyCustomerFileStatusUpdate(
+              file.userId,
+              file.originalFilename,
+              fileId,
+              newStatus
+            );
+            console.log('✅ Customer notification sent');
+          } catch (notificationError) {
+            console.error('⚠️ Failed to send customer notification:', notificationError);
+            // Continue execution even if notification fails
+          }
 
           // Send real-time update to customer
-          sendUpdateToUser(file.userId, {
-            type: 'file_status_update',
-            fileId: fileId,
-            fileName: file.originalFilename,
-            oldStatus: oldStatus, // Use stored old status
-            newStatus: newStatus,
-            message: `File status updated to ${newStatus}`
-          });
+          try {
+            console.log('⚡ Sending real-time update...');
+            sendUpdateToUser(file.userId, {
+              type: 'file_status_update',
+              fileId: fileId,
+              fileName: file.originalFilename,
+              oldStatus: oldStatus, // Use stored old status
+              newStatus: newStatus,
+              message: `File status updated to ${newStatus}`
+            });
+            console.log('✅ Real-time update sent');
+          } catch (realtimeError) {
+            console.error('⚠️ Failed to send real-time update:', realtimeError);
+            // Continue execution even if real-time update fails
+          }
 
             // Answer callback query
+            console.log('✅ Answering callback query...');
             await TelegramService.answerCallbackQuery(
               callbackQueryId,
               `✅ File status updated to ${newStatus}`,
@@ -93,6 +155,8 @@ export async function POST(request: NextRequest) {
 🔧 <b>Modifications:</b> ${file.fileModifications.map(fm => fm.modification.label).join(', ')}
 
 🔗 <a href="${process.env.NEXTAUTH_URL}/admin/files/${fileId}">View in Admin Panel</a>
+
+🕐 <b>Updated:</b> ${new Date().toLocaleString()}
             `.trim();
 
             // Update buttons based on new status
@@ -119,14 +183,28 @@ export async function POST(request: NextRequest) {
               ]
             };
 
-            await TelegramService.editMessageText(chatId, messageId, updatedMessage, replyMarkup);
+            try {
+              console.log('📝 Updating Telegram message...');
+              await TelegramService.editMessageText(chatId, messageId, updatedMessage, replyMarkup);
+              console.log('✅ Telegram message updated');
+            } catch (editError) {
+              console.error('⚠️ Failed to update Telegram message:', editError);
+              // This is not critical, so we continue
+            }
+
+            console.log('🎉 File status change completed successfully');
+            return NextResponse.json({ success: true, newStatus });
         } catch (error) {
-          console.error('Error updating file status:', error);
+          console.error('💥 Error updating file status:', error);
+          console.error('💥 Error details:', error instanceof Error ? error.message : String(error));
+          console.error('💥 Error stack:', error instanceof Error ? error.stack : undefined);
+          
           await TelegramService.answerCallbackQuery(
             callbackQueryId,
             '❌ Error updating file status',
             true
           );
+          return NextResponse.json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
         }
       }
       else if (parts[0] === 'file' && parts[1] === 'estimated' && parts[2] === 'time') {
