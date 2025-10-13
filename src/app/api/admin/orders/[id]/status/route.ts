@@ -144,7 +144,7 @@ export async function PATCH(
               to_wilaya_name: existingOrder.yalidine.to_wilaya_name,
               to_commune_name: existingOrder.yalidine.to_commune_name,
               product_list: existingOrder.yalidine.product_list,
-              price: existingOrder.yalidine.price,
+              price: existingOrder.yalidine.price - (existingOrder.shipping || 0), // Send ONLY product total, exclude shipping to avoid double charging
               // Force standard dimensions (1kg weight triggers proper oversize detection)
               height: null,
               width: null,
@@ -152,7 +152,7 @@ export async function PATCH(
               weight: 1, // 1 KG for proper oversize handling
               is_stopdesk: existingOrder.yalidine.is_stopdesk,
               stopdesk_id: existingOrder.yalidine.stopdesk_id || undefined,
-              freeshipping: existingOrder.yalidine.freeshipping,
+              freeshipping: true, // Let Yalidine handle shipping calculation to avoid double charging
               // Keep original exchange setting
               has_exchange: existingOrder.yalidine.has_exchange,
               // Force insurance to always be true

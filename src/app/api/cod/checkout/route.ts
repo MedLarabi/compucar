@@ -330,10 +330,10 @@ export async function POST(request: NextRequest) {
             to_commune_name: exactCommuneName || data.destination.commune || '',
             is_stopdesk: data.delivery.isStopdesk,
             stopdesk_id: data.delivery.stopdeskId,
-            freeshipping: data.delivery.freeshipping || false,
+            freeshipping: true, // Let Yalidine handle shipping calculation to avoid double charging
             has_exchange: data.delivery.hasExchange || false,
             product_list: productList,
-            price: Math.round(totalCents / 100), // Convert to DZD (no decimals)
+            price: Math.round(subtotalCents / 100), // Send ONLY product total, exclude shipping to avoid double charging
             // Force dimensions to standard values (1kg weight triggers proper oversize detection)
             height: null,
             width: null,
