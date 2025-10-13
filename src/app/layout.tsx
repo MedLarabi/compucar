@@ -14,6 +14,11 @@ export const metadata: Metadata = {
   title: "CompuCar - Auto Diagnostic Tools & Equipment",
   description: "Premium auto diagnostic tools and equipment for all vehicle types. Quality guaranteed.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
+  icons: {
+    icon: '/favicon.ico?v=2',
+    shortcut: '/favicon.ico?v=2',
+    apple: '/apple-touch-icon.png',
+  },
   openGraph: {
     title: "CompuCar - Auto Parts & Accessories",
     description: "Premium automotive parts and accessories for all vehicle types. Quality guaranteed.",
@@ -75,9 +80,10 @@ export default function RootLayout({
         <meta httpEquiv="x-dns-prefetch-control" content="on" />
         
         {/* Favicon */}
-        <link rel="icon" href="/car-logo.png" type="image/png" sizes="32x32" />
-        <link rel="icon" href="/car-logo.png" type="image/png" sizes="16x16" />
-        <link rel="shortcut icon" href="/car-logo.png" type="image/png" />
+        <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" sizes="any" />
+        <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" sizes="32x32" />
+        <link rel="icon" href="/favicon.ico?v=2" type="image/x-icon" sizes="16x16" />
+        <link rel="shortcut icon" href="/favicon.ico?v=2" type="image/x-icon" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
         <link rel="manifest" href="/manifest.json" />
       </head>
