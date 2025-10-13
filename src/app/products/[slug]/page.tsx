@@ -88,6 +88,11 @@ async function getProduct(slug: string) {
       variants: {
         where: { isActive: true },
         orderBy: { createdAt: "asc" },
+        include: {
+          images: {
+            orderBy: { sortOrder: "asc" }
+          }
+        }
       },
       tags: true,
       reviews: {
@@ -129,14 +134,28 @@ async function getProduct(slug: string) {
   
   const variantsWithoutStock = product.variants?.map(variant => {
     const { quantity: variantQuantity, ...publicVariant } = variant;
-    return publicVariant;
+    return {
+      ...publicVariant,
+      inStock: variantQuantity > 0,
+      stockLevel: variantQuantity > 10 ? 'high' : variantQuantity > 0 ? 'low' : 'out'
+    };
   });
+
+  // Calculate availability - if has variants, check if any variant has stock, otherwise check main product stock
+  let isAvailable = false;
+  if (product.variants && product.variants.length > 0) {
+    // Has variants - check if any variant has stock
+    isAvailable = product.variants.some(variant => variant.quantity > 0);
+  } else {
+    // No variants - check main product stock
+    isAvailable = quantity > 0;
+  }
 
   const productWithComputedFields = {
     ...publicProduct,
     variants: variantsWithoutStock,
     averageRating: avgRating._avg.rating || 0,
-    isAvailable: quantity > 0
+    isAvailable
   };
 
   // Serialize all Decimal and Date objects for client component compatibility

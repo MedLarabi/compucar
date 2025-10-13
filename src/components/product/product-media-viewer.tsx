@@ -39,6 +39,7 @@ interface ProductMediaViewerProps {
   images?: ProductImage[];
   videos?: ProductVideo[];
   productName: string;
+  variantImages?: ProductImage[]; // Add variant images
 }
 
 // Helper function to extract Vimeo ID from URL
@@ -61,7 +62,8 @@ function getVimeoThumbnail(vimeoId: string): string {
 export function ProductMediaViewer({ 
   images = [], 
   videos = [], 
-  productName 
+  productName,
+  variantImages = []
 }: ProductMediaViewerProps) {
   // Process videos to detect Vimeo URLs and extract IDs
   const processedVideos = videos.map(video => {
@@ -74,9 +76,12 @@ export function ProductMediaViewer({
     };
   });
 
+  // Use variant images if available, otherwise use product images
+  const displayImages = variantImages.length > 0 ? variantImages : images;
+
   // Simple media combination - images first, then videos
   const allMedia = [
-    ...images.map(img => ({ ...img, type: 'image' as const, alt: img.altText })),
+    ...displayImages.map(img => ({ ...img, type: 'image' as const, alt: img.altText })),
     ...processedVideos.map(vid => ({ ...vid, type: 'video' as const }))
   ];
 

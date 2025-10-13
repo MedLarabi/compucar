@@ -24,7 +24,11 @@ export async function GET(request: NextRequest) {
         images: true,
         videos: true,
         tags: true,
-        variants: true,
+        variants: {
+          include: {
+            images: true,
+          },
+        },
         _count: {
           select: {
             reviews: true,
@@ -274,6 +278,17 @@ export async function POST(request: NextRequest) {
               quantity: variant.quantity || 0,
               options: variant.options || {},
               isActive: variant.isActive !== undefined ? variant.isActive : true,
+              // Create variant images if provided
+              ...(variant.images && variant.images.length > 0 && {
+                images: {
+                  create: variant.images.map((image: any, index: number) => ({
+                    url: image.url,
+                    altText: image.alt || variant.name,
+                    sortOrder: index,
+                    isMain: image.isMain || index === 0,
+                  })),
+                },
+              }),
             })),
           },
         }),
@@ -283,7 +298,11 @@ export async function POST(request: NextRequest) {
         images: true,
         videos: true,
         tags: true,
-        variants: true,
+        variants: {
+          include: {
+            images: true,
+          },
+        },
       },
     });
 

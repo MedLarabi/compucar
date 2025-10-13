@@ -20,6 +20,11 @@ export async function GET(
         variants: {
           where: { isActive: true },
           orderBy: { createdAt: "asc" },
+          include: {
+            images: {
+              orderBy: { sortOrder: "asc" }
+            }
+          }
         },
         tags: true,
         reviews: {
@@ -48,18 +53,32 @@ export async function GET(
     // Remove stock/quantity information from public API
     const { quantity, trackQuantity, allowBackorder, ...publicProduct } = product;
     
-    // Also remove quantity from variants
+    // Also remove quantity from variants but add stock availability
     const variantsWithoutStock = product.variants?.map(variant => {
       const { quantity: variantQuantity, ...publicVariant } = variant;
-      return publicVariant;
+      return {
+        ...publicVariant,
+        inStock: variantQuantity > 0,
+        stockLevel: variantQuantity > 10 ? 'high' : variantQuantity > 0 ? 'low' : 'out'
+      };
     });
+
+    // Calculate availability - if has variants, check if any variant has stock, otherwise check main product stock
+    let isAvailable = false;
+    if (product.variants && product.variants.length > 0) {
+      // Has variants - check if any variant has stock
+      isAvailable = product.variants.some(variant => variant.quantity > 0);
+    } else {
+      // No variants - check main product stock
+      isAvailable = quantity > 0;
+    }
 
     const productWithRating = {
       ...publicProduct,
       variants: variantsWithoutStock,
       averageRating: avgRating._avg.rating || 0,
       // Only show if item is available or not
-      isAvailable: quantity > 0
+      isAvailable
     };
 
     return NextResponse.json(productWithRating);

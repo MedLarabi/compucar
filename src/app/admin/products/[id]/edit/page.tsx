@@ -87,6 +87,15 @@ export default function EditProductPage() {
 
       console.log("=== CLIENT: Submitting product update ===");
       console.log("Product ID:", params.id);
+      console.log("Variants data:", {
+        variantsCount: transformedData.variants.length,
+        variants: transformedData.variants.map((v: any) => ({
+          name: v.name,
+          price: v.price,
+          imagesCount: v.images?.length || 0,
+          images: v.images
+        }))
+      });
       console.log("Transformed data:", {
         name: transformedData.name,
         description: transformedData.description?.substring(0, 50) + "...",

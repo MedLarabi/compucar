@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Image from "next/image";
 import { MainLayout } from "@/components/layout/main-layout-simple";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ProductMediaViewer } from "@/components/product/product-media-viewer";
+import { ProductVariantSelector } from "@/components/product/product-variant-selector";
 
 import { useCartStore } from "@/stores/cart-store";
 import { formatPrice } from "@/lib/utils";
@@ -32,12 +33,31 @@ interface ProductPageClientProps {
 
 export default function ProductPageClient({ product }: ProductPageClientProps) {
   const [showReviewForm, setShowReviewForm] = useState(false);
-  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [variantImages, setVariantImages] = useState<any[]>([]);
+  const [currentPrice, setCurrentPrice] = useState(product.price);
+  const [currentCompareAtPrice, setCurrentCompareAtPrice] = useState(product.compareAtPrice);
 
   const { addItem, openCart } = useCartStore();
   const { t } = useLanguage();
+
+  // Memoized callback functions to prevent infinite re-renders
+  const handleVariantChange = useCallback((variant: any) => {
+    setSelectedVariant(variant);
+    // Reset quantity to 1 when variant changes
+    setQuantity(1);
+  }, []);
+
+  const handlePriceChange = useCallback((price: number, compareAtPrice?: number) => {
+    setCurrentPrice(price);
+    setCurrentCompareAtPrice(compareAtPrice);
+  }, []);
+
+  const handleImagesChange = useCallback((images: any[]) => {
+    setVariantImages(images);
+  }, []);
 
   // Enhanced add to cart with optimistic updates
   const handleAddToCart = async () => {
@@ -48,11 +68,14 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
         productId: product.id,
         name: product.name,
         slug: product.slug,
-        price: product.price,
+        price: currentPrice,
         quantity,
-        maxQuantity: 99,
+        maxQuantity: selectedVariant?.stockLevel === 'high' ? 10 : 
+                     selectedVariant?.stockLevel === 'low' ? 3 : 1,
         variant: selectedVariant,
-        image: product.images?.[0]?.url || '/api/placeholder/400/400',
+        image: variantImages.length > 0 
+          ? variantImages.find(img => img.isMain)?.url || variantImages[0]?.url
+          : product.images?.[0]?.url || '/api/placeholder/400/400',
       };
 
       addItem(cartItem);
@@ -115,6 +138,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
             images={product.images || []}
             videos={product.videos || []}
             productName={product.name}
+            variantImages={variantImages}
           />
 
           {/* Product Details */}
@@ -149,14 +173,21 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               {/* Price */}
               <div className="flex items-center gap-3">
                 <span className="text-3xl font-bold text-primary">
-                  {formatPrice(product.price)}
+                  {formatPrice(currentPrice)}
                 </span>
-                {product.compareAtPrice && product.compareAtPrice > product.price && (
+                {currentCompareAtPrice && currentCompareAtPrice > currentPrice && (
                   <span className="text-lg text-gray-500 line-through">
-                    {formatPrice(product.compareAtPrice)}
+                    {formatPrice(currentCompareAtPrice)}
                   </span>
                 )}
               </div>
+
+              {/* SKU - Only show main product SKU when no variant is selected */}
+              {!selectedVariant && product.sku && (
+                <div className="text-sm text-gray-600">
+                  SKU: {product.sku}
+                </div>
+              )}
             </div>
 
             {/* Short Description */}
@@ -164,6 +195,22 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
               <p className="text-gray-600 leading-relaxed">
                 {product.shortDescription}
               </p>
+            )}
+
+            {/* Variant Selector */}
+            {product.variants && product.variants.length > 0 && (
+              <div className="space-y-4">
+                <Separator />
+                <ProductVariantSelector
+                  variants={product.variants}
+                  defaultPrice={product.price}
+                  defaultCompareAtPrice={product.compareAtPrice}
+                  onVariantChange={handleVariantChange}
+                  onPriceChange={handlePriceChange}
+                  onImagesChange={handleImagesChange}
+                />
+                <Separator />
+              </div>
             )}
 
             {/* Actions */}
@@ -181,24 +228,45 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   </button>
                   <span className="px-4 py-1 border-x">{quantity}</span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
+                    onClick={() => {
+                      // Allow up to 10 items if in stock, but limit based on stock level
+                      const maxQuantity = selectedVariant?.stockLevel === 'high' ? 10 : 
+                                         selectedVariant?.stockLevel === 'low' ? 3 : 1;
+                      setQuantity(Math.min(quantity + 1, maxQuantity));
+                    }}
                     className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                    disabled={
+                      selectedVariant ? !selectedVariant.inStock : false
+                    }
                   >
                     +
                   </button>
                 </div>
+                {selectedVariant && (
+                  <span className="text-xs text-muted-foreground">
+                    {selectedVariant.inStock 
+                      ? `${selectedVariant.stockLevel === 'high' ? 'In stock' : 'Limited stock'}` 
+                      : 'Out of stock'}
+                  </span>
+                )}
               </div>
 
               {/* Add to Cart Button */}
               <div className="flex gap-3">
                 <Button
                   onClick={handleAddToCart}
-                  disabled={!product.isAvailable || isAddingToCart}
+                  disabled={
+                    isAddingToCart || 
+                    (selectedVariant ? !selectedVariant.inStock : !product.isAvailable)
+                  }
                   className="flex-1"
                   size="lg"
                 >
                   <ShoppingCart className="w-4 h-4 mr-2" />
-                  {isAddingToCart ? t('cart.adding') : t('product.addToCart')}
+                  {isAddingToCart ? t('cart.adding') : 
+                   (selectedVariant && !selectedVariant.inStock) ? t('product.outOfStock') :
+                   (!product.isAvailable && !selectedVariant) ? t('product.outOfStock') :
+                   t('product.addToCart')}
                 </Button>
                 
                 <Button variant="outline" size="lg" onClick={handleShare}>

@@ -193,6 +193,16 @@ export default function AdminProductsPage() {
         variants: data.variants || [],
       };
 
+      console.log("Submitting product with variants:", {
+        variantsCount: transformedData.variants.length,
+        variants: transformedData.variants.map((v: any) => ({
+          name: v.name,
+          price: v.price,
+          imagesCount: v.images?.length || 0,
+          images: v.images
+        }))
+      });
+
       const response = await fetch("/api/admin/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

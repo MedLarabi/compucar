@@ -39,6 +39,13 @@ export async function GET(
         tags: {
           select: { name: true }
         },
+        variants: {
+          include: {
+            images: {
+              orderBy: { sortOrder: 'asc' }
+            }
+          }
+        },
         _count: {
           select: {
             orderItems: true
@@ -409,6 +416,48 @@ export async function PUT(
         }
       }
 
+      console.log("Handling variants...");
+      // Handle variants update
+      if (variants !== undefined) {
+        // Delete existing variants and their images (cascade will handle images)
+        await tx.productVariant.deleteMany({
+          where: { productId }
+        });
+
+        // Create new variants with their images
+        if (variants && variants.length > 0) {
+          console.log("Creating", variants.length, "new variants");
+          for (const variant of variants) {
+            const createdVariant = await tx.productVariant.create({
+              data: {
+                productId,
+                name: variant.name,
+                sku: variant.sku || `${uniqueSku}-${variant.name.replace(/\s+/g, '-').toUpperCase()}`,
+                price: variant.price || parsedPrice,
+                compareAtPrice: variant.compareAtPrice || null,
+                quantity: variant.quantity || 0,
+                options: variant.options || {},
+                isActive: variant.isActive !== undefined ? variant.isActive : true,
+              }
+            });
+
+            // Create variant images if provided
+            if (variant.images && variant.images.length > 0) {
+              console.log("Creating", variant.images.length, "images for variant", variant.name);
+              await tx.productVariantImage.createMany({
+                data: variant.images.map((image: any, index: number) => ({
+                  variantId: createdVariant.id,
+                  url: image.url,
+                  altText: image.alt || variant.name,
+                  sortOrder: index,
+                  isMain: image.isMain || index === 0,
+                }))
+              });
+            }
+          }
+        }
+      }
+
       // Return just the product ID - we'll fetch the full product outside the transaction
       return product;
     }, {
@@ -431,7 +480,11 @@ export async function PUT(
         images: true,
         videos: true,
         tags: true,
-        variants: true,
+        variants: {
+          include: {
+            images: true,
+          },
+        },
       },
     });
 
@@ -535,7 +588,7 @@ export async function DELETE(
         }
       });
 
-      // Delete product variants
+      // Delete product variants and their images
       await tx.productVariant.deleteMany({
         where: { productId }
       });
