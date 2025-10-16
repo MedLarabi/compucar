@@ -284,6 +284,11 @@
     "returns": "دعم مجاني",
     "description": "الوصف",
     "writeReview": "اكتب مراجعة",
+    "clearSelection": "مسح التحديد",
+    "currentSelection": "التحديد الحالي",
+    "combinationNotAvailable": "هذه التركيبة غير متوفرة كمنتج كامل",
+    "tryDifferentOptions": "جرب اختيار خيارات مختلفة للعثور على تركيبات متاحة",
+    "selectAllOptions": "يرجى تحديد جميع الخيارات لرؤية السعر النهائي والتوفر.",
     "reviewForm": {
       "rating": "التقييم",
       "ratingRequired": "يرجى اختيار تقييم",

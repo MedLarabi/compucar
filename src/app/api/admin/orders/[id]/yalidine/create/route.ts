@@ -35,7 +35,7 @@ export async function POST(
       to_wilaya_name: order.yalidine.to_wilaya_name,
       to_commune_name: order.yalidine.to_commune_name,
       product_list: order.yalidine.product_list,
-      price: order.yalidine.price - (order.shipping || 0), // Send ONLY product total, exclude shipping to avoid double charging
+      price: order.yalidine.price, // Price already contains only product total (shipping excluded during order creation)
       // Force standard dimensions (1kg weight triggers proper oversize detection)
       height: null,
       width: null,
@@ -43,7 +43,7 @@ export async function POST(
       weight: 1, // 1 KG for proper oversize handling
       is_stopdesk: order.yalidine.is_stopdesk,
       stopdesk_id: order.yalidine.stopdesk_id || undefined,
-      freeshipping: true, // Let Yalidine handle shipping calculation to avoid double charging
+      freeshipping: true, // Price already includes our calculated shipping - don't add Yalidine shipping
       // Keep original exchange setting
       has_exchange: order.yalidine.has_exchange,
       // Force insurance to always be true

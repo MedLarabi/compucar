@@ -381,7 +381,7 @@ export async function PATCH(
                 to_wilaya_name: shippingAddress?.state || 'Wilaya to be updated',
                 to_commune_name: shippingAddress?.city || 'Commune to be updated',
                 product_list: 'Products to be updated', // Required field
-                price: Math.round(total - (order.shipping || 0)), // Send ONLY product total, exclude shipping to avoid double charging
+                price: Math.round(Number(total) - Number(order.shipping || 0)), // Send ONLY product total, exclude shipping to avoid double charging
                 status: 'PENDING',
                 createdAt: new Date(),
                 updatedAt: new Date(),

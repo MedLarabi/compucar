@@ -196,7 +196,12 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         'courses.moduleCount': '{count} modules',
         'courses.videoCount': '{count} videos',
         'courses.enrollmentCount': '{count} students',
-        'courses.videoOf': '{current} of {total}'
+        'courses.videoOf': '{current} of {total}',
+        'product.clearSelection': 'Clear Selection',
+        'product.currentSelection': 'Current selection',
+        'product.combinationNotAvailable': 'This combination is not available as a complete product',
+        'product.tryDifferentOptions': 'Try selecting different options to find available combinations',
+        'product.selectAllOptions': 'Please select all options to see the final price and availability.'
       },
       fr: {
         'navigation.categories': 'Catégories',
@@ -258,7 +263,12 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         'courses.moduleCount': '{count} modules',
         'courses.videoCount': '{count} vidéos',
         'courses.enrollmentCount': '{count} étudiants',
-        'courses.videoOf': '{current} sur {total}'
+        'courses.videoOf': '{current} sur {total}',
+        'product.clearSelection': 'Effacer la sélection',
+        'product.currentSelection': 'Sélection actuelle',
+        'product.combinationNotAvailable': 'Cette combinaison n\'est pas disponible en tant que produit complet',
+        'product.tryDifferentOptions': 'Essayez de sélectionner différentes options pour trouver des combinaisons disponibles',
+        'product.selectAllOptions': 'Veuillez sélectionner toutes les options pour voir le prix final et la disponibilité.'
       },
       ar: {
         'navigation.categories': 'الفئات',
@@ -320,7 +330,12 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
         'courses.moduleCount': '{count} وحدات',
         'courses.videoCount': '{count} فيديوهات',
         'courses.enrollmentCount': '{count} طلاب',
-        'courses.videoOf': '{current} من {total}'
+        'courses.videoOf': '{current} من {total}',
+        'product.clearSelection': 'مسح التحديد',
+        'product.currentSelection': 'التحديد الحالي',
+        'product.combinationNotAvailable': 'هذه التركيبة غير متوفرة كمنتج كامل',
+        'product.tryDifferentOptions': 'جرب اختيار خيارات مختلفة للعثور على تركيبات متاحة',
+        'product.selectAllOptions': 'يرجى تحديد جميع الخيارات لرؤية السعر النهائي والتوفر.'
       }
     };
 

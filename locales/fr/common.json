@@ -425,6 +425,11 @@
     "returns": "Support Gratuit",
     "description": "Description",
     "writeReview": "Écrire un avis",
+    "clearSelection": "Effacer la sélection",
+    "currentSelection": "Sélection actuelle",
+    "combinationNotAvailable": "Cette combinaison n'est pas disponible en tant que produit complet",
+    "tryDifferentOptions": "Essayez de sélectionner différentes options pour trouver des combinaisons disponibles",
+    "selectAllOptions": "Veuillez sélectionner toutes les options pour voir le prix final et la disponibilité.",
     "reviewForm": {
       "rating": "Note",
       "ratingRequired": "Veuillez sélectionner une note",
