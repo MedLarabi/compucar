@@ -8,6 +8,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        'xs': '475px', // Extra small breakpoint for mobile optimization
+      },
       aspectRatio: {
         '4/3': '4 / 3',
         '3/2': '3 / 2',

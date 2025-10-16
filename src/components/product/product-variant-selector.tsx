@@ -7,6 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils";
+import { RefreshCw } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ProductVariant {
   id: string;
@@ -48,6 +50,7 @@ export function ProductVariantSelector({
   onPriceChange,
   onImagesChange,
 }: ProductVariantSelectorProps) {
+  const { t } = useLanguage();
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
 
@@ -99,10 +102,22 @@ export function ProductVariantSelector({
   }, [selectedOptions, variants, defaultPrice, defaultCompareAtPrice]);
 
   const handleOptionSelect = (optionName: string, value: string) => {
-    setSelectedOptions(prev => ({
-      ...prev,
-      [optionName]: value,
-    }));
+    setSelectedOptions(prev => {
+      const currentValue = prev[optionName];
+      
+      // If clicking the same option, deselect it
+      if (currentValue === value) {
+        const newOptions = { ...prev };
+        delete newOptions[optionName];
+        return newOptions;
+      }
+      
+      // Otherwise, select the new option
+      return {
+        ...prev,
+        [optionName]: value,
+      };
+    });
   };
 
   const isOptionAvailable = (optionName: string, value: string) => {
@@ -119,20 +134,54 @@ export function ProductVariantSelector({
     return null;
   }
 
+  const handleResetSelection = () => {
+    setSelectedOptions({});
+    setSelectedVariant(null);
+    onVariantChange?.(null);
+    onPriceChange?.(defaultPrice, defaultCompareAtPrice);
+    onImagesChange?.([]);
+  };
+
+  const hasAnySelection = Object.keys(selectedOptions).length > 0;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 sm:space-y-8">
+      {/* Reset Button - Show when any option is selected */}
+      {hasAnySelection && (
+        <div className="flex justify-end">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleResetSelection}
+            className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 font-medium"
+          >
+            <RefreshCw className="w-4 h-4 mr-2" />
+            {t('product.resetSelection')}
+          </Button>
+        </div>
+      )}
+
       {variantOptions.map((option) => (
-        <div key={option.name}>
-          <Label className="text-sm font-medium mb-3 block">
+        <div key={option.name} className="variant-option-group">
+          {/* Mobile-optimized label */}
+          <div 
+            className="text-base sm:text-sm font-bold mb-3 sm:mb-4 uppercase tracking-wide leading-tight" 
+            style={{ 
+              color: '#111827',
+              fontSize: '15px',
+              fontWeight: '700'
+            }}
+          >
             {option.name}
             {selectedOptions[option.name] && (
-              <span className="ml-2 text-muted-foreground">
+              <span className="ml-2 text-gray-600 dark:text-gray-400 font-normal text-sm">
                 ({selectedOptions[option.name]})
               </span>
             )}
-          </Label>
+          </div>
           
-          <div className="flex flex-wrap gap-2">
+          {/* Mobile-optimized button grid */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3">
             {option.values.map((value) => {
               const isSelected = selectedOptions[option.name] === value;
               const isAvailable = isOptionAvailable(option.name, value);
@@ -141,18 +190,20 @@ export function ProductVariantSelector({
                 <Button
                   key={value}
                   variant={isSelected ? "default" : "outline"}
-                  size="sm"
+                  size="lg"
                   onClick={() => handleOptionSelect(option.name, value)}
                   disabled={!isAvailable}
                   className={cn(
-                    "transition-all",
+                    "transition-all w-full sm:w-auto min-h-[48px] sm:min-h-[44px] h-auto text-xs sm:text-sm font-medium touch-manipulation whitespace-normal text-center leading-tight py-3 px-3",
                     !isAvailable && "opacity-50 cursor-not-allowed"
                   )}
                 >
-                  {value}
-                  {!isAvailable && (
-                    <span className="ml-1 text-xs opacity-70">(Out of Stock)</span>
-                  )}
+                  <span className="break-words w-full block">
+                    {value}
+                    {!isAvailable && (
+                      <span className="ml-1 text-xs opacity-70 block sm:inline">(Out of Stock)</span>
+                    )}
+                  </span>
                 </Button>
               );
             })}
@@ -160,17 +211,19 @@ export function ProductVariantSelector({
         </div>
       ))}
 
-      {/* Selected Variant Info */}
+      {/* Selected Variant Info - Mobile Optimized */}
       {selectedVariant && (
-        <Card className="bg-muted/50">
-          <CardContent className="p-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium">{selectedVariant.name}</p>
+        <Card className="bg-muted/50 shadow-sm">
+          <CardContent className="p-3 sm:p-2.5">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-2">
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-tight">
+                  {selectedVariant.name}
+                </p>
               </div>
-              <div className="text-right">
+              <div className="flex items-center justify-between sm:justify-end sm:text-right gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold text-base">
+                  <span className="font-bold text-base sm:text-sm text-primary">
                     {formatPrice(selectedVariant.price)}
                   </span>
                   {selectedVariant.compareAtPrice && selectedVariant.compareAtPrice > selectedVariant.price && (
@@ -179,24 +232,31 @@ export function ProductVariantSelector({
                     </span>
                   )}
                 </div>
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge variant={selectedVariant.inStock ? "secondary" : "destructive"} className="text-xs px-2 py-0.5">
-                    {selectedVariant.inStock 
-                      ? `${selectedVariant.stockLevel === 'high' ? 'In stock' : 'Limited stock'}` 
-                      : "Out of stock"}
-                  </Badge>
-                </div>
+                <Badge 
+                  variant={selectedVariant.inStock ? "secondary" : "destructive"} 
+                  className="text-xs px-2 py-0.5 font-medium"
+                >
+                  {selectedVariant.inStock 
+                    ? `${selectedVariant.stockLevel === 'high' ? 'In stock' : 'Limited stock'}` 
+                    : "Out of stock"}
+                </Badge>
               </div>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* Show message if no complete selection */}
+      {/* Show message if no complete selection - Mobile Optimized */}
       {variantOptions.length > 0 && Object.keys(selectedOptions).length < variantOptions.length && (
-        <p className="text-sm text-muted-foreground">
-          Please select all options to see the final price and availability.
-        </p>
+        <div 
+          className="text-sm sm:text-sm font-medium text-gray-700 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-2.5"
+          style={{
+            fontSize: '14px',
+            color: '#374151'
+          }}
+        >
+          {t('product.selectAllOptions')}
+        </div>
       )}
     </div>
   );

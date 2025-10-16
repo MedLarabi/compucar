@@ -426,6 +426,7 @@
     "description": "Description",
     "writeReview": "Écrire un avis",
     "clearSelection": "Effacer la sélection",
+    "resetSelection": "Réinitialiser la sélection",
     "currentSelection": "Sélection actuelle",
     "combinationNotAvailable": "Cette combinaison n'est pas disponible en tant que produit complet",
     "tryDifferentOptions": "Essayez de sélectionner différentes options pour trouver des combinaisons disponibles",

@@ -319,10 +319,11 @@
     "description": "Description",
     "writeReview": "Write a Review",
     "clearSelection": "Clear Selection",
+    "resetSelection": "Reset Selection",
+    "selectAllOptions": "Please select all options to see the final price and availability.",
     "currentSelection": "Current selection",
     "combinationNotAvailable": "This combination is not available as a complete product",
     "tryDifferentOptions": "Try selecting different options to find available combinations",
-    "selectAllOptions": "Please select all options to see the final price and availability.",
     "reviewForm": {
       "rating": "Rating",
       "ratingRequired": "Please select a rating",

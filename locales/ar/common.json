@@ -285,6 +285,7 @@
     "description": "الوصف",
     "writeReview": "اكتب مراجعة",
     "clearSelection": "مسح التحديد",
+    "resetSelection": "إعادة تعيين الاختيار",
     "currentSelection": "التحديد الحالي",
     "combinationNotAvailable": "هذه التركيبة غير متوفرة كمنتج كامل",
     "tryDifferentOptions": "جرب اختيار خيارات مختلفة للعثور على تركيبات متاحة",
