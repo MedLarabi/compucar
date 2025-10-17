@@ -54,7 +54,9 @@
     "yes": "Oui",
     "no": "Non",
     "ok": "OK",
-    "min": "min"
+    "min": "min",
+    "loadMore": "Charger Plus",
+    "of": "de"
   },
   "checkout": {
     "cod": {
@@ -358,6 +360,7 @@
     "discoverWideRange": "Découvrez notre large gamme d'outils de diagnostic professionnels",
     "discoverQualityParts": "Découvrez des outils de diagnostic automobile de qualité",
     "showingResults": "Affichage de {start}-{end} sur {total} résultats",
+    "showing": "Affichage de",
     "noProductsFound": "Aucun produit trouvé",
     "tryAdjusting": "Essayez d'ajuster votre recherche ou vos filtres",
     "tryDifferentKeywords": "Essayez des mots-clés différents",

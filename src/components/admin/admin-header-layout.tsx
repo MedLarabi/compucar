@@ -185,11 +185,13 @@ function MobileAdminMenu() {
           {/* Header */}
           <div className="p-6 border-b">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <LayoutDashboard className="h-5 w-5 text-primary-foreground" />
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="CompuCar Logo" 
+                className="h-8 w-auto object-contain"
+              />
               <div>
-                <h2 className="text-lg font-semibold">CompuCar Admin</h2>
+                <h2 className="text-lg font-semibold">Admin</h2>
                 <p className="text-sm text-muted-foreground">Management Portal</p>
               </div>
             </div>
@@ -405,11 +407,13 @@ export function AdminHeaderLayout({ children }: AdminHeaderLayoutProps) {
               className="flex items-center space-x-2 cursor-pointer"
               onClick={() => router.push("/admin")}
             >
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <LayoutDashboard className="h-5 w-5 text-primary-foreground" />
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="CompuCar Logo" 
+                className="h-7 w-auto object-contain hover:opacity-80 transition-opacity"
+              />
               <div className="hidden sm:block">
-                <span className="font-bold text-lg">CompuCar Admin</span>
+                <span className="font-bold text-lg">Admin</span>
               </div>
             </div>
           </div>

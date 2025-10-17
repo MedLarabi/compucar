@@ -49,8 +49,8 @@ export interface InvoiceData {
 
 // Company information (you can move this to a config file)
 const COMPANY_INFO = {
-  name: 'CompuCar',
-  logo: '/logo.png', // Update with your actual logo path
+  name: '',
+  logo: '/logo.png',
   address: {
     street: '123 Tech Street',
     city: 'Digital City',

@@ -12,11 +12,11 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   ArrowRight, 
   ChevronUp,
-  ChevronLeft, 
-  ChevronRight, 
+  ChevronDown,
   Grid3X3, 
   List,
-  Package
+  Package,
+  Loader2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -67,16 +67,19 @@ export function HomePageClient() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [pagination, setPagination] = useState<ProductsResponse["pagination"] | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [currentPage, setCurrentPage] = useState(1);
   
   const productsRef = useRef<HTMLElement>(null);
   
   const { t } = useLanguage();
 
-  const currentPage = parseInt(searchParams.get("page") || "1");
-
   useEffect(() => {
-    fetchProducts();
+    // Reset when filters change
+    setCurrentPage(1);
+    setProducts([]);
+    fetchProducts(1, false);
   }, [searchParams]);
 
   // Scroll to products when search params change (user searched)
@@ -95,10 +98,16 @@ export function HomePageClient() {
 
 
 
-  const fetchProducts = async () => {
-    setLoading(true);
+  const fetchProducts = async (page: number = 1, append: boolean = false) => {
+    if (append) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
+    }
+    
     try {
       const params = new URLSearchParams(searchParams);
+      params.set('page', page.toString());
       // Use relative URL instead of constructing absolute URL
       const apiUrl = `/api/products?${params}`;
       console.log('Fetching products from:', apiUrl);
@@ -109,25 +118,43 @@ export function HomePageClient() {
       const contentType = response.headers.get('content-type') || '';
       if (!response.ok || !contentType.includes('application/json')) {
         console.error(`Unexpected response for products: status=${response.status}, content-type=${contentType}`);
-        setProducts([]);
-        setPagination(null);
+        if (!append) {
+          setProducts([]);
+          setPagination(null);
+        }
         return;
       }
       const data: ProductsResponse = await response.json();
       
       if (data.success && data.data) {
-        setProducts(data.data);
+        if (append) {
+          setProducts(prev => [...prev, ...data.data]);
+        } else {
+          setProducts(data.data);
+        }
         setPagination(data.pagination);
+        setCurrentPage(page);
       } else {
-        setProducts([]);
-        setPagination(null);
+        if (!append) {
+          setProducts([]);
+          setPagination(null);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch products:", error);
-      setProducts([]);
-      setPagination(null);
+      if (!append) {
+        setProducts([]);
+        setPagination(null);
+      }
     } finally {
       setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
+  const handleLoadMore = () => {
+    if (pagination && currentPage < pagination.pages) {
+      fetchProducts(currentPage + 1, true);
     }
   };
 
@@ -206,7 +233,7 @@ export function HomePageClient() {
                 <div className={cn(
                   "grid gap-6",
                   viewMode === "grid" 
-                    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5" 
+                    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
                     : "grid-cols-1"
                 )}>
                   {[...Array(12)].map((_, i) => (
@@ -221,20 +248,54 @@ export function HomePageClient() {
                   ))}
                 </div>
               ) : products.length > 0 ? (
-                <div className={cn(
-                  "grid gap-6",
-                  viewMode === "grid" 
-                    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5" 
-                    : "grid-cols-1"
-                )}>
-                  {products.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      className={viewMode === "list" ? "flex-row" : ""}
-                    />
-                  ))}
-                </div>
+                <>
+                  <div className={cn(
+                    "grid gap-6",
+                    viewMode === "grid" 
+                      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" 
+                      : "grid-cols-1"
+                  )}>
+                    {products.map((product) => (
+                      <ProductCard
+                        key={product.id}
+                        product={product}
+                        className={viewMode === "list" ? "flex-row" : ""}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Load More Button */}
+                  {pagination && currentPage < pagination.pages && (
+                    <div className="mt-8 flex justify-center">
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={handleLoadMore}
+                        disabled={loadingMore}
+                        className="min-w-[200px]"
+                      >
+                        {loadingMore ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            {t('common.loading')}
+                          </>
+                        ) : (
+                          <>
+                            {t('common.loadMore')}
+                            <ChevronDown className="ml-2 h-4 w-4" />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Show total loaded products */}
+                  {pagination && (
+                    <div className="mt-4 text-center text-sm text-muted-foreground">
+                      {t('messages.showing')} {products.length} {t('common.of')} {pagination.total} {t('common.products')}
+                    </div>
+                  )}
+                </>
               ) : (
                 <Card className="p-12 text-center">
                   <Package className="mx-auto h-16 w-16 text-muted-foreground mb-4" />
@@ -243,88 +304,6 @@ export function HomePageClient() {
                     {t('messages.tryAdjusting')}
                   </p>
                 </Card>
-              )}
-
-              {/* Pagination */}
-              {pagination && pagination.pages > 1 && (
-                <div className="mt-8 flex items-center justify-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={pagination.page <= 1}
-                    asChild={pagination.page > 1}
-                  >
-                    {pagination.page > 1 ? (
-                      <a href={generatePageUrl(currentPage - 1)}>
-                        <ChevronLeft className="h-4 w-4 mr-1" />
-                        {t('messages.previous')}
-                      </a>
-                    ) : (
-                      <>
-                        <ChevronLeft className="h-4 w-4 mr-1" />
-                        {t('messages.previous')}
-                      </>
-                    )}
-                  </Button>
-
-                  <div className="flex items-center gap-1">
-                    {[...Array(pagination.pages)].map((_, i) => {
-                      const page = i + 1;
-                      const isCurrentPage = page === pagination.page;
-                      
-                      // Show first page, last page, current page, and pages around current
-                      const shouldShow = 
-                        page === 1 ||
-                        page === pagination.pages ||
-                        Math.abs(page - pagination.page) <= 1;
-
-                      if (!shouldShow) {
-                        // Show ellipsis
-                        if (page === 2 && pagination.page > 4) {
-                          return <span key={page} className="px-2">...</span>;
-                        }
-                        if (page === pagination.pages - 1 && pagination.page < pagination.pages - 3) {
-                          return <span key={page} className="px-2">...</span>;
-                        }
-                        return null;
-                      }
-
-                      return (
-                        <Button
-                          key={page}
-                          variant={isCurrentPage ? "default" : "outline"}
-                          size="sm"
-                          asChild={!isCurrentPage}
-                        >
-                          {isCurrentPage ? (
-                            <span>{page}</span>
-                          ) : (
-                            <a href={generatePageUrl(page)}>{page}</a>
-                          )}
-                        </Button>
-                      );
-                    })}
-                  </div>
-
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={pagination.page >= pagination.pages}
-                    asChild={pagination.page < pagination.pages}
-                  >
-                    {pagination.page < pagination.pages ? (
-                      <a href={generatePageUrl(currentPage + 1)}>
-                        {t('common.next')}
-                        <ChevronRight className="h-4 w-4 ml-1" />
-                      </a>
-                    ) : (
-                      <>
-                        {t('common.next')}
-                        <ChevronRight className="h-4 w-4 ml-1" />
-                      </>
-                    )}
-                  </Button>
-                </div>
               )}
             </main>
         </div>

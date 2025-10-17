@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Package, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
@@ -29,26 +29,24 @@ export function AuthHeader({
               </Button>
             </Link>
           ) : (
-            <Link href="/" className="flex items-center space-x-2 group">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                <Package className="h-5 w-5 text-primary" />
-              </div>
-              <span className="hidden sm:inline-block font-bold text-lg bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                CompuCar
-              </span>
+            <Link href="/" className="flex items-center group">
+              <img 
+                src="/logo.png" 
+                alt="CompuCar Logo" 
+                className="h-7 w-auto object-contain group-hover:opacity-80 transition-opacity"
+              />
             </Link>
           )}
         </div>
 
         {/* Center - Logo (when back button is shown) */}
         {showBackButton && (
-          <Link href="/" className="flex items-center space-x-2 group">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <Package className="h-5 w-5 text-primary" />
-            </div>
-            <span className="hidden sm:inline-block font-bold text-lg bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              CompuCar
-            </span>
+          <Link href="/" className="flex items-center group">
+            <img 
+              src="/logo.png" 
+              alt="CompuCar Logo" 
+              className="h-7 w-auto object-contain group-hover:opacity-80 transition-opacity"
+            />
           </Link>
         )}
 

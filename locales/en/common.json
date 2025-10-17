@@ -258,6 +258,7 @@
     "discoverWideRange": "Discover our wide range of professional diagnostic tools and equipment",
     "discoverQualityParts": "Discover quality automotive parts and accessories",
     "showingResults": "Showing {start}-{end} of {total} results",
+    "showing": "Showing",
     "noProductsFound": "No products found",
     "tryAdjusting": "Try adjusting your search or filters",
     "tryDifferentKeywords": "Try different keywords",
@@ -855,7 +856,10 @@
     "product": "product",
     "products": "products",
     "free": "Free",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "loadMore": "Load More",
+    "loading": "Loading...",
+    "of": "of"
   },
   "courses": {
     "title": "My Courses",

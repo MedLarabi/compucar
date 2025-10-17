@@ -114,31 +114,23 @@ export function Navigation() {
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between min-w-0">
         {/* Logo - Desktop */}
         <div className="mr-4 lg:mr-6 hidden md:flex">
-          <Link href="/" className="mr-2 lg:mr-4 flex items-center space-x-2 group">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-              <img 
-                src="/car-logo.png" 
-                alt="CompuCar Logo" 
-                className="h-5 w-5 object-contain"
-              />
-            </div>
-            <span className="hidden lg:inline-block font-bold text-lg bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              CompuCar
-            </span>
+          <Link href="/" className="mr-2 lg:mr-4 flex items-center group">
+            <img 
+              src="/logo.png" 
+              alt="CompuCar Logo" 
+              className="h-7 w-auto object-contain group-hover:opacity-80 transition-opacity"
+            />
           </Link>
         </div>
 
         {/* Logo - Mobile */}
         <div className="flex md:hidden">
           <Link href="/" className="flex items-center">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10">
-              <img 
-                src="/car-logo.png" 
-                alt="CompuCar Logo" 
-                className="h-5 w-5 object-contain"
-              />
-            </div>
-            {/* Hide text on mobile to save space */}
+            <img 
+              src="/logo.png" 
+              alt="CompuCar Logo" 
+              className="h-6 w-auto object-contain"
+            />
           </Link>
         </div>
 
@@ -156,16 +148,11 @@ export function Navigation() {
           <SheetContent side="right" className="pl-0 w-80">
             <SheetHeader className="text-left">
               <SheetTitle className="flex items-center text-xl">
-                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 mr-3">
-                  <img 
-                    src="/car-logo.png" 
-                    alt="CompuCar Logo" 
-                    className="h-6 w-6 object-contain"
-                  />
-                </div>
-                <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                  CompuCar
-                </span>
+                <img 
+                  src="/logo.png" 
+                  alt="CompuCar Logo" 
+                  className="h-8 w-auto object-contain"
+                />
               </SheetTitle>
               <SheetDescription className="text-base">
                 {t('messages.premiumAutoParts')}

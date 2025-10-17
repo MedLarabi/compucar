@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Package, Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -17,9 +17,12 @@ export function Footer() {
           <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
             {/* Company info */}
             <div>
-              <Link href="/" className="flex items-center justify-center lg:justify-start space-x-2">
-                <Package className="h-6 w-6" />
-                <span className="font-bold">CompuCar</span>
+              <Link href="/" className="flex items-center justify-center lg:justify-start">
+                <img 
+                  src="/logo.png" 
+                  alt="CompuCar Logo" 
+                  className="h-8 w-auto object-contain"
+                />
               </Link>
               <p className="mt-4 text-sm text-muted-foreground max-w-md">
                 {t('footer.companyDescription')}

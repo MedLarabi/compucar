@@ -1,7 +1,7 @@
 {
-  "name": "CompuCar - Auto Parts & Accessories",
+  "name": "CompuCar",
   "short_name": "CompuCar",
-  "description": "Premium automotive parts and accessories for all vehicle types",
+  "description": "Premium automotive diagnostic tools and equipment",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

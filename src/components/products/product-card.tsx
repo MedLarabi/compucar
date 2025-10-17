@@ -66,7 +66,7 @@ export function ProductCard({
   const reviewCount = product._count?.reviews || product.reviewCount || 0;
 
   return (
-    <Card className={cn("group overflow-hidden transition-all hover:shadow-lg", className)}>
+    <Card className={cn("group overflow-hidden transition-all hover:shadow-lg flex flex-col", className)}>
       <div className="relative aspect-square overflow-hidden">
         <Link href={`/products/${product.slug}`}>
           {product.images?.[0]?.url ? (
@@ -131,8 +131,8 @@ export function ProductCard({
         )}
       </div>
 
-      <CardContent className="p-4">
-        <div className="space-y-2">
+      <CardContent className="p-4 flex flex-col flex-1">
+        <div className="space-y-2 flex-1 flex flex-col">
           {/* Category */}
           {product.category && (
             <Link 
@@ -172,19 +172,9 @@ export function ProductCard({
             </div>
           )}
 
-          {/* Price */}
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold">{formatPrice(product.price)}</span>
-            {product.compareAtPrice && (
-              <span className="text-sm text-muted-foreground line-through">
-                {formatPrice(product.compareAtPrice)}
-              </span>
-            )}
-          </div>
-
           {/* Variants Preview */}
           {product.variants && product.variants.length > 0 && (
-            <div className="flex gap-1">
+            <div className="flex gap-1 flex-wrap">
               {product.variants.slice(0, 3).map((variant) => (
                 <Badge key={variant.id} variant="outline" className="text-xs">
                   {variant.name}
@@ -208,6 +198,21 @@ export function ProductCard({
               ))}
             </div>
           )}
+
+          {/* Spacer to push price to bottom */}
+          <div className="flex-1"></div>
+
+          {/* Price - Fixed at bottom center */}
+          <div className="flex items-center justify-center gap-2 mt-auto pb-1">
+            <div className="flex flex-col items-center">
+              <span className="text-lg font-bold">{formatPrice(product.price)}</span>
+              {product.compareAtPrice && (
+                <span className="text-xs text-muted-foreground line-through">
+                  {formatPrice(product.compareAtPrice)}
+                </span>
+              )}
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

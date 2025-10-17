@@ -257,6 +257,7 @@
     "discoverWideRange": "اكتشف مجموعتنا الواسعة من أدوات التشخيص المهنية والمعدات",
     "discoverQualityParts": "اكتشف قطع غيار ومستلزمات سيارات عالية الجودة",
     "showingResults": "عرض {start}-{end} من {total} نتيجة",
+    "showing": "عرض",
     "noProductsFound": "لم يتم العثور على منتجات",
     "tryAdjusting": "حاول تعديل البحث أو المرشحات",
     "tryDifferentKeywords": "جرب كلمات مفتاحية مختلفة",
@@ -689,7 +690,10 @@
     "product": "منتج",
     "products": "منتجات",
     "free": "مجاني",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "loadMore": "تحميل المزيد",
+    "loading": "جاري التحميل...",
+    "of": "من"
   },
   "admin": {
     "navigation": {
