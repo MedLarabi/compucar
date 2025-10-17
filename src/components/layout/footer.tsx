@@ -20,7 +20,7 @@ export function Footer() {
               <Link href="/" className="flex items-center justify-center lg:justify-start">
                 <img 
                   src="/logo.png" 
-                  alt="Luxana Logo" 
+                  alt="CompuCar Logo" 
                   className="h-8 w-auto object-contain"
                 />
               </Link>
@@ -77,7 +77,7 @@ export function Footer() {
                 allowFullScreen={true}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Luxana Location - Algeria"
+                title="CompuCar Location - Algeria"
                 className="rounded-lg"
               ></iframe>
             </div>
@@ -89,7 +89,7 @@ export function Footer() {
         {/* Bottom footer */}
         <div className="flex flex-col items-center text-center">
           <p className="text-sm text-muted-foreground">
-            © {currentYear} Luxana. {t('footer.allRightsReserved')}
+            © {currentYear} CompuCar. {t('footer.allRightsReserved')}
           </p>
         </div>
       </div>

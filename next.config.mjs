@@ -27,12 +27,6 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'luxana.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
         hostname: 'carworkshop.org',
         port: '',
         pathname: '/**',

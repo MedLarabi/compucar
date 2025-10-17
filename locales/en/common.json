@@ -11,7 +11,7 @@
     "account": "Account",
     "logout": "Logout",
     "cart": "Cart",
-    "tuning": "Consultations"
+    "tuning": "Tuning"
   },
   "checkout": {
     "cod": {
@@ -40,11 +40,11 @@
     "searchFor": "Search for products..."
   },
   "upload": {
-    "title": "Upload File for Consultation",
-    "description": "Upload your consultation request and select the services you want",
+    "title": "Upload File for Tuning",
+    "description": "Upload your ECU file and select the modifications you want applied",
     "selectFile": {
       "title": "Select File",
-      "description": "Choose your file for consultation (Max: 200MB)"
+      "description": "Choose your ECU file for tuning (Max: 200MB)"
     },
     "browse": {
       "text": "Click to browse or drag and drop",
@@ -52,20 +52,20 @@
     },
     "supportedTypes": "All file types are supported",
   "modifications": {
-    "title": "Select Services",
-    "description": "Choose the services you want for your consultation",
-    "loading": "Loading services...",
-    "selectAtLeastOne": "Please select at least one service"
+    "title": "Select Modifications",
+    "description": "Choose the modifications you want applied to your file",
+    "loading": "Loading modifications...",
+    "selectAtLeastOne": "Please select at least one modification"
   },
   "dtcCodes": {
-    "title": "Specific Requirements",
-    "description": "Please specify any specific requirements or preferences for your consultation.",
-    "placeholder": "Enter your specific requirements...\nExample: Skin type, allergies, preferences",
-    "example": "Example: Sensitive skin, fragrance-free, organic products"
+    "title": "DTC Error Codes to Remove",
+    "description": "Please specify which DTC (Diagnostic Trouble Code) error codes you want to remove from your ECU file.",
+    "placeholder": "Enter DTC codes separated by commas or new lines...\nExample: P0171, P0174, P0300",
+    "example": "Example: P0171, P0174, P0300, U0001, B1234"
   },
     "comments": {
       "title": "Additional Comments",
-      "description": "Any special instructions or notes (optional)",
+      "description": "Any special instructions or notes for the tuner (optional)",
       "placeholder": "Enter any special instructions or requirements..."
     },
     "progress": {
@@ -85,23 +85,23 @@
     "errors": {
       "fileSize": "File size exceeds maximum allowed size of 200MB",
       "fileType": "All file types are now supported",
-      "selectFileAndModification": "Please select a file and at least one service",
-      "loadModifications": "Failed to load service options"
+      "selectFileAndModification": "Please select a file and at least one modification",
+      "loadModifications": "Failed to load modification options"
     }
   },
   "files": {
-    "title": "Consultation Requests",
-    "description": "Track your consultation requests and services",
-    "uploadNewFile": "Upload New Request",
+    "title": "Order Modifications",
+    "description": "Track your tuning file orders and modifications",
+    "uploadNewFile": "Upload New File",
     "stats": {
-      "totalOrders": "Total Requests",
+      "totalOrders": "Total Orders",
       "ready": "Ready",
       "inProgress": "In Progress",
       "received": "Received"
     },
     "filters": {
       "title": "Filters",
-      "searchPlaceholder": "Search requests by file name...",
+      "searchPlaceholder": "Search orders by file name...",
       "statusPlaceholder": "Status",
       "allFiles": "All Files",
       "received": "Received",
@@ -109,11 +109,11 @@
       "ready": "Ready"
     },
     "table": {
-      "title": "Consultation Requests",
+      "title": "Order Modifications",
       "loading": "Loading...",
-      "totalOrders": "total requests",
+      "totalOrders": "total orders",
       "headers": {
-        "orderId": "Request ID",
+        "orderId": "Order ID",
         "date": "Date",
         "fileName": "File Name",
         "price": "Price",
@@ -123,8 +123,8 @@
       }
     },
     "empty": {
-      "title": "No requests found",
-      "noMatch": "No requests match your current filters",
+      "title": "No orders found",
+      "noMatch": "No orders match your current filters",
       "getStarted": "Upload your first file to get started",
       "uploadFile": "Upload File"
     },
@@ -142,13 +142,13 @@
       "showing": "Showing",
       "to": "to",
       "of": "of",
-      "orders": "requests",
+      "orders": "orders",
       "previous": "Previous",
       "next": "Next"
     },
     "summary": {
-      "title": "Request Summary",
-      "description": "Financial overview of your consultation requests",
+      "title": "Order Summary",
+      "description": "Financial overview of your order modifications",
       "totalUnpaid": "Total Unpaid"
     },
     "errors": {
@@ -179,24 +179,24 @@
       "modifiedFailed": "Failed to download modified file",
       "downloading": "Downloading...",
       "submittedFile": "Your submitted file",
-      "tunedFile": "Processed file",
+      "tunedFile": "Tuned file",
       "unknownSize": "Unknown size",
       "noFilesAvailable": "No files available for download yet."
     },
     "modifications": {
-      "title": "Requested Services",
-      "description": "The services you selected for this consultation"
+      "title": "Requested Modifications",
+      "description": "The modifications you selected for this file"
     },
     "comments": {
       "title": "Your Comments"
     },
     "dtcCodes": {
-      "title": "Specific Requirements",
-      "description": "Requirements you specified"
+      "title": "DTC Error Codes to Remove",
+      "description": "Diagnostic Trouble Codes you specified for deletion"
     },
     "adminComments": {
       "title": "Admin Comments",
-      "description": "Comments from the administrator about your consultation"
+      "description": "Comments from the administrator about your file"
     },
     "fileInfo": {
       "title": "File Information",
@@ -220,7 +220,7 @@
       "title": "Actions",
       "backToFiles": "Back to Files",
       "downloadOriginal": "Download Original",
-      "downloadModified": "Download Processed",
+      "downloadModified": "Download Modified",
       "refreshStatus": "Refresh Status"
     },
     "errors": {
@@ -247,16 +247,16 @@
     "title": "Product Categories",
     "description": "Browse our products by category",
     "searchPlaceholder": "Search categories...",
-    "brakeParts": "Makeup",
-    "engineParts": "Skincare",
-    "lighting": "Fragrances",
-    "filters": "Hair Care",
-    "performance": "Wellness"
+    "brakeParts": "Brake Parts",
+    "engineParts": "Engine Parts",
+    "lighting": "Lighting",
+    "filters": "Filters",
+    "performance": "Performance"
   },
   "messages": {
-    "premiumAutoParts": "Premium luxury beauty products and cosmetics",
-    "discoverWideRange": "Discover our wide range of luxury beauty products and cosmetics",
-    "discoverQualityParts": "Discover luxury beauty products and cosmetics",
+    "premiumAutoParts": "Premium auto diagnostic tools and equipment",
+    "discoverWideRange": "Discover our wide range of professional diagnostic tools and equipment",
+    "discoverQualityParts": "Discover quality automotive parts and accessories",
     "showingResults": "Showing {start}-{end} of {total} results",
     "showing": "Showing",
     "noProductsFound": "No products found",
@@ -284,7 +284,7 @@
     },
     "files": {
       "title": "File Management",
-      "description": "Manage consultation requests",
+      "description": "Manage file tuning requests",
       "allFiles": "All Files",
       "received": "Received",
       "inProgress": "In Progress",
@@ -354,9 +354,9 @@
     }
   },
   "hero": {
-    "title": "Premium Luxury Beauty",
-    "subtitle": "Elegance You Can Trust",
-    "description": "Discover the finest collection of luxury beauty products and cosmetics for the modern woman",
+    "title": "Premium Auto Diagnostic Tools",
+    "subtitle": "Quality You Can Trust",
+    "description": "Find the best diagnostic tools and equipment for professional vehicle analysis",
     "shopNow": "Shop Now",
     "browseCategories": "Browse Categories"
   },
@@ -453,110 +453,7 @@
     "company": "Company",
     "address": "Address"
   },
-  "welcome": "Welcome to our premium luxury beauty store",
-  "orderSuccess": {
-    "welcome": "Welcome to Luxana! 🎉",
-    "accountCreated": "Your account has been created and order",
-    "isConfirmed": "is confirmed!",
-    "paymentPending": "Payment Pending",
-    "orderWaitingPayment": "Your order",
-    "waitingPaymentConfirmation": "is waiting for payment confirmation.",
-    "paymentConfirmed": "Payment Confirmed! 🎉",
-    "thankYouPaymentConfirmed": "Thank you! Your payment has been confirmed and your order is being processed.",
-    "orderSuccessfullyPlaced": "Order Successfully Placed! 🎉",
-    "thankYouForOrder": "Thank you for your order! Here are all the details for order",
-    "orderNumber": "Order #",
-    "total": "Total",
-    "overview": "Overview",
-    "items": "Items",
-    "digitalAccess": "Digital Access",
-    "delivery": "Delivery",
-    "payment": "Payment",
-    "orderSummary": "Order Summary",
-    "subtotal": "Subtotal",
-    "shipping": "Shipping",
-    "tax": "Tax",
-    "discount": "Discount",
-    "customerInformation": "Customer Information",
-    "name": "Name",
-    "email": "Email",
-    "phone": "Phone",
-    "specialInstructions": "Special Instructions",
-    "cashOnDelivery": "Cash on Delivery",
-    "prepareExactly": "Prepare exactly",
-    "toPayDeliveryPerson": "to pay the delivery person.",
-    "digitalProductsReady": "Digital Products Ready",
-    "digitalProductsAvailable": "Your digital products are available for immediate download and access.",
-    "quickActions": "Quick Actions",
-    "continueShopping": "Continue Shopping",
-    "viewOrderHistory": "View Order History",
-    "trackPackage": "Track Package",
-    "accessDownloads": "Access Downloads",
-    "viewLicenseKeys": "View License Keys",
-    "downloadNow": "Download Now",
-    "whatHappensNext": "What happens next?",
-    "confirmationMessage": "We will contact you as soon as possible via Phone or WhatsApp to confirm your order details.",
-    "deliveryMessage": "Once confirmed, we will work diligently to prepare and deliver your items at the earliest convenience.",
-    "orderConfirmed": "Order received and being processed",
-    "willContactYou": "We will contact you for confirmation",
-    "preparingShipment": "Preparing your shipment",
-    "outForDelivery": "Out for delivery",
-    "paymentOnDelivery": "Payment upon delivery",
-    "orderComplete": "Order complete",
-    "copyLicenseKey": "Copy License Key",
-    "copiedToClipboard": "Copied to clipboard",
-    "downloadFile": "Download File",
-    "licenseKey": "License Key",
-    "expiresOn": "Expires on",
-    "downloadsRemaining": "downloads remaining",
-    "unlimited": "Unlimited",
-    "orderItems": "Order Items",
-    "quantity": "Quantity",
-    "unitPrice": "Unit Price",
-    "lineTotal": "Line Total",
-    "deliveryInformation": "Delivery Information",
-    "deliveryMethod": "Delivery Method",
-    "homeDelivery": "Home Delivery",
-    "stopDeskPickup": "Stop Desk Pickup",
-    "shippingAddress": "Shipping Address",
-    "estimatedDelivery": "Estimated Delivery",
-    "businessDays": "business days",
-    "trackingNumber": "Tracking Number",
-    "carrierInformation": "Carrier Information",
-    "yalidineDelivery": "Yalidine Delivery Service",
-    "paymentInformation": "Payment Information",
-    "paymentMethod": "Payment Method",
-    "paymentStatus": "Payment Status",
-    "paidOn": "Paid on",
-    "billingAddress": "Billing Address",
-    "transactionId": "Transaction ID",
-    "paymentHistory": "Payment History",
-    "amount": "Amount",
-    "status": "Status",
-    "date": "Date",
-    "processing": "Processing",
-    "completed": "Completed",
-    "failed": "Failed",
-    "refunded": "Refunded",
-    "cashOnDeliveryPayment": "Cash on Delivery",
-    "stripePayment": "Credit Card",
-    "orderNotFound": "Order not found",
-    "loadingOrderDetails": "Loading order details...",
-    "errorLoadingOrder": "Error loading order details. Please try again."
-  },
-  "footer": {
-    "companyDescription": "Your trusted partner for premium luxury beauty products and cosmetics. We provide authentic, high-quality beauty essentials to help you look and feel your best every day.",
-    "contactInfo": "Contact Information",
-    "phone": "Phone",
-    "email": "Email",
-    "address": "Address",
-    "followUs": "Follow Us",
-    "facebook": "Facebook",
-    "twitter": "Twitter", 
-    "instagram": "Instagram",
-    "youtube": "YouTube",
-    "allRightsReserved": "All rights reserved."
-  },
+  "welcome": "Welcome to our premium auto diagnostic tools store",
   "checkout": {
     "cod": {
       "title": "Cash on Delivery Checkout",
@@ -1055,7 +952,7 @@
     "videoCount": "{count} videos",
     "public": {
       "pageTitle": "Explore Our Courses",
-      "pageDescription": "Discover comprehensive beauty tutorial courses designed to enhance your skills and knowledge. Learn at your own pace with expert-led content.",
+      "pageDescription": "Discover comprehensive video courses designed to enhance your skills and knowledge. Learn at your own pace with expert-led content.",
       "searchCoursesPlaceholder": "Search courses by title, description, or topic...",
       "filters": "Filters",
       "filterByLevel": "Filter by level",
@@ -1112,7 +1009,7 @@
         "fullLifetimeAccess": "Full lifetime access",
         "accessOnMobileAndTV": "Access on mobile and TV",
         "certificateOfCompletion": "Certificate of completion",
-        "masterFundamentalConcepts": "Master the fundamental concepts and techniques",
+        "masterFundamentalConcepts": "Master the fundamental concepts and principles",
         "applyKnowledgeThroughPractice": "Apply knowledge through practical exercises and projects",
         "developIndustryRelevantSkills": "Develop industry-relevant skills and best practices",
         "buildConfidenceForChallenges": "Build confidence to tackle real-world challenges",
@@ -1121,6 +1018,280 @@
         "strongFoundationRecommended": "Strong foundation in the subject area and some practical experience is recommended.",
         "basedOnStudentReviews": "Based on {count} student reviews",
         "reviewsWillBeDisplayed": "Reviews will be displayed here once students start enrolling and completing the course."
+      }
+    },
+    "public": {
+      "pageTitle": "Explore Our Courses",
+      "pageDescription": "Discover comprehensive video courses designed to enhance your skills and knowledge. Learn at your own pace with expert-led content.",
+      "searchCoursesPlaceholder": "Search courses by title, description, or topic...",
+      "filters": "Filters",
+      "filterByLevel": "Filter by level",
+      "allLevels": "All Levels",
+      "sortBy": "Sort by",
+      "newest": "Newest First",
+      "oldest": "Oldest First",
+      "titleAZ": "Title A-Z",
+      "titleZA": "Title Z-A",
+      "mostPopular": "Most Popular",
+      "highestRated": "Highest Rated",
+      "clearFilters": "Clear Filters",
+      "activeFilters": "Active filters:",
+      "search": "Search",
+      "level": "Level",
+      "sort": "Sort",
+      "showingResults": "Showing {count} course{plural}",
+      "noCoursesFoundMessage": "No courses found matching your criteria.",
+      "adjustCriteria": "Try adjusting your search criteria or browse all available courses.",
+      "viewAllCourses": "View All Courses",
+      "studentsEnrolled": "Students Enrolled",
+      "hoursOfContent": "Hours of Content",
+      "averageRating": "Average Rating",
+      "students": "students",
+      "rating": "rating",
+      "createdOn": "Created {date}",
+      "available": "Available",
+      "enrollNow": "Enroll Now",
+      "continueLearning": "Continue Learning",
+      "youreEnrolled": "You're enrolled!",
+      "free": "Free",
+      "limitedTimeOffer": "Limited time offer",
+      "moneyBackGuarantee": "30-day money-back guarantee",
+      "checkingEnrollment": "Checking enrollment...",
+      "loadMoreCourses": "Load More Courses",
+      "enrolled": "Enrolled",
+      "freePreview": "Free Preview",
+      "watchableFilter": "Show Watchable Courses First",
+      "watchableFilterDescription": "Show enrolled and free courses first",
+      "watchableFilterActive": "Watchable courses first",
+      "courseDetails": {
+        "aboutThisCourse": "About This Course",
+        "whatYoullLearn": "What You'll Learn",
+        "prerequisites": "Prerequisites",
+        "curriculum": "Curriculum",
+        "overview": "Overview",
+        "reviews": "Reviews",
+        "courseProgress": "Course Progress",
+        "completed": "Completed",
+        "enrollToStartTracking": "Enroll to start tracking your progress",
+        "relatedCourses": "Related Courses",
+        "discoverMoreCourses": "Discover more courses to enhance your learning journey.",
+        "browseAllCourses": "Browse All Courses",
+        "fullLifetimeAccess": "Full lifetime access",
+        "accessOnMobileAndTV": "Access on mobile and TV",
+        "certificateOfCompletion": "Certificate of completion",
+        "masterFundamentalConcepts": "Master the fundamental concepts and principles",
+        "applyKnowledgeThroughPractice": "Apply knowledge through practical exercises and projects",
+        "developIndustryRelevantSkills": "Develop industry-relevant skills and best practices",
+        "buildConfidenceForChallenges": "Build confidence to tackle real-world challenges",
+        "noPriorExperienceRequired": "No prior experience required. This course is designed for complete beginners.",
+        "basicUnderstandingRecommended": "Basic understanding of the subject matter is recommended but not required.",
+        "strongFoundationRecommended": "Strong foundation in the subject area and some practical experience is recommended.",
+        "basedOnStudentReviews": "Based on {count} student reviews",
+        "reviewsWillBeDisplayed": "Reviews will be displayed here once students start enrolling and completing the course."
+      }
+    }
+  },
+  "orderSuccess": {
+    "welcome": "Welcome to CompuCar! 🎉",
+    "accountCreated": "Your account has been created and order",
+    "isConfirmed": "is confirmed!",
+    "paymentPending": "Payment Pending",
+    "orderWaitingPayment": "Your order",
+    "waitingPaymentConfirmation": "is waiting for payment confirmation.",
+    "paymentConfirmed": "Payment Confirmed! 🎉",
+    "thankYouPaymentConfirmed": "Thank you! Your payment has been confirmed and your order is being processed.",
+    "orderSuccessfullyPlaced": "Order Successfully Placed! 🎉",
+    "thankYouForOrder": "Thank you for your order! Here are all the details for order",
+    "orderNumber": "Order #",
+    "total": "Total",
+    "overview": "Overview",
+    "items": "Items",
+    "digitalAccess": "Digital Access",
+    "delivery": "Delivery",
+    "payment": "Payment",
+    "orderSummary": "Order Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "tax": "Tax",
+    "discount": "Discount",
+    "customerInformation": "Customer Information",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "specialInstructions": "Special Instructions",
+    "cashOnDelivery": "Cash on Delivery",
+    "prepareExactly": "Prepare exactly",
+    "toPayDeliveryPerson": "to pay the delivery person.",
+    "digitalProductsReady": "Digital Products Ready",
+    "digitalProductsAvailable": "Your digital products are available for immediate download and access.",
+    "quickActions": "Quick Actions",
+    "continueShopping": "Continue Shopping",
+    "viewOrderHistory": "View Order History",
+    "trackPackage": "Track Package",
+    "accessDownloads": "Access Downloads",
+    "viewLicenseKeys": "View License Keys",
+    "downloadNow": "Download Now",
+    "whatHappensNext": "What happens next?",
+    "confirmationMessage": "We will contact you as soon as possible via Phone or WhatsApp to confirm your order details.",
+    "deliveryMessage": "Once confirmed, we will work diligently to prepare and deliver your items at the earliest convenience.",
+    "orderConfirmed": "Order received and being processed",
+    "willContactYou": "We will contact you for confirmation",
+    "preparingShipment": "Preparing your shipment",
+    "outForDelivery": "Out for delivery",
+    "paymentOnDelivery": "Payment upon delivery",
+    "orderComplete": "Order complete",
+    "copyLicenseKey": "Copy License Key",
+    "copiedToClipboard": "Copied to clipboard",
+    "downloadFile": "Download File",
+    "licenseKey": "License Key",
+    "expiresOn": "Expires on",
+    "downloadsRemaining": "downloads remaining",
+    "unlimited": "Unlimited",
+    "orderItems": "Order Items",
+    "quantity": "Quantity",
+    "unitPrice": "Unit Price",
+    "lineTotal": "Line Total",
+    "deliveryInformation": "Delivery Information",
+    "deliveryMethod": "Delivery Method",
+    "homeDelivery": "Home Delivery",
+    "stopDeskPickup": "Stop Desk Pickup",
+    "shippingAddress": "Shipping Address",
+    "estimatedDelivery": "Estimated Delivery",
+    "businessDays": "business days",
+    "trackingNumber": "Tracking Number",
+    "carrierInformation": "Carrier Information",
+    "yalidineDelivery": "Yalidine Delivery Service",
+    "paymentInformation": "Payment Information",
+    "paymentMethod": "Payment Method",
+    "paymentStatus": "Payment Status",
+    "paidOn": "Paid on",
+    "billingAddress": "Billing Address",
+    "transactionId": "Transaction ID",
+    "paymentHistory": "Payment History",
+    "amount": "Amount",
+    "status": "Status",
+    "date": "Date",
+    "processing": "Processing",
+    "completed": "Completed",
+    "failed": "Failed",
+    "refunded": "Refunded",
+    "cashOnDeliveryPayment": "Cash on Delivery",
+    "stripePayment": "Credit Card",
+    "orderNotFound": "Order not found",
+    "loadingOrderDetails": "Loading order details...",
+    "errorLoadingOrder": "Error loading order details. Please try again."
+  },
+  "footer": {
+    "companyDescription": "Your trusted partner for professional auto diagnostic tools and equipment. We provide reliable, cutting-edge solutions to help you diagnose and solve vehicle problems with precision.",
+    "contactInfo": "Contact Information",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "followUs": "Follow Us",
+    "facebook": "Facebook",
+    "twitter": "Twitter", 
+    "instagram": "Instagram",
+    "youtube": "YouTube",
+    "allRightsReserved": "All rights reserved."
+  },
+  "admin": {
+    "navigation": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "orders": "Orders",
+      "files": "Files",
+      "users": "Users",
+      "courses": "Courses",
+      "reviews": "Reviews",
+      "notifications": "Notifications",
+      "blog": "Blog",
+      "seo": "SEO",
+      "analytics": "Analytics"
+    },
+    "quickActions": {
+      "addProduct": "Add Product",
+      "addCourse": "Add Course",
+      "viewOrders": "View Orders",
+      "manageFiles": "Manage Files",
+      "analytics": "Analytics"
+    },
+    "files": {
+      "description": "Manage all tuning files uploaded by customers",
+      "allFiles": "All Files",
+      "received": "Received",
+      "inProgress": "In Progress",
+      "ready": "Ready"
+    },
+    "analytics": {
+      "title": "Analytics Dashboard",
+      "subtitle": "Real-time business insights for the last",
+      "loadingSubtitle": "Loading comprehensive business insights...",
+      "days": "days",
+      "timeRanges": {
+        "7": "Last 7 days",
+        "14": "Last 14 days",
+        "30": "Last 30 days",
+        "60": "Last 60 days",
+        "90": "Last 90 days"
+      },
+      "refresh": "Refresh",
+      "metrics": {
+        "totalRevenue": "Total Revenue",
+        "totalOrders": "Total Orders",
+        "averageOrderValue": "Average Order Value",
+        "conversionRate": "Conversion Rate",
+        "fromLastPeriod": "from last period",
+        "perOrderAverage": "Per order average",
+        "ordersPerCustomer": "Orders per customer"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "sales": "Sales Analysis",
+        "products": "Products",
+        "customers": "Customers"
+      },
+      "charts": {
+        "salesTrend": {
+          "title": "Sales Trend",
+          "description": "Daily revenue over time"
+        },
+        "orderStatus": {
+          "title": "Order Status Distribution",
+          "description": "Current order status breakdown"
+        },
+        "topProducts": {
+          "title": "Top Products by Revenue",
+          "description": "Best performing products this period"
+        },
+        "customerGrowth": {
+          "title": "Customer Growth",
+          "description": "Monthly customer acquisition"
+        },
+        "paymentMethods": {
+          "title": "Payment Methods",
+          "description": "Revenue by payment method"
+        }
+      },
+      "productInsights": {
+        "totalProducts": "Total Products",
+        "activeProducts": "Active products",
+        "averageRating": "Average Rating",
+        "fromReviews": "From {count} reviews",
+        "stockAlerts": "Stock Alerts",
+        "outOfStock": "{count} out of stock"
+      },
+      "customerInsights": {
+        "totalCustomers": "Total Customers",
+        "registeredCustomers": "Registered customers",
+        "newCustomers": "New Customers",
+        "thisPeriod": "This period",
+        "retentionRate": "Retention Rate",
+        "repeatCustomers": "{count} repeat customers"
+      },
+      "chartLabels": {
+        "newCustomers": "New Customers",
+        "totalCustomers": "Total Customers",
+        "transactions": "transactions"
       }
     }
   }

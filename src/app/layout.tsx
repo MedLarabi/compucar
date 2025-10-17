@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Luxana - Premium Luxury Beauty & Cosmetics",
-  description: "Discover premium luxury beauty products, cosmetics, skincare, and makeup. Shop the finest collection of beauty essentials for women.",
+  title: "CompuCar - Auto Diagnostic Tools & Equipment",
+  description: "Premium auto diagnostic tools and equipment for all vehicle types. Quality guaranteed.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
   icons: {
     icon: '/favicon.ico?v=2',
@@ -20,15 +20,15 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   openGraph: {
-    title: "Luxana - Premium Luxury Beauty & Cosmetics",
-    description: "Discover premium luxury beauty products, cosmetics, skincare, and makeup. Shop the finest collection of beauty essentials for women.",
+    title: "CompuCar - Auto Parts & Accessories",
+    description: "Premium automotive parts and accessories for all vehicle types. Quality guaranteed.",
     type: 'website',
     locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Luxana - Premium Luxury Beauty & Cosmetics",
-    description: "Discover premium luxury beauty products, cosmetics, skincare, and makeup. Shop the finest collection of beauty essentials for women.",
+    title: "CompuCar - Auto Parts & Accessories",
+    description: "Premium automotive parts and accessories for all vehicle types. Quality guaranteed.",
   },
   robots: {
     index: true,

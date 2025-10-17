@@ -1,49 +1,33 @@
-# Luxana - Premium Luxury Beauty & Cosmetics E-Commerce
-
-A modern, full-featured e-commerce platform built with Next.js 15, designed for luxury beauty products and cosmetics.
-
-## About Luxana
-
-Luxana is a premium e-commerce platform offering luxury beauty products, cosmetics, skincare, and makeup for women. The platform provides a sophisticated shopping experience with features like:
-
-- 🛍️ Full-featured shopping cart and checkout
-- 💄 Product catalog with categories (makeup, skincare, fragrances, etc.)
-- 🎓 Beauty tutorial courses and video content
-- 📦 Order management and tracking
-- 💳 Multiple payment options (Cash on Delivery, Stripe)
-- 🌍 Multi-language support (English, French, Arabic)
-- 🎨 Beautiful, responsive UI with dark mode support
-- 👤 User accounts and wishlists
-- 📊 Admin dashboard for store management
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-First, install dependencies:
-
-```bash
-npm install
-```
-
-Then, run the development server:
+First, run the development server:
 
 ```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Tech Stack
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-- **Framework:** Next.js 15 with App Router
-- **Database:** PostgreSQL with Prisma ORM
-- **Authentication:** NextAuth.js v5
-- **UI Components:** Shadcn/ui + Tailwind CSS
-- **State Management:** Zustand
-- **Form Validation:** Zod + React Hook Form
-- **File Uploads:** UploadThing
-- **Payments:** Stripe
-- **Email:** Nodemailer
-- **Analytics:** Vercel Analytics
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel
 
