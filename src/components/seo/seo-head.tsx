@@ -19,9 +19,9 @@ interface SEOHeadProps {
 }
 
 export function SEOHead({
-  title = "CompuCar - Premium Auto Diagnostic Tools & Equipment",
-  description = "Discover premium auto diagnostic tools, equipment, and expert advice at CompuCar. Quality diagnostic solutions for professionals with fast shipping and expert support.",
-  keywords = "auto diagnostic tools, car diagnostic equipment, automotive diagnostics, CompuCar, vehicle diagnosis, car scanner, OBD tools, professional diagnostics",
+  title = "Luxana - Premium Luxury Beauty & Cosmetics",
+  description = "Discover premium luxury beauty products, cosmetics, skincare, and makeup at Luxana. Shop the finest collection of beauty essentials for women with fast shipping and expert beauty advice.",
+  keywords = "luxury beauty, premium cosmetics, luxury makeup, skincare products, beauty essentials, Luxana, women's beauty, luxury fragrances, makeup products, beauty shop",
   image,
   url,
   type = 'website',
@@ -35,7 +35,7 @@ export function SEOHead({
   section,
   tags = []
 }: SEOHeadProps) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://compucar.com';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://luxana.com';
   const fullUrl = url ? `${baseUrl}${url}` : baseUrl;
   const ogImage = image || `${baseUrl}/og-image.jpg`;
   const canonicalUrl = canonical || fullUrl;
@@ -46,7 +46,7 @@ export function SEOHead({
       <title>{title}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
-      <meta name="author" content={author || "CompuCar Team"} />
+      <meta name="author" content={author || "Luxana Beauty"} />
       <link rel="canonical" href={canonicalUrl} />
 
       {/* Robots Meta Tags */}
@@ -62,7 +62,7 @@ export function SEOHead({
       <meta property="og:image" content={ogImage} />
       <meta property="og:image:alt" content={title} />
       <meta property="og:url" content={fullUrl} />
-      <meta property="og:site_name" content="CompuCar" />
+      <meta property="og:site_name" content="Luxana" />
       <meta property="og:locale" content="en_US" />
 
       {/* Article specific meta tags */}
@@ -89,7 +89,7 @@ export function SEOHead({
       {/* Product specific meta tags */}
       {type === 'product' && (
         <>
-          <meta property="product:brand" content="CompuCar" />
+          <meta property="product:brand" content="Luxana" />
           <meta property="product:availability" content="in stock" />
           <meta property="product:condition" content="new" />
           <meta property="product:price:currency" content="DZD" />
@@ -101,31 +101,31 @@ export function SEOHead({
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={ogImage} />
-      <meta name="twitter:site" content="@compucar" />
-      <meta name="twitter:creator" content="@compucar" />
+      <meta name="twitter:site" content="@luxanabeauty" />
+      <meta name="twitter:creator" content="@luxanabeauty" />
 
       {/* Additional SEO Meta Tags */}
       <meta name="theme-color" content="#3B82F6" />
       <meta name="msapplication-TileColor" content="#3B82F6" />
-      <meta name="application-name" content="CompuCar" />
-      <meta name="apple-mobile-web-app-title" content="CompuCar" />
+      <meta name="application-name" content="Luxana" />
+      <meta name="apple-mobile-web-app-title" content="Luxana" />
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       <meta name="mobile-web-app-capable" content="yes" />
 
       {/* Geo Tags */}
-      <meta name="geo.region" content="US-MI" />
-      <meta name="geo.placename" content="Detroit" />
-      <meta name="geo.position" content="42.3314;-83.0458" />
-      <meta name="ICBM" content="42.3314, -83.0458" />
+      <meta name="geo.region" content="DZ-16" />
+      <meta name="geo.placename" content="Algiers" />
+      <meta name="geo.position" content="36.7167;3.1833" />
+      <meta name="ICBM" content="36.7167, 3.1833" />
 
       {/* Business Tags */}
-      <meta name="business:contact_data:street_address" content="123 Diagnostic Tools Blvd" />
-      <meta name="business:contact_data:locality" content="Detroit" />
-      <meta name="business:contact_data:region" content="MI" />
-      <meta name="business:contact_data:postal_code" content="48201" />
-      <meta name="business:contact_data:country_name" content="USA" />
-      <meta name="business:contact_data:phone_number" content="+1-555-COMPUCAR" />
+      <meta name="business:contact_data:street_address" content="Bd de l'Université, Bab Ezzouar" />
+      <meta name="business:contact_data:locality" content="Algiers" />
+      <meta name="business:contact_data:region" content="Wilaya d'Alger" />
+      <meta name="business:contact_data:postal_code" content="16000" />
+      <meta name="business:contact_data:country_name" content="Algeria" />
+      <meta name="business:contact_data:phone_number" content="+213559231732" />
 
       {/* Structured Data */}
       {structuredData && (

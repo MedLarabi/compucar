@@ -1,7 +1,7 @@
 {
-  "name": "CompuCar",
-  "short_name": "CompuCar",
-  "description": "Premium automotive diagnostic tools and equipment",
+  "name": "Luxana",
+  "short_name": "Luxana",
+  "description": "Premium luxury beauty and cosmetics e-commerce",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -21,7 +21,7 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["automotive", "shopping", "business"],
+  "categories": ["beauty", "cosmetics", "shopping", "lifestyle"],
   "lang": "en",
   "dir": "ltr"
 }

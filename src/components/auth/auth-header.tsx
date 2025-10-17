@@ -32,7 +32,7 @@ export function AuthHeader({
             <Link href="/" className="flex items-center group">
               <img 
                 src="/logo.png" 
-                alt="CompuCar Logo" 
+                alt="Luxana Logo" 
                 className="h-7 w-auto object-contain group-hover:opacity-80 transition-opacity"
               />
             </Link>
@@ -44,7 +44,7 @@ export function AuthHeader({
           <Link href="/" className="flex items-center group">
             <img 
               src="/logo.png" 
-              alt="CompuCar Logo" 
+              alt="Luxana Logo" 
               className="h-7 w-auto object-contain group-hover:opacity-80 transition-opacity"
             />
           </Link>
