@@ -605,37 +605,19 @@ export default function OrderSuccessPage() {
                   {/* Next Steps */}
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-sm">What happens next?</CardTitle>
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        <Phone className="h-4 w-4" />
+                        {t('orderSuccess.whatHappensNext')}
+                      </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-2 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full" />
-                        <span>Order confirmed and being prepared</span>
-                      </div>
-                      
-                      {hasPhysicalProducts && (
-                        <>
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                            <span>Package prepared for shipping</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 bg-purple-500 rounded-full" />
-                            <span>Out for delivery</span>
-                          </div>
-                        </>
-                      )}
-                      
-                      {order.paymentMethod.toLowerCase() === 'cod' && (
-                        <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-yellow-500 rounded-full" />
-                          <span>Payment on delivery</span>
-                        </div>
-                      )}
-                      
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-green-600 rounded-full" />
-                        <span>Order complete</span>
+                    <CardContent className="space-y-4">
+                      <div className="space-y-3 text-sm">
+                        <p className="text-muted-foreground leading-relaxed">
+                          {t('orderSuccess.confirmationMessage')}
+                        </p>
+                        <p className="text-muted-foreground leading-relaxed">
+                          {t('orderSuccess.deliveryMessage')}
+                        </p>
                       </div>
                     </CardContent>
                   </Card>

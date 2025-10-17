@@ -415,6 +415,7 @@
     "allProducts": "Tous les produits",
     "new": "Nouveau",
     "addToCart": "Ajouter au panier",
+    "orderNow": "Acheter Maintenant",
     "category": "Catégorie",
     "priceRange": "Gamme de prix",
     "linkCopied": "Lien copié dans le presse-papiers",
@@ -1126,7 +1127,16 @@
     "digitalProductsAvailable": "Vos produits numériques sont maintenant disponibles au téléchargement",
     "quickActions": "Actions Rapides",
     "continueShopping": "Continuer les Achats",
-    "viewOrderHistory": "Voir l'Historique des Commandes"
+    "viewOrderHistory": "Voir l'Historique des Commandes",
+    "whatHappensNext": "Et maintenant ?",
+    "confirmationMessage": "Nous vous contacterons dans les plus brefs délais par téléphone ou WhatsApp pour confirmer les détails de votre commande.",
+    "deliveryMessage": "Une fois confirmée, nous travaillerons avec diligence pour préparer et livrer vos articles dans les meilleurs délais.",
+    "orderConfirmed": "Commande reçue et en cours de traitement",
+    "willContactYou": "Nous vous contacterons pour confirmation",
+    "preparingShipment": "Préparation de votre envoi",
+    "outForDelivery": "En cours de livraison",
+    "paymentOnDelivery": "Paiement à la livraison",
+    "orderComplete": "Commande terminée"
   },
   "footer": {
     "companyDescription": "Votre partenaire de confiance pour les outils et équipements de diagnostic automobile professionnels. Nous fournissons des solutions fiables et de pointe pour vous aider à diagnostiquer et résoudre les problèmes de véhicules avec précision.",

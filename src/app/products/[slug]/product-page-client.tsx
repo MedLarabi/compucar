@@ -1,14 +1,17 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { MainLayout } from "@/components/layout/main-layout-simple";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ProductMediaViewer } from "@/components/product/product-media-viewer";
 import { ProductVariantSelector } from "@/components/product/product-variant-selector";
+import { QuickCheckoutForm } from "@/components/product/quick-checkout-form";
 
 import { useCartStore } from "@/stores/cart-store";
 import { formatPrice } from "@/lib/utils";
@@ -32,6 +35,7 @@ interface ProductPageClientProps {
 }
 
 export default function ProductPageClient({ product }: ProductPageClientProps) {
+  const router = useRouter();
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
@@ -39,9 +43,23 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
   const [variantImages, setVariantImages] = useState<any[]>([]);
   const [currentPrice, setCurrentPrice] = useState(product.price);
   const [currentCompareAtPrice, setCurrentCompareAtPrice] = useState(product.compareAtPrice);
+  const [showQuickCheckout, setShowQuickCheckout] = useState(false);
+  const [isMobileOrTablet, setIsMobileOrTablet] = useState(false);
 
   const { addItem, openCart } = useCartStore();
   const { t } = useLanguage();
+
+  // Detect mobile/tablet devices
+  useEffect(() => {
+    const checkDevice = () => {
+      setIsMobileOrTablet(window.innerWidth < 1024); // lg breakpoint
+    };
+    
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
 
   // Memoized callback functions to prevent infinite re-renders
   const handleVariantChange = useCallback((variant: any) => {
@@ -61,6 +79,12 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
 
   // Enhanced add to cart with optimistic updates
   const handleAddToCart = async () => {
+    // On mobile/tablet, show quick checkout instead
+    if (isMobileOrTablet) {
+      setShowQuickCheckout(true);
+      return;
+    }
+    
     setIsAddingToCart(true);
     
     try {
@@ -266,7 +290,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
                   {isAddingToCart ? t('cart.adding') : 
                    (selectedVariant && !selectedVariant.inStock) ? t('product.outOfStock') :
                    (!product.isAvailable && !selectedVariant) ? t('product.outOfStock') :
-                   t('product.addToCart')}
+                   isMobileOrTablet ? t('product.orderNow') : t('product.addToCart')}
                 </Button>
                 
                 <Button variant="outline" size="lg" onClick={handleShare}>
@@ -351,6 +375,36 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           </div>
         </div>
       </div>
+
+      {/* Quick Checkout Dialog for Mobile/Tablet */}
+      <Dialog open={showQuickCheckout} onOpenChange={setShowQuickCheckout}>
+        <DialogContent className="max-w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+          <DialogHeader>
+            <DialogTitle className="text-base sm:text-lg">{t('checkout.cod.title')}</DialogTitle>
+            <DialogDescription className="text-sm">
+              {t('checkout.cod.description')}
+            </DialogDescription>
+          </DialogHeader>
+          <QuickCheckoutForm
+            product={{
+              id: product.id,
+              name: product.name,
+              slug: product.slug,
+              price: currentPrice,
+              image: variantImages.length > 0 
+                ? variantImages.find(img => img.isMain)?.url || variantImages[0]?.url
+                : product.images?.[0]?.url,
+            }}
+            quantity={quantity}
+            selectedVariant={selectedVariant}
+            onSuccess={(orderId: string) => {
+              setShowQuickCheckout(false);
+              router.push(`/order/success?orderId=${orderId}`);
+            }}
+            onCancel={() => setShowQuickCheckout(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </MainLayout>
   );
 }
